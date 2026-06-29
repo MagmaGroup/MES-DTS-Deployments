@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>דוח DTS #2664 — Tosaf</title>
+<title>דוח DTS #2664 — תוסף</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,6 +36,7 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 .ticket-block-header { background: linear-gradient(135deg, #1a3a5c 0%, #1e4d7b 100%); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid #4a9fd4; }
 .ticket-block-title { font-family: 'Heebo', Arial, sans-serif; font-size: 20px; font-weight: 800; color: #fff; }
 .ticket-block-num { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; font-weight: 700; color: #7eb8e8; margin-bottom: 4px; letter-spacing: 1px; }
+.ticket-block-owner { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; color: #a8c8e8; margin-top: 4px; }
 .ticket-block-body { padding: 20px 24px; }
 .block-label { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; background: #1a3a5c; display: inline-block; padding: 3px 10px; border-radius: 3px; margin-bottom: 10px; margin-top: 20px; }
 .block-label:first-child { margin-top: 0; }
@@ -59,7 +60,7 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
     <div class="header-meta">
       <div class="meta-block">
         <span class="label">לקוח</span>
-        <span class="value">Tosaf</span>
+        <span class="value">תוסף</span>
       </div>
       <div class="meta-block">
         <span class="label">תאריך</span>
@@ -79,6 +80,7 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <tr>
           <th>#</th>
           <th>שם קריאה</th>
+          <th>אחראי</th>
           <th>סטטוס</th>
         </tr>
       </thead>
@@ -86,32 +88,38 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <tr>
           <td><a class="ticket-num-link" href="#t2476">#2476</a></td>
           <td>יישום Minor station שקילות חול</td>
+          <td>Ayala Rov</td>
           <td><span class="badge badge-waiting">Waiting for Customer Testing</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2360">#2360</a></td>
           <td>סריקת שקים - חול</td>
+          <td>Ayala Rov</td>
           <td><span class="badge badge-waiting">Waiting for Customer Testing</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2437">#2437</a></td>
           <td>ניהול עדיפות לפי תחנה</td>
-          <td><span class="badge badge-waiting">Waiting For Client</span></td>
+          <td>ישראלה גילת</td>
+          <td><span class="badge badge-waiting">Waiting for Customer Testing</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2440">#2440</a></td>
           <td>הוספת פרמטר למדבקה שם התחנה + number of total mix/kit on the label</td>
-          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+          <td>ישראלה גילת</td>
+          <td><span class="badge badge-pending">Waiting DTS</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2376">#2376</a></td>
           <td>מחיקת טבלאות Holding tables</td>
-          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+          <td>Ayala Rov</td>
+          <td><span class="badge badge-pending">Waiting DTS</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2439">#2439</a></td>
           <td>לאפשר לדלג על חומרים ספציפיים, ולסיים שקילה לקיט</td>
-          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+          <td>Ayala Rov</td>
+          <td><span class="badge badge-pending">Waiting DTS</span></td>
         </tr>
       </tbody>
     </table>
@@ -125,17 +133,18 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <div>
           <div class="ticket-block-num">#2476</div>
           <div class="ticket-block-title">יישום Minor station שקילות חול</div>
+          <div class="ticket-block-owner">Ayala Rov</div>
         </div>
         <span class="badge badge-waiting">Waiting for Customer Testing</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">יישום עמדת Minor Station לשקילת חול — הוספת תמיכה בעמדת שקילה מסוג Minor Station עם ממשק מותאם לניהול חומרי גלם ושקילת קיטים.</div>
+        <div class="block-text">יישום עמדת שקילה מסוג Minor Station עבור תהליך שקילות חול — כולל חיבור לתחנה, קליטת נתוני שקילה בזמן אמת ושמירתם במערכת.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>כנס לעמדת Minor Station ובדוק שהממשק עולה תקין עם כל האפשרויות הנדרשות</li>
-          <li>בצע שקילה מלאה של קיט וודא שהנתונים נשמרים במערכת</li>
-          <li>בדוק הצגת רשימת חומרי גלם ופרמטרי המפעל הרלוונטיים</li>
+          <li>פתח עמדת שקילה מסוג Minor Station ובדוק שהממשק עולה כראוי</li>
+          <li>בצע שקילה של קיט ובדוק שהנתונים נשמרים בהצלחה</li>
+          <li>ודא שהחיבור לתחנה פועל ומקבל נתוני שקילה בזמן אמת</li>
         </ul>
       </div>
     </div>
@@ -145,18 +154,19 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <div>
           <div class="ticket-block-num">#2360</div>
           <div class="ticket-block-title">סריקת שקים - חול</div>
+          <div class="ticket-block-owner">Ayala Rov</div>
         </div>
         <span class="badge badge-waiting">Waiting for Customer Testing</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">הוספת כפתור Scan Bags בעמדת Minor Station לסריקת שקים ושאריות. הטופס מציג את חומרי הגלם שנשקלו עם שדה לסריקת מזהה שקית (מק"ט + מספר קיט + מספר רץ). ולידציה בצבע ירוק/אדום. שמירת תאריך סריקה ב-InventoryPack_Custom. המסך מחולק לשאריות ושקים שלמים לפי פרמטר Scan Full Bags.</div>
+        <div class="block-text">הוספת פרמטרים ברמת מפעל: Scan Full Bags (הדפסת מדבקות בשקילת שקים שלמים) ו-Scan Remainders (מאפשר כפתור Scan Bags בעמדת Minor Station). כפתור חדש — Scan Bags — יוצג בעמדות מסוג Minor Station בלבד. סריקת מזהה שקית: ריבוע ירוק = תואם, אדום = לא תואם. בלחיצה על אישור מתועד תאריך הסריקה ב-InventoryPack_Custom.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>בדוק פרמטרי Scan Full Bags ו-Scan Remainders ברמת מפעל — ודא שהם מופיעים וניתנים לעדכון</li>
-          <li>לחץ על כפתור Scan Bags בעמדת Minor Station ובדוק שהטופס נפתח עם חומרי הגלם הנכונים</li>
-          <li>סרוק מזהה שקית תקין וודא ולידציה ירוקה, סרוק מזהה שגוי וודא ולידציה אדומה</li>
-          <li>אשר טופס ובדוק שתאריך הסריקה נרשם ב-InventoryPack_Custom</li>
+          <li>הפעל פרמטר Scan Full Bags ובדוק שכפתור Scan Bags מופיע בעמדת Minor Station</li>
+          <li>סרוק מזהה שקית תקין ובדוק שהריבוע מתעדכן לירוק</li>
+          <li>סרוק מזהה שקית שגוי ובדוק שהריבוע מתעדכן לאדום</li>
+          <li>ודא שאישור הטופס מתעד תאריך סריקה ב-InventoryPack_Custom</li>
         </ul>
       </div>
     </div>
@@ -166,16 +176,18 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <div>
           <div class="ticket-block-num">#2437</div>
           <div class="ticket-block-title">ניהול עדיפות לפי תחנה</div>
+          <div class="ticket-block-owner">ישראלה גילת</div>
         </div>
-        <span class="badge badge-waiting">Waiting For Client</span>
+        <span class="badge badge-waiting">Waiting for Customer Testing</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">קבלת עדיפות חדשה מפריוריטי ומיון תורי עבודה לפי עדיפות תחנה — בנוסף למיון הקיים לפי זמן התחלה ועדיפות מכונה.</div>
+        <div class="block-text">קבלת עדיפות חדשה מפריוריטי ומיון לפי עדיפות תחנה. כיום המיון הוא לפי זמן התחלה על הפקע ולפי עדיפות מכונה — נוספה גם עדיפות תחנה כקריטריון מיון נוסף.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>ודא שהעדיפות מתקבלת מפריוריטי ומשתקפת נכון לפי תחנה</li>
-          <li>בדוק שהמיון בממשק מציג לפי עדיפות תחנה ולא רק לפי זמן התחלה</li>
+          <li>הגדר עדיפות תחנה שונה לשתי תחנות ובדוק שסדר התצוגה משתנה בהתאם</li>
+          <li>ודא שהמיון לפי עדיפות תחנה מתקיים לצד המיון הקיים (זמן התחלה + עדיפות מכונה)</li>
+          <li>בדוק שעדכון עדיפות מפריוריטי מתעדכן במערכת כראוי</li>
         </ul>
       </div>
     </div>
@@ -185,16 +197,17 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <div>
           <div class="ticket-block-num">#2440</div>
           <div class="ticket-block-title">הוספת פרמטר למדבקה שם התחנה + number of total mix/kit on the label</div>
+          <div class="ticket-block-owner">ישראלה גילת</div>
         </div>
-        <span class="badge badge-waiting">Waiting DTS</span>
+        <span class="badge badge-pending">Waiting DTS</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">הוספת שם התחנה ומספר ה-mix/kit הכולל כפרמטרים חדשים על מדבקת השקילה.</div>
+        <div class="block-text">הוספת פרמטרים חדשים למדבקות: שם התחנה ומספר הקיט/מיקס הכולל על המדבקה.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>הדפס מדבקה ובדוק שפרמטר שם התחנה מופיע עליה</li>
-          <li>ודא שמספר ה-mix/kit הכולל מוצג נכון על המדבקה</li>
+          <li>הדפס מדבקה ובדוק שמופיע שם התחנה הנכון</li>
+          <li>בדוק שמספר הקיט/מיקס הכולל מוצג בצורה נכונה על המדבקה</li>
         </ul>
       </div>
     </div>
@@ -204,16 +217,18 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <div>
           <div class="ticket-block-num">#2376</div>
           <div class="ticket-block-title">מחיקת טבלאות Holding tables</div>
+          <div class="ticket-block-owner">Ayala Rov</div>
         </div>
-        <span class="badge badge-waiting">Waiting DTS</span>
+        <span class="badge badge-pending">Waiting DTS</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">מחיקת תוכן טבלאות ה-Holding tables ומחיקת תוכן ERP בסביבת החול.</div>
+        <div class="block-text">מחיקת תוכן טבלאות Holding tables — מחיקת נתוני ERP בסביבת החול.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>ודא שטבלאות ה-Holding tables פונו / נמחקו בסביבת החול</li>
-          <li>בדוק שתוכן ה-ERP בחול הוסר כראוי ואין נתונים שיריים</li>
+          <li>ודא שטבלאות ה-Holding ריקות לאחר הרצת הסקריפט</li>
+          <li>בדוק שנתוני ERP בסביבת החול נמחקו ואין רשומות שיוריות</li>
+          <li>ודא שהמערכת פועלת תקין לאחר המחיקה</li>
         </ul>
       </div>
     </div>
@@ -223,16 +238,18 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <div>
           <div class="ticket-block-num">#2439</div>
           <div class="ticket-block-title">לאפשר לדלג על חומרים ספציפיים, ולסיים שקילה לקיט</div>
+          <div class="ticket-block-owner">Ayala Rov</div>
         </div>
-        <span class="badge badge-waiting">Waiting DTS</span>
+        <span class="badge badge-pending">Waiting DTS</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">הוספת אפשרות לדלג על חומר ספציפי בתהליך השקילה ולסיים שקילה לקיט גם ללא שקילת כל החומרים.</div>
+        <div class="block-text">הוספת אפשרות לדלג על חומרים ספציפיים בתהליך השקילה ולסיים את השקילה לקיט גם ללא שקילת כל החומרים.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>בצע שקילה עם דילוג על חומר ספציפי — ודא שהדילוג נרשם ולא חוסם המשך</li>
-          <li>סיים שקילה לקיט לאחר דילוג וודא שהתהליך מסתיים תקין</li>
+          <li>בתהליך שקילה, דלג על חומר ספציפי ובדוק שניתן להמשיך לחומר הבא</li>
+          <li>סיים שקילה לקיט עם חומר מדולג ובדוק שהמערכת מאפשרת זאת ומתעדת נכון</li>
+          <li>ודא שהדו"חות משקפים נכונה את החומרים שנשקלו לעומת שדולגו</li>
         </ul>
       </div>
     </div>
