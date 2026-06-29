@@ -1,0 +1,2 @@
+# Disable Jekyll processing — serve plain HTML
+exclude: ["customers.yaml", "*.yaml", "*.yml"]
