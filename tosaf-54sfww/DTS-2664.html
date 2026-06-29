@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>דוח DTS #2664 — Tosaf</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1a2e; padding: 40px 24px; font-weight: 400; }
+.page { max-width: 860px; margin: 0 auto; }
+.header { background: #1a3a5c; color: #fff; border-radius: 10px 10px 0 0; padding: 32px 40px; }
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.header-brand { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; }
+.header-dts { font-size: 11px; opacity: 0.5; text-align: left; }
+.header h1 { font-size: 28px; font-weight: 500; line-height: 1.3; margin-bottom: 20px; }
+.header-meta { display: flex; gap: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); }
+.meta-block { display: flex; flex-direction: column; gap: 3px; }
+.meta-block .label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.5; }
+.meta-block .value { font-size: 18px; font-weight: 700; }
+.card { background: #fff; padding: 32px 40px; border-bottom: 1px solid #e8ecf0; }
+.card:last-child { border-radius: 0 0 10px 10px; border-bottom: none; }
+.section-heading { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #1a3a5c; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #1a3a5c; display: inline-block; }
+.summary-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.summary-table th { background: #f0f4f8; color: #1a3a5c; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 12px 16px; border-bottom: 2px solid #d0d8e4; text-align: right; }
+.summary-table td { padding: 13px 16px; border-bottom: 1px solid #eef1f5; vertical-align: middle; }
+.summary-table tr:last-child td { border-bottom: none; }
+.summary-table tr:hover td { background: #f7f9fc; }
+.ticket-num-link { color: #1a3a5c; font-weight: 700; text-decoration: none; font-size: 14px; }
+.ticket-num-link:hover { text-decoration: underline; color: #1e4d7b; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.badge-pending { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+.badge-waiting  { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+.badge-done     { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.ticket-block { font-family: 'Heebo', Arial, sans-serif; margin-bottom: 28px; border: 1px solid #dde4ed; border-radius: 8px; overflow: hidden; }
+.ticket-block:last-child { margin-bottom: 0; }
+.ticket-block-header { background: linear-gradient(135deg, #1a3a5c 0%, #1e4d7b 100%); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid #4a9fd4; }
+.ticket-block-title { font-family: 'Heebo', Arial, sans-serif; font-size: 20px; font-weight: 800; color: #fff; }
+.ticket-block-num { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; font-weight: 700; color: #7eb8e8; margin-bottom: 4px; letter-spacing: 1px; }
+.ticket-block-body { padding: 20px 24px; }
+.block-label { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; background: #1a3a5c; display: inline-block; padding: 3px 10px; border-radius: 3px; margin-bottom: 10px; margin-top: 20px; }
+.block-label:first-child { margin-top: 0; }
+.block-text { font-size: 15px; line-height: 1.8; color: #222; font-weight: 400; }
+.test-steps { list-style: none; }
+.test-steps li { font-size: 15px; line-height: 1.7; color: #222; padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; border-bottom: 1px solid #f5f5f5; }
+.test-steps li:last-child { border-bottom: none; }
+.test-steps li::before { content: "▸"; color: #1a3a5c; font-size: 13px; margin-top: 3px; flex-shrink: 0; font-weight: 700; }
+.footer { text-align: center; font-size: 11px; color: #aaa; margin-top: 24px; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-top">
+      <div class="header-brand">Magma Group — פירוט תכולה וקריאות</div>
+      <div class="header-dts">Generated 29.06.2026</div>
+    </div>
+    <h1>DTS #2664<br>לאחר אישור לקוח - שקילות חול DTS</h1>
+    <div class="header-meta">
+      <div class="meta-block">
+        <span class="label">לקוח</span>
+        <span class="value">Tosaf</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">תאריך</span>
+        <span class="value">29.06.2026</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">קריאות</span>
+        <span class="value">6</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-heading">תכולת DTS</div>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>שם קריאה</th>
+          <th>סטטוס</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2476">#2476</a></td>
+          <td>יישום Minor station שקילות חול</td>
+          <td><span class="badge badge-waiting">Waiting for Customer Testing</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2360">#2360</a></td>
+          <td>סריקת שקים - חול</td>
+          <td><span class="badge badge-waiting">Waiting for Customer Testing</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2437">#2437</a></td>
+          <td>ניהול עדיפות לפי תחנה</td>
+          <td><span class="badge badge-waiting">Waiting For Client</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2440">#2440</a></td>
+          <td>הוספת פרמטר למדבקה שם התחנה + number of total mix/kit on the label</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2376">#2376</a></td>
+          <td>מחיקת טבלאות Holding tables</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2439">#2439</a></td>
+          <td>לאפשר לדלג על חומרים ספציפיים, ולסיים שקילה לקיט</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="section-heading">פירוט תכולה</div>
+
+    <div class="ticket-block" id="t2476">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2476</div>
+          <div class="ticket-block-title">יישום Minor station שקילות חול</div>
+        </div>
+        <span class="badge badge-waiting">Waiting for Customer Testing</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">יישום עמדת Minor Station לשקילת חול — הוספת תמיכה בעמדת שקילה מסוג Minor Station עם ממשק מותאם לניהול חומרי גלם ושקילת קיטים.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>כנס לעמדת Minor Station ובדוק שהממשק עולה תקין עם כל האפשרויות הנדרשות</li>
+          <li>בצע שקילה מלאה של קיט וודא שהנתונים נשמרים במערכת</li>
+          <li>בדוק הצגת רשימת חומרי גלם ופרמטרי המפעל הרלוונטיים</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2360">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2360</div>
+          <div class="ticket-block-title">סריקת שקים - חול</div>
+        </div>
+        <span class="badge badge-waiting">Waiting for Customer Testing</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">הוספת כפתור Scan Bags בעמדת Minor Station לסריקת שקים ושאריות. הטופס מציג את חומרי הגלם שנשקלו עם שדה לסריקת מזהה שקית (מק"ט + מספר קיט + מספר רץ). ולידציה בצבע ירוק/אדום. שמירת תאריך סריקה ב-InventoryPack_Custom. המסך מחולק לשאריות ושקים שלמים לפי פרמטר Scan Full Bags.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>בדוק פרמטרי Scan Full Bags ו-Scan Remainders ברמת מפעל — ודא שהם מופיעים וניתנים לעדכון</li>
+          <li>לחץ על כפתור Scan Bags בעמדת Minor Station ובדוק שהטופס נפתח עם חומרי הגלם הנכונים</li>
+          <li>סרוק מזהה שקית תקין וודא ולידציה ירוקה, סרוק מזהה שגוי וודא ולידציה אדומה</li>
+          <li>אשר טופס ובדוק שתאריך הסריקה נרשם ב-InventoryPack_Custom</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2437">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2437</div>
+          <div class="ticket-block-title">ניהול עדיפות לפי תחנה</div>
+        </div>
+        <span class="badge badge-waiting">Waiting For Client</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">קבלת עדיפות חדשה מפריוריטי ומיון תורי עבודה לפי עדיפות תחנה — בנוסף למיון הקיים לפי זמן התחלה ועדיפות מכונה.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>ודא שהעדיפות מתקבלת מפריוריטי ומשתקפת נכון לפי תחנה</li>
+          <li>בדוק שהמיון בממשק מציג לפי עדיפות תחנה ולא רק לפי זמן התחלה</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2440">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2440</div>
+          <div class="ticket-block-title">הוספת פרמטר למדבקה שם התחנה + number of total mix/kit on the label</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">הוספת שם התחנה ומספר ה-mix/kit הכולל כפרמטרים חדשים על מדבקת השקילה.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>הדפס מדבקה ובדוק שפרמטר שם התחנה מופיע עליה</li>
+          <li>ודא שמספר ה-mix/kit הכולל מוצג נכון על המדבקה</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2376">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2376</div>
+          <div class="ticket-block-title">מחיקת טבלאות Holding tables</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">מחיקת תוכן טבלאות ה-Holding tables ומחיקת תוכן ERP בסביבת החול.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>ודא שטבלאות ה-Holding tables פונו / נמחקו בסביבת החול</li>
+          <li>בדוק שתוכן ה-ERP בחול הוסר כראוי ואין נתונים שיריים</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2439">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2439</div>
+          <div class="ticket-block-title">לאפשר לדלג על חומרים ספציפיים, ולסיים שקילה לקיט</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">הוספת אפשרות לדלג על חומר ספציפי בתהליך השקילה ולסיים שקילה לקיט גם ללא שקילת כל החומרים.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>בצע שקילה עם דילוג על חומר ספציפי — ודא שהדילוג נרשם ולא חוסם המשך</li>
+          <li>סיים שקילה לקיט לאחר דילוג וודא שהתהליך מסתיים תקין</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<div class="footer">Magma Group DTS Report &nbsp;·&nbsp; Generated 29.06.2026</div>
+</body>
+</html>
