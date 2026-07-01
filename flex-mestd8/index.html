@@ -4,34 +4,211 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Flex — DTS Deployments</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f9; color: #333; max-width: 800px; margin: 48px auto; padding: 0 24px; }
-    h1 { font-size: 1.6rem; border-bottom: 2px solid #e0e0e0; padding-bottom: 12px; }
-    .subtitle { color: #666; margin-top: -8px; margin-bottom: 32px; }
-    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    th { background: #2c3e50; color: #fff; padding: 12px 16px; text-align: left; font-size: 0.85rem; }
-    td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Heebo', Arial, sans-serif;
+      background: #f0f4ff;
+      color: #1a2340;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background: linear-gradient(135deg, #1a2340 0%, #1e3a6e 100%);
+      padding: 40px 40px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle star dots */
+    .page-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.25) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px);
+      background-size: 60px 60px, 97px 97px;
+      background-position: 0 0, 30px 30px;
+      pointer-events: none;
+    }
+
+    .header-inner {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .header-back {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      display: block;
+      margin-bottom: 12px;
+      letter-spacing: 0.3px;
+    }
+    .header-back:hover { color: rgba(255,255,255,0.75); }
+
+    .header-customer {
+      display: inline-block;
+      background: #be185d;
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .header-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .header-sub {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.45);
+      margin-top: 6px;
+    }
+
+    .header-rocket {
+      font-size: 4rem;
+      opacity: 0.2;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* ── Main content ── */
+    main {
+      max-width: 1100px;
+      margin: 36px auto;
+      padding: 0 28px 60px;
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead tr {
+      background: linear-gradient(90deg, #1a2340, #1e3a6e);
+    }
+
+    th {
+      padding: 14px 18px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th:first-child { border-left: 4px solid #be185d; }
+
+    td {
+      padding: 16px 18px;
+      border-bottom: 1px solid #f0f4ff;
+      font-size: 0.88rem;
+      vertical-align: middle;
+    }
+
     tr:last-child td { border-bottom: none; }
-    .badge-open   { background: #27ae60; color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 0.78rem; }
-    .badge-closed { background: #95a5a6; color: #fff; padding: 2px 10px; border-radius: 12px; font-size: 0.78rem; }
-    .empty { text-align: center; color: #aaa; padding: 48px; }
+    tbody tr:hover td { background: #f8faff; }
+
+    .ticket-link {
+      color: #be185d;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .ticket-link:hover { text-decoration: underline; }
+
+    .title-cell {
+      max-width: 300px;
+      color: #1a2340;
+      font-weight: 500;
+    }
+
+    .na { color: #ccc; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+    .badge-open      { background: #dcfce7; color: #166534; }
+    .badge-scheduled { background: #fef9c3; color: #854d0e; }
+    .badge-closed    { background: #f1f5f9; color: #64748b; }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      color: #c5cfe8;
+      font-size: 0.95rem;
+      padding: 64px 24px;
+    }
   </style>
 </head>
 <body>
-  <h1>DTS Deployments — Flex</h1>
-  <p class="subtitle">Deployment history for Magma MES releases</p>
-  <table>
-    <thead>
-      <tr>
-        <th>Ticket</th>
-        <th>Title</th>
-        <th>Date</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td colspan="4" class="empty">No deployments yet.</td></tr>
-    </tbody>
-  </table>
+
+  <div class="page-header">
+    <div class="header-inner">
+      <div>
+        <a class="header-back" href="../magma-d8vn3k/">← Internal Dashboard</a>
+        <div class="header-customer">Flex</div>
+        <div class="header-title">DTS Deployment History</div>
+        <div class="header-sub">Magma MES releases for Flex</div>
+      </div>
+      <div class="header-rocket">🚀</div>
+    </div>
+  </div>
+
+  <main>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Ticket</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Deploy Date</th>
+            <th>Close Date</th>
+            <th>Changes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="7" class="empty">🚀 No deployments yet</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
 </body>
 </html>
