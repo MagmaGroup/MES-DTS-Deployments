@@ -4,57 +4,69 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magma — DTS Internal Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Heebo', Arial, sans-serif;
-      background: #f0f2f5;
+      background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 50%, #e8f5e9 100%);
       color: #1a2340;
       min-height: 100vh;
-      padding: 36px 24px 60px;
+      padding: 40px 28px 60px;
     }
 
     header {
       text-align: center;
-      margin-bottom: 36px;
+      margin-bottom: 40px;
     }
     header h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
+      font-size: 2rem;
+      font-weight: 800;
       color: #1a2340;
+      letter-spacing: -0.5px;
     }
     header p {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: #999;
-      margin-top: 5px;
+      margin-top: 6px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px;
-      max-width: 1000px;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 22px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
     .card {
       background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
       text-decoration: none;
       color: #1a2340;
-      padding: 22px 20px 18px;
-      border-top: 3px solid #1a2340;
-      transition: box-shadow 0.15s, transform 0.15s;
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
       display: flex;
       flex-direction: column;
-      gap: 10px;
     }
     .card:hover {
-      box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+      transform: translateY(-4px);
+    }
+
+    .card-banner {
+      height: 8px;
+      width: 100%;
+    }
+
+    .card-body {
+      padding: 22px 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
     }
 
     .card-header {
@@ -63,15 +75,17 @@
       justify-content: space-between;
     }
     .card-name {
-      font-size: 1rem;
-      font-weight: 700;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
     }
     .card-count {
       font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 12px;
       background: #f0f2f5;
-      color: #666;
-      padding: 2px 8px;
-      border-radius: 10px;
+      color: #888;
     }
 
     .card-divider {
@@ -79,57 +93,71 @@
       border-top: 1px solid #f0f2f5;
     }
 
-    .card-row {
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .info-cell {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.78rem;
+      flex-direction: column;
+      gap: 3px;
     }
-    .card-label {
-      color: #aaa;
-      font-size: 0.72rem;
+    .info-label {
+      font-size: 0.68rem;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
     }
-    .card-value {
+    .info-value {
+      font-size: 0.85rem;
+      font-weight: 600;
       color: #1a2340;
-      font-weight: 500;
-      font-size: 0.78rem;
-      text-align: right;
-      max-width: 140px;
+    }
+    .info-value.na {
+      color: #ccc;
+      font-weight: 400;
+    }
+
+    .last-title {
+      font-size: 0.82rem;
+      color: #555;
+      background: #f8f9fb;
+      border-radius: 8px;
+      padding: 8px 12px;
+      border-left: 3px solid #e0e0e0;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .card-value.na {
-      color: #ccc;
     }
 
     .badge {
       display: inline-block;
-      font-size: 0.68rem;
-      font-weight: 700;
-      padding: 2px 9px;
-      border-radius: 10px;
-      letter-spacing: 0.3px;
-    }
-    .badge.open       { background: #e6f4ea; color: #1e7e34; }
-    .badge.scheduled  { background: #fff3cd; color: #856404; }
-    .badge.closed     { background: #e9ecef; color: #555; }
-    .badge.none       { background: #f0f2f5; color: #bbb; }
-
-    .card-footer {
       font-size: 0.7rem;
-      color: #bbb;
-      text-align: right;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.4px;
     }
+    .badge.open      { background: #dcfce7; color: #166534; }
+    .badge.scheduled { background: #fef9c3; color: #854d0e; }
+    .badge.closed    { background: #f1f5f9; color: #64748b; }
+    .badge.none      { background: #f1f5f9; color: #cbd5e1; }
 
-    .card-skeleton .card-value {
-      color: #ddd;
+    .empty-state {
+      text-align: center;
+      padding: 16px 0 4px;
+      color: #d1d5db;
+      font-size: 0.85rem;
     }
+    .empty-state .icon { font-size: 2rem; display: block; margin-bottom: 6px; }
 
     footer {
       text-align: center;
-      margin-top: 48px;
-      font-size: 0.72rem;
+      margin-top: 52px;
+      font-size: 0.75rem;
       color: #bbb;
     }
   </style>
@@ -137,8 +165,8 @@
 <body>
 
   <header>
-    <h1>Magma MES — DTS Internal Dashboard</h1>
-    <p>Internal use only &mdash; <span id="ts"></span></p>
+    <h1>🛰️ DTS Internal Dashboard</h1>
+    <p>Magma MES &mdash; Internal use only &mdash; <span id="ts"></span></p>
   </header>
 
   <div class="grid" id="grid"></div>
@@ -147,22 +175,21 @@
 
   <script>
     const customers = [
-      { name: 'Tosaf',       slug: 'tosaf-54sfww' },
-      { name: 'Elcam',       slug: 'elcam-bs3h7e' },
-      { name: 'Ytong',       slug: 'ytong-qunmvy' },
-      { name: 'Tama',        slug: 'tama-ij6mnp' },
-      { name: 'Carmit',      slug: 'carmit-pys97q' },
-      { name: 'Motorad',     slug: 'motorad-4yrxcm' },
-      { name: 'Rav-Bariach', slug: 'rav-bariach-0ii743' },
-      { name: 'Polybid',     slug: 'polybid-g90djj' },
-      { name: 'Flex',        slug: 'flex-mestd8' },
-      { name: 'Electra',     slug: 'electra-lg43m8' },
+      { name: 'Tosaf',       slug: 'tosaf-54sfww',      color: '#4f46e5' },
+      { name: 'Elcam',       slug: 'elcam-bs3h7e',      color: '#0891b2' },
+      { name: 'Ytong',       slug: 'ytong-qunmvy',      color: '#059669' },
+      { name: 'Tama',        slug: 'tama-ij6mnp',       color: '#d97706' },
+      { name: 'Carmit',      slug: 'carmit-pys97q',     color: '#dc2626' },
+      { name: 'Motorad',     slug: 'motorad-4yrxcm',    color: '#7c3aed' },
+      { name: 'Rav-Bariach', slug: 'rav-bariach-0ii743',color: '#0d9488' },
+      { name: 'Polybid',     slug: 'polybid-g90djj',    color: '#ea580c' },
+      { name: 'Flex',        slug: 'flex-mestd8',       color: '#be185d' },
+      { name: 'Electra',     slug: 'electra-lg43m8',    color: '#1d4ed8' },
     ];
 
-    const grid = document.getElementById('grid');
-
-    // Timestamp
-    document.getElementById('ts').textContent = new Date().toLocaleString('he-IL');
+    document.getElementById('ts').textContent = new Date().toLocaleDateString('he-IL', {
+      day: '2-digit', month: '2-digit', year: 'numeric'
+    });
 
     function statusBadge(status) {
       if (!status) return `<span class="badge none">—</span>`;
@@ -173,78 +200,66 @@
       return `<span class="badge none">${status}</span>`;
     }
 
-    function val(v, fallback = '—') {
-      return v ? `<span class="card-value">${v}</span>`
-               : `<span class="card-value na">${fallback}</span>`;
+    function truncate(str, len) {
+      if (!str) return '';
+      return str.length > len ? str.slice(0, len) + '…' : str;
     }
 
     function renderCard(customer, data) {
       const deployments = data?.deployments || [];
       const last = deployments.length > 0 ? deployments[deployments.length - 1] : null;
-
-      // Find upcoming (open or scheduled, not closed)
-      const upcoming = deployments.slice().reverse().find(
-        d => d.status && d.status.toLowerCase() !== 'closed'
-      );
-
       const count = deployments.length;
-      const href  = `../${customer.slug}/`;
 
-      const cardHtml = `
-        <a class="card" href="${href}">
-          <div class="card-header">
-            <span class="card-name">${customer.name}</span>
-            <span class="card-count">${count} DTS</span>
-          </div>
-          <hr class="card-divider" />
+      if (!last) {
+        return `
+          <a class="card" href="../${customer.slug}/">
+            <div class="card-banner" style="background:${customer.color}"></div>
+            <div class="card-body">
+              <div class="card-header">
+                <span class="card-name" style="color:${customer.color}">${customer.name}</span>
+                <span class="card-count">0 DTS</span>
+              </div>
+              <div class="empty-state">
+                <span class="icon">📭</span>
+                No deployments yet
+              </div>
+            </div>
+          </a>`;
+      }
 
-          <div class="card-row">
-            <span class="card-label">Last DTS</span>
-            ${last ? val(`#${last.ticketNumber} &nbsp;${truncate(last.title, 22)}`) : val(null)}
-          </div>
-
-          <div class="card-row">
-            <span class="card-label">Status</span>
-            <span>${last ? statusBadge(last.status) : statusBadge(null)}</span>
-          </div>
-
-          <div class="card-row">
-            <span class="card-label">Created</span>
-            ${val(last?.createDate)}
-          </div>
-
-          <div class="card-row">
-            <span class="card-label">Deploy date</span>
-            ${val(last?.deployDate, 'Not scheduled')}
-          </div>
-
-          <div class="card-row">
-            <span class="card-label">Changes</span>
-            ${val(last?.ticketCount ? `${last.ticketCount} tickets` : null)}
-          </div>
-        </a>
-      `;
-      return cardHtml;
-    }
-
-    function renderEmpty(customer) {
       return `
-        <a class="card card-skeleton" href="../${customer.slug}/">
-          <div class="card-header">
-            <span class="card-name">${customer.name}</span>
-            <span class="card-count">0 DTS</span>
-          </div>
-          <hr class="card-divider" />
-          <div class="card-row">
-            <span class="card-label" style="color:#ddd">No deployments yet</span>
-          </div>
-        </a>
-      `;
-    }
+        <a class="card" href="../${customer.slug}/">
+          <div class="card-banner" style="background:${customer.color}"></div>
+          <div class="card-body">
+            <div class="card-header">
+              <span class="card-name" style="color:${customer.color}">${customer.name}</span>
+              <span class="card-count">${count} DTS</span>
+            </div>
 
-    function truncate(str, len) {
-      if (!str) return '';
-      return str.length > len ? str.slice(0, len) + '…' : str;
+            <div class="last-title">
+              #${last.ticketNumber} &nbsp; ${truncate(last.title, 36)}
+            </div>
+
+            <div class="info-grid">
+              <div class="info-cell">
+                <span class="info-label">Status</span>
+                <span>${statusBadge(last.status)}</span>
+              </div>
+              <div class="info-cell">
+                <span class="info-label">Changes</span>
+                <span class="info-value ${last.ticketCount ? '' : 'na'}">${last.ticketCount ? last.ticketCount + ' tickets' : '—'}</span>
+              </div>
+              <div class="info-cell">
+                <span class="info-label">Created</span>
+                <span class="info-value ${last.createDate ? '' : 'na'}">${last.createDate || '—'}</span>
+              </div>
+              <div class="info-cell">
+                <span class="info-label">Deploy date</span>
+                <span class="info-value ${last.deployDate ? '' : 'na'}">${last.deployDate || 'Not set'}</span>
+              </div>
+            </div>
+          </div>
+        </a>`;
     }
 
     async function loadCustomer(customer) {
@@ -254,13 +269,13 @@
         const data = await res.json();
         return renderCard(customer, data);
       } catch {
-        return renderEmpty(customer);
+        return renderCard(customer, null);
       }
     }
 
     async function init() {
       const cards = await Promise.all(customers.map(loadCustomer));
-      grid.innerHTML = cards.join('');
+      document.getElementById('grid').innerHTML = cards.join('');
     }
 
     init();
