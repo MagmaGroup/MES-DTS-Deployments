@@ -1,0 +1,15 @@
+{
+  "customer": "Tosaf",
+  "deployments": [
+    {
+      "ticketNumber": "2664",
+      "title": "לאחר אישור לקוח - שקילות חול DTS",
+      "status": "Open",
+      "createDate": "29.06.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 6,
+      "url": "DTS-2664.html"
+    }
+  ]
+}

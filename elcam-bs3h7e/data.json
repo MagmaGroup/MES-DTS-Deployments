@@ -1,0 +1,15 @@
+{
+  "customer": "Elcam",
+  "deployments": [
+    {
+      "ticketNumber": "2670",
+      "title": "לאחר אישור לקוח - אלכם - 30.7.26 DTS",
+      "status": "Open",
+      "createDate": "30.06.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 4,
+      "url": "DTS-2670.html"
+    }
+  ]
+}
