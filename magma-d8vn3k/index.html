@@ -251,4 +251,35 @@
               </div>
               <div class="info-cell">
                 <span class="info-label">Created</span>
-                <span class="info
+                <span class="info-value ${last.createDate ? '' : 'na'}">${last.createDate || '—'}</span>
+              </div>
+              <div class="info-cell">
+                <span class="info-label">Deploy date</span>
+                <span class="info-value ${last.deployDate ? '' : 'na'}">${last.deployDate || 'Not set'}</span>
+              </div>
+            </div>
+          </div>
+        </a>`;
+    }
+
+    async function loadCustomer(customer) {
+      try {
+        const res = await fetch(`../${customer.slug}/data.json?_=${Date.now()}`);
+        if (!res.ok) throw new Error('no data');
+        const data = await res.json();
+        return renderCard(customer, data);
+      } catch {
+        return renderCard(customer, null);
+      }
+    }
+
+    async function init() {
+      const cards = await Promise.all(customers.map(loadCustomer));
+      document.getElementById('grid').innerHTML = cards.join('');
+    }
+
+    init();
+  </script>
+
+</body>
+</html>
