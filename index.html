@@ -4,17 +4,157 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magma MES — DTS Deployments</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f9; color: #333; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-    .box { text-align: center; background: #fff; padding: 48px 64px; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-    h1 { font-size: 1.8rem; margin-bottom: 8px; }
-    p { color: #666; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Heebo', Arial, sans-serif;
+      background: #f0f2f5;
+      color: #1a2340;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #1a2340;
+      letter-spacing: 0.5px;
+    }
+
+    header p {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      text-decoration: none;
+      color: #1a2340;
+      padding: 28px 20px;
+      text-align: center;
+      transition: box-shadow 0.15s, transform 0.15s;
+      border-top: 3px solid #1a2340;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+      transform: translateY(-2px);
+    }
+
+    .card .icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+
+    .card .name {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .card .arrow {
+      font-size: 0.75rem;
+      color: #aaa;
+      margin-top: 8px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      font-size: 0.75rem;
+      color: #bbb;
+    }
   </style>
 </head>
 <body>
-  <div class="box">
+
+  <header>
     <h1>Magma MES — DTS Deployments</h1>
-    <p>Use the link provided by your Magma contact to access your deployment page.</p>
+    <p>Internal team dashboard &mdash; select a customer to view their deployment history</p>
+  </header>
+
+  <div class="grid">
+
+    <a class="card" href="tosaf-54sfww/">
+      <div class="icon">🏭</div>
+      <div class="name">Tosaf</div>
+      <div class="arrow">View →</div>
+    </a>
+
+    <a class="card" href="elcam-bs3h7e/">
+      <div class="icon">🏭</div>
+      <div class="name">Elcam</div>
+      <div class="arrow">View →</div>
+    </a>
+
+    <a class="card" href="ytong-qunmvy/">
+      <div class="icon">🏭</div>
+      <div class="name">Ytong</div>
+      <div class="arrow">View →</div>
+    </a>
+
+    <a class="card" href="tama-ij6mnp/">
+      <div class="icon">🏭</div>
+      <div class="name">Tama</div>
+      <div class="arrow">View →</div>
+    </a>
+
+    <a class="card" href="carmit-pys97q/">
+      <div class="icon">🏭</div>
+      <div class="name">Carmit</div>
+      <div class="arrow">View →</div>
+    </a>
+
+    <a class="card" href="motorad-4yrxcm/">
+      <div class="icon">🏭</div>
+      <div class="name">Motorad</div>
+      <div class="arrow">View →</div>
+    </a>
+
+    <a class="card" href="rav-bariach-0ii743/">
+      <div class="icon">🏭</div>
+      <div class="name">Rav-Bariach</div>
+      <div class="arrow">View →</div>
+    </a>
+
+    <a class="card" href="polybid-g90djj/">
+      <div class="icon">🏭</div>
+      <div class="name">Polybid</div>
+      <div class="arrow">View →</div>
+    </a>
+
+    <a class="card" href="flex-mestd8/">
+      <div class="icon">🏭</div>
+      <div class="name">Flex</div>
+      <div class="arrow">View →</div>
+    </a>
+
+    <a class="card" href="electra-lg43m8/">
+      <div class="icon">🏭</div>
+      <div class="name">Electra</div>
+      <div class="arrow">View →</div>
+    </a>
+
   </div>
+
+  <footer>Magma Group &mdash; Internal Use Only</footer>
+
 </body>
 </html>
