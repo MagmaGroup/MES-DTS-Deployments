@@ -4,157 +4,145 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magma MES — DTS Deployments</title>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Heebo', Arial, sans-serif;
-      background: #f0f2f5;
-      color: #1a2340;
+      background: #0d1117;
+      color: #e6edf3;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       padding: 40px 24px;
+      overflow: hidden;
+      position: relative;
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 40px;
+    /* Starfield */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
     }
-
-    header h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #1a2340;
-      letter-spacing: 0.5px;
-    }
-
-    header p {
-      font-size: 0.85rem;
-      color: #888;
-      margin-top: 6px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 16px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .card {
+    .star {
+      position: absolute;
+      border-radius: 50%;
       background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
-      text-decoration: none;
-      color: #1a2340;
-      padding: 28px 20px;
+      animation: twinkle var(--d) infinite ease-in-out;
+      opacity: 0;
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; }
+      50% { opacity: var(--o); }
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
       text-align: center;
-      transition: box-shadow 0.15s, transform 0.15s;
-      border-top: 3px solid #1a2340;
+      max-width: 560px;
     }
 
-    .card:hover {
-      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
-      transform: translateY(-2px);
+    .rocket {
+      font-size: 5rem;
+      display: block;
+      margin-bottom: 24px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
     }
 
-    .card .icon {
-      font-size: 1.8rem;
-      margin-bottom: 12px;
+    h1 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 16px;
+      line-height: 1.3;
     }
 
-    .card .name {
+    .tagline {
       font-size: 1rem;
+      color: #8b949e;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .tagline em {
+      color: #58a6ff;
+      font-style: normal;
       font-weight: 600;
     }
 
-    .card .arrow {
-      font-size: 0.75rem;
-      color: #aaa;
-      margin-top: 8px;
+    .badge {
+      display: inline-block;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 20px;
+      padding: 10px 24px;
+      font-size: 0.85rem;
+      color: #8b949e;
+    }
+
+    .badge span {
+      color: #3fb950;
+      font-weight: 600;
     }
 
     footer {
-      text-align: center;
+      position: relative;
+      z-index: 1;
       margin-top: 48px;
-      font-size: 0.75rem;
-      color: #bbb;
+      font-size: 0.72rem;
+      color: #30363d;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Magma MES — DTS Deployments</h1>
-    <p>Internal team dashboard &mdash; select a customer to view their deployment history</p>
-  </header>
+  <!-- Stars -->
+  <div class="stars" id="stars"></div>
 
-  <div class="grid">
-
-    <a class="card" href="tosaf-54sfww/">
-      <div class="icon">🏭</div>
-      <div class="name">Tosaf</div>
-      <div class="arrow">View →</div>
-    </a>
-
-    <a class="card" href="elcam-bs3h7e/">
-      <div class="icon">🏭</div>
-      <div class="name">Elcam</div>
-      <div class="arrow">View →</div>
-    </a>
-
-    <a class="card" href="ytong-qunmvy/">
-      <div class="icon">🏭</div>
-      <div class="name">Ytong</div>
-      <div class="arrow">View →</div>
-    </a>
-
-    <a class="card" href="tama-ij6mnp/">
-      <div class="icon">🏭</div>
-      <div class="name">Tama</div>
-      <div class="arrow">View →</div>
-    </a>
-
-    <a class="card" href="carmit-pys97q/">
-      <div class="icon">🏭</div>
-      <div class="name">Carmit</div>
-      <div class="arrow">View →</div>
-    </a>
-
-    <a class="card" href="motorad-4yrxcm/">
-      <div class="icon">🏭</div>
-      <div class="name">Motorad</div>
-      <div class="arrow">View →</div>
-    </a>
-
-    <a class="card" href="rav-bariach-0ii743/">
-      <div class="icon">🏭</div>
-      <div class="name">Rav-Bariach</div>
-      <div class="arrow">View →</div>
-    </a>
-
-    <a class="card" href="polybid-g90djj/">
-      <div class="icon">🏭</div>
-      <div class="name">Polybid</div>
-      <div class="arrow">View →</div>
-    </a>
-
-    <a class="card" href="flex-mestd8/">
-      <div class="icon">🏭</div>
-      <div class="name">Flex</div>
-      <div class="arrow">View →</div>
-    </a>
-
-    <a class="card" href="electra-lg43m8/">
-      <div class="icon">🏭</div>
-      <div class="name">Electra</div>
-      <div class="arrow">View →</div>
-    </a>
-
+  <div class="content">
+    <span class="rocket">🚀</span>
+    <h1>Houston, we have a deployment.</h1>
+    <p class="tagline">
+      This is Magma MES deployment central.<br />
+      If you're looking for your release page — <em>you need the link.</em><br />
+      If you don't have it, it's probably not for you. 👀
+    </p>
+    <div class="badge">
+      System status: <span>All systems go</span> &nbsp;✓
+    </div>
   </div>
 
-  <footer>Magma Group &mdash; Internal Use Only</footer>
+  <footer>Magma Group &copy; 2026 — Internal Infrastructure</footer>
+
+  <script>
+    // Generate starfield
+    const container = document.getElementById('stars');
+    for (let i = 0; i < 120; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.5 + 0.5;
+      s.style.cssText = `
+        width: ${size}px;
+        height: ${size}px;
+        top: ${Math.random() * 100}%;
+        left: ${Math.random() * 100}%;
+        --d: ${(Math.random() * 4 + 2).toFixed(1)}s;
+        --o: ${(Math.random() * 0.7 + 0.3).toFixed(2)};
+        animation-delay: ${(Math.random() * 4).toFixed(1)}s;
+      `;
+      container.appendChild(s);
+    }
+  </script>
 
 </body>
 </html>
