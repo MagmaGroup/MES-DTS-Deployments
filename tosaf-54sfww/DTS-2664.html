@@ -46,12 +46,16 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 .test-steps li:last-child { border-bottom: none; }
 .test-steps li::before { content: "▸"; color: #1a3a5c; font-size: 13px; margin-top: 3px; flex-shrink: 0; font-weight: 700; }
 .footer { text-align: center; font-size: 11px; color: #aaa; margin-top: 24px; letter-spacing: 0.5px; }
+.back-link { display: inline-block; font-size: 11px; color: rgba(255,255,255,0.45); text-decoration: none; letter-spacing: 0.3px; margin-bottom: 16px; }
+.back-link:hover { color: rgba(255,255,255,0.8); }
+.meta-block .value-na { font-size: 18px; font-weight: 400; opacity: 0.35; }
 </style>
 </head>
 <body>
 <div class="page">
 
   <div class="header">
+    <a class="back-link" href="../">← חזרה לרשימת DTS</a>
     <div class="header-top">
       <div class="header-brand">Magma Group — פירוט תכולה וקריאות</div>
       <div class="header-dts">Generated 29.06.2026</div>
@@ -63,8 +67,16 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <span class="value">תוסף</span>
       </div>
       <div class="meta-block">
-        <span class="label">תאריך</span>
+        <span class="label">נוצר</span>
         <span class="value">29.06.2026</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">תאריך DTS</span>
+        <span class="value">07.07.2026</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">נסגר</span>
+        <span class="value-na">—</span>
       </div>
       <div class="meta-block">
         <span class="label">קריאות</span>
