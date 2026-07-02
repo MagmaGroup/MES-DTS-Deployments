@@ -176,9 +176,25 @@
     }
     .btn-add-step:hover { border-color: #3b82f6; color: #3b82f6; }
 
+    .back-link {
+      display: inline-block; background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85);
+      text-decoration: none; padding: 6px 16px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
+      margin-bottom: 16px; transition: background 0.2s;
+    }
+    .back-link:hover { background: rgba(255,255,255,0.22); color: #fff; }
+
     .save-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
     .save-note { font-size: 12px; color: #aab; line-height: 1.5; }
     .save-note strong { color: #d97706; }
+    .btn-ghost {
+      background: none; border: 1.5px solid #dde4ef; border-radius: 6px;
+      color: #8899aa; font-size: 13px; font-weight: 600;
+      padding: 9px 20px; cursor: pointer; transition: border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .btn-ghost:hover { border-color: #aab; color: #5a6a7a; }
 
     footer { text-align: center; padding: 20px; font-size: 11px; color: #bbb; letter-spacing: 0.5px; }
   </style>
@@ -186,6 +202,7 @@
 <body>
 
 <div class="page-header">
+  <a class="back-link" href="./">← Dashboard</a>
   <div class="brand">Magma MES &mdash; Internal Use Only</div>
   <h1>DTS Content Editor</h1>
   <div class="subtitle">Edit ticket descriptions and test steps &nbsp;&middot;&nbsp; Saves commit data.json + HTML report to GitHub</div>
@@ -225,7 +242,10 @@
       <span class="save-note">
         Save commits <strong>data.json</strong> + regenerates the <strong>HTML report</strong> — both updated in one step.
       </span>
-      <button class="btn btn-green" id="btn-save">Save &amp; Publish</button>
+      <div style="display:flex;gap:10px;flex-shrink:0;">
+        <button class="btn-ghost" id="btn-cancel">Cancel</button>
+        <button class="btn btn-green" id="btn-save">Save &amp; Publish</button>
+      </div>
     </div>
   </div>
 
@@ -262,6 +282,7 @@ const btnLoad      = document.getElementById('btn-load');
 const editorArea   = document.getElementById('editor-area');
 const saveBar      = document.getElementById('save-bar');
 const btnSave      = document.getElementById('btn-save');
+const btnCancel    = document.getElementById('btn-cancel');
 const statusMsg    = document.getElementById('status-msg');
 const lockedNotice = document.getElementById('locked-notice');
 
@@ -659,6 +680,15 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 </body>
 </html>`;
 }
+
+// ── Cancel ──
+btnCancel.addEventListener('click', () => {
+  if (!state.data) return;
+  const dep = state.data.deployments[state.deploymentIdx];
+  if (!dep) return;
+  clearStatus();
+  renderEditor(dep);
+});
 
 // ── Save ──
 btnSave.addEventListener('click', async () => {
