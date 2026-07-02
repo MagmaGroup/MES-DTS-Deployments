@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DTS Content Editor — Magma</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Heebo', Arial, sans-serif;
+      background: #eef1f5;
+      color: #1a2340;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 32px 40px;
+      text-align: center;
+    }
+    .page-header .brand {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 12px;
+    }
+    .page-header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+    .page-header .subtitle { font-size: 13px; opacity: 0.45; margin-top: 8px; }
+
+    /* ── Layout ── */
+    .wrap { max-width: 860px; margin: 0 auto; padding: 32px 24px 64px; }
+
+    /* ── Panel (shared card style) ── */
+    .panel {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      padding: 18px 22px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Config bar (token) ── */
+    .config-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .config-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #8899aa;
+      white-space: nowrap;
+    }
+    #inp-token {
+      flex: 1;
+      min-width: 200px;
+      border: 1.5px solid #e0e6ef;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-family: monospace;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    #inp-token:focus { border-color: #3b82f6; }
+    .token-status { font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .token-status.ok   { color: #16a34a; }
+    .token-status.err  { color: #dc2626; }
+    .token-status.none { color: #aab; }
+
+    /* ── Selector bar ── */
+    .selector-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .selector-bar label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #8899aa;
+      white-space: nowrap;
+    }
+    .selector-bar select {
+      border: 1.5px solid #e0e6ef;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: #1a2340;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .selector-bar select:focus { border-color: #3b82f6; }
+    #sel-customer { min-width: 160px; }
+    #sel-dts      { min-width: 200px; flex: 1; }
+
+    .btn {
+      border: none;
+      border-radius: 6px;
+      padding: 9px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: background 0.15s, opacity 0.15s;
+      white-space: nowrap;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-dark  { background: #1a3a5c; color: #fff; }
+    .btn-dark:not(:disabled):hover  { background: #243f64; }
+    .btn-green { background: #16a34a; color: #fff; }
+    .btn-green:not(:disabled):hover { background: #15803d; }
+
+    /* ── Status message ── */
+    .status-msg {
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .status-msg.ok      { background: #dcfce7; color: #166534; }
+    .status-msg.err     { background: #fee2e2; color: #991b1b; }
+    .status-msg.loading { background: #eff6ff; color: #1e40af; }
+    .status-msg.hidden  { display: none; }
+
+    /* ── Locked notice ── */
+    .locked-notice {
+      background: #fefce8;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #92400e;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    /* ── Placeholder ── */
+    .placeholder {
+      text-align: center;
+      padding: 56px 20px;
+      color: #c8d0dc;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.7;
+    }
+
+    /* ── Ticket cards ── */
+    .ticket-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .ticket-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid transparent;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.1s;
+    }
+    .ticket-header:hover { background: #f9fafb; }
+    .ticket-card.open .ticket-header { border-bottom-color: #eef1f5; }
+
+    .ticket-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      background: #1a3a5c;
+      border-radius: 4px;
+      padding: 3px 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .ticket-subject {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a2340;
+      flex: 1;
+      line-height: 1.4;
+      direction: rtl;
+      text-align: right;
+    }
+    .ticket-badges {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    .badge-status { background: #fef3c7; color: #92400e; }
+    .badge-cr     { background: #ede9fe; color: #5b21b6; }
+
+    .chevron {
+      font-size: 14px;
+      color: #ccc;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .ticket-card.open .chevron { transform: rotate(180deg); }
+
+    .ticket-body { padding: 20px; display: none; }
+    .ticket-card.open .ticket-body { display: block; }
+
+    /* ── Fields ── */
+    .field-group { margin-bottom: 22px; }
+    .field-group:last-child { margin-bottom: 0; }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #8899aa;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    textarea.desc {
+      width: 100%;
+      border: 1.5px solid #e0e6ef;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 96px;
+      line-height: 1.65;
+      color: #1a2340;
+      direction: rtl;
+      text-align: right;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    textarea.desc:focus { border-color: #3b82f6; }
+
+    /* ── Steps ── */
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .step-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: #c0c8d4;
+      width: 18px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .step-row input[type="text"] {
+      flex: 1;
+      border: 1.5px solid #e0e6ef;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-family: inherit;
+      color: #1a2340;
+      direction: rtl;
+      text-align: right;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .step-row input:focus { border-color: #3b82f6; }
+
+    .btn-del-step {
+      background: none;
+      border: none;
+      color: #d0d9e4;
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0 3px;
+      flex-shrink: 0;
+      transition: color 0.15s;
+    }
+    .btn-del-step:hover { color: #dc2626; }
+
+    .btn-add-step {
+      background: none;
+      border: 1.5px dashed #d0d9e4;
+      border-radius: 6px;
+      color: #8899aa;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-add-step:hover { border-color: #3b82f6; color: #3b82f6; }
+
+    /* ── Save bar ── */
+    .save-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .save-note {
+      font-size: 12px;
+      color: #aab;
+      line-height: 1.5;
+    }
+    .save-note strong { color: #d97706; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 11px;
+      color: #bbb;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="brand">Magma MES &mdash; Internal Use Only</div>
+  <h1>DTS Content Editor</h1>
+  <div class="subtitle">Edit ticket descriptions and test steps &nbsp;&middot;&nbsp; Changes commit to GitHub</div>
+</div>
+
+<div class="wrap">
+
+  <!-- Token -->
+  <div class="panel">
+    <div class="config-bar">
+      <span class="config-label">GitHub Token</span>
+      <input type="password" id="inp-token" placeholder="ghp_..." autocomplete="off" spellcheck="false" />
+      <span class="token-status none" id="token-status">Not set</span>
+    </div>
+  </div>
+
+  <!-- Customer + DTS selectors -->
+  <div class="panel">
+    <div class="selector-bar">
+      <label for="sel-customer">Customer</label>
+      <select id="sel-customer">
+        <option value="">— Select —</option>
+      </select>
+      <label for="sel-dts">DTS</label>
+      <select id="sel-dts" disabled>
+        <option value="">— Select DTS —</option>
+      </select>
+      <button class="btn btn-dark" id="btn-load" disabled>Load</button>
+    </div>
+  </div>
+
+  <!-- Status message -->
+  <div class="status-msg hidden" id="status-msg"></div>
+
+  <!-- Locked notice (shown when contentLocked: true) -->
+  <div class="locked-notice" id="locked-notice" style="display:none;">
+    &#x1F512; This DTS already has <strong>contentLocked: true</strong> — content was previously manually edited.
+    You are overriding it.
+  </div>
+
+  <!-- Ticket editor area -->
+  <div id="editor-area">
+    <div class="placeholder">Select a customer and DTS,<br>then click Load to begin editing.</div>
+  </div>
+
+  <!-- Save bar -->
+  <div class="panel" id="save-bar" style="display:none;">
+    <div class="save-bar">
+      <span class="save-note">
+        Saving will set <strong>contentLocked: true</strong> — Claude will not overwrite this content.<br>
+        After saving, run <strong>Option 5</strong> in Claude to regenerate the HTML report.
+      </span>
+      <button class="btn btn-green" id="btn-save">Save &amp; Lock Content</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>Magma Group &copy; 2026</footer>
+
+<script>
+const REPO      = 'MagmaGroup/MES-DTS-Deployments';
+const TOKEN_KEY = 'dts_editor_pat';
+
+const customers = [
+  { name: 'Tosaf',       slug: 'tosaf-54sfww',       color: '#4f46e5' },
+  { name: 'Elcam',       slug: 'elcam-bs3h7e',       color: '#0891b2' },
+  { name: 'Ytong',       slug: 'ytong-qunmvy',       color: '#059669' },
+  { name: 'Tama',        slug: 'tama-ij6mnp',        color: '#d97706' },
+  { name: 'Carmit',      slug: 'carmit-pys97q',      color: '#dc2626' },
+  { name: 'Motorad',     slug: 'motorad-4yrxcm',     color: '#7c3aed' },
+  { name: 'Rav-Bariach', slug: 'rav-bariach-0ii743', color: '#0d9488' },
+  { name: 'Polybid',     slug: 'polybid-g90djj',     color: '#ea580c' },
+  { name: 'Flex',        slug: 'flex-mestd8',        color: '#be185d' },
+  { name: 'Electra',     slug: 'electra-lg43m8',     color: '#1d4ed8' },
+];
+
+// ── State ──
+let state = {
+  pat:           '',
+  customerSlug:  '',
+  deploymentIdx: -1,
+  data:          null,
+  sha:           null,
+};
+
+// ── DOM refs ──
+const inpToken     = document.getElementById('inp-token');
+const tokenStatus  = document.getElementById('token-status');
+const selCustomer  = document.getElementById('sel-customer');
+const selDts       = document.getElementById('sel-dts');
+const btnLoad      = document.getElementById('btn-load');
+const editorArea   = document.getElementById('editor-area');
+const saveBar      = document.getElementById('save-bar');
+const btnSave      = document.getElementById('btn-save');
+const statusMsg    = document.getElementById('status-msg');
+const lockedNotice = document.getElementById('locked-notice');
+
+// ── Populate customer dropdown ──
+customers.forEach(c => {
+  const opt = document.createElement('option');
+  opt.value = c.slug;
+  opt.textContent = c.name;
+  selCustomer.appendChild(opt);
+});
+
+// ── Restore PAT from localStorage ──
+const savedPat = localStorage.getItem(TOKEN_KEY) || '';
+if (savedPat) {
+  inpToken.value = savedPat;
+  state.pat = savedPat;
+  updateTokenStatus();
+}
+
+// ── Token input ──
+inpToken.addEventListener('input', () => {
+  state.pat = inpToken.value.trim();
+  localStorage.setItem(TOKEN_KEY, state.pat);
+  updateTokenStatus();
+});
+
+function updateTokenStatus() {
+  const len = state.pat.length;
+  if (!state.pat) {
+    tokenStatus.textContent = 'Not set';
+    tokenStatus.className = 'token-status none';
+  } else if (state.pat.startsWith('ghp_') || state.pat.startsWith('github_pat_') || len >= 30) {
+    tokenStatus.textContent = '● Ready';
+    tokenStatus.className = 'token-status ok';
+  } else {
+    tokenStatus.textContent = '⚠ Check token format';
+    tokenStatus.className = 'token-status err';
+  }
+  updateLoadBtn();
+}
+
+// ── Customer change — load DTS list ──
+selCustomer.addEventListener('change', async () => {
+  state.customerSlug  = selCustomer.value;
+  state.deploymentIdx = -1;
+  state.data          = null;
+  state.sha           = null;
+
+  selDts.innerHTML = '<option value="">— Select DTS —</option>';
+  selDts.disabled  = true;
+  editorArea.innerHTML = '<div class="placeholder">Select a DTS, then click Load.</div>';
+  saveBar.style.display    = 'none';
+  lockedNotice.style.display = 'none';
+  clearStatus();
+  updateLoadBtn();
+
+  if (!state.customerSlug) return;
+
+  setStatus('loading', 'Fetching deployments…');
+  try {
+    const { data } = await fetchDataJson(state.customerSlug);
+    clearStatus();
+    if (!data.deployments || data.deployments.length === 0) {
+      setStatus('err', 'No deployments found for this customer.');
+      return;
+    }
+    data.deployments.forEach((dep, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      const title = dep.title.length > 42 ? dep.title.slice(0, 42) + '…' : dep.title;
+      opt.textContent = `#${dep.ticketNumber} — ${title}`;
+      selDts.appendChild(opt);
+    });
+    selDts.disabled = false;
+  } catch (err) {
+    setStatus('err', `Failed to load: ${err.message}`);
+  }
+});
+
+// ── DTS change ──
+selDts.addEventListener('change', () => {
+  const v = selDts.value;
+  state.deploymentIdx = v !== '' ? parseInt(v, 10) : -1;
+  updateLoadBtn();
+});
+
+function updateLoadBtn() {
+  btnLoad.disabled = !(state.pat && state.customerSlug && state.deploymentIdx >= 0);
+}
+
+// ── Load button ──
+btnLoad.addEventListener('click', async () => {
+  clearStatus();
+  saveBar.style.display    = 'none';
+  lockedNotice.style.display = 'none';
+  editorArea.innerHTML = '<div class="placeholder">Loading…</div>';
+  btnLoad.disabled     = true;
+  setStatus('loading', 'Loading from GitHub…');
+
+  try {
+    const { data, sha } = await fetchDataJson(state.customerSlug);
+    state.data = data;
+    state.sha  = sha;
+
+    const dep = data.deployments[state.deploymentIdx];
+    if (!dep) throw new Error('Deployment not found at selected index.');
+
+    clearStatus();
+
+    if (dep.contentLocked) {
+      lockedNotice.style.display = 'block';
+    }
+
+    renderEditor(dep);
+    saveBar.style.display = 'flex';
+  } catch (err) {
+    setStatus('err', `Load failed: ${err.message}`);
+    editorArea.innerHTML = '<div class="placeholder">Load failed. Check token and try again.</div>';
+  }
+
+  updateLoadBtn();
+});
+
+// ── GitHub API helpers ──
+async function ghFetch(path, opts = {}) {
+  const res = await fetch(`https://api.github.com/repos/${REPO}/${path}`, {
+    ...opts,
+    headers: {
+      Authorization: `token ${state.pat}`,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+      ...(opts.headers || {}),
+    },
+  });
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.message || `GitHub API error ${res.status}`);
+  return body;
+}
+
+async function fetchDataJson(slug) {
+  const resp = await ghFetch(`contents/${slug}/data.json`);
+  // Decode base64 UTF-8 content from GitHub API
+  const binaryStr = atob(resp.content.replace(/\s/g, ''));
+  const bytes     = Uint8Array.from(binaryStr, c => c.charCodeAt(0));
+  const json      = new TextDecoder().decode(bytes);
+  return { data: JSON.parse(json), sha: resp.sha };
+}
+
+function toBase64(str) {
+  // Encode a UTF-8 string to base64 (handles Hebrew and other Unicode)
+  const bytes = new TextEncoder().encode(str);
+  let binary  = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+
+// ── Render editor ──
+function renderEditor(dep) {
+  const tickets = dep.tickets || [];
+
+  if (tickets.length === 0) {
+    editorArea.innerHTML = `
+      <div class="placeholder">
+        No ticket content in DTS #${escHtml(String(dep.ticketNumber))}.<br>
+        Run <strong>Option 4 (Populate DTS Ticket)</strong> in Claude first.
+      </div>`;
+    saveBar.style.display = 'none';
+    return;
+  }
+
+  editorArea.innerHTML = '';
+
+  tickets.forEach((t, i) => {
+    const card = document.createElement('div');
+    card.className = 'ticket-card open';
+    card.dataset.idx = i;
+
+    const crBadge     = t.isCR ? `<span class="badge badge-cr">CR</span>` : '';
+    const statusLabel = t.status || '';
+    const statusBadge = statusLabel ? `<span class="badge badge-status">${escHtml(statusLabel)}</span>` : '';
+
+    card.innerHTML = `
+      <div class="ticket-header" onclick="toggleCard(this.parentElement)">
+        <span class="ticket-num">#${escHtml(String(t.number))}</span>
+        <span class="ticket-subject">${escHtml(t.subject)}</span>
+        <span class="ticket-badges">${statusBadge}${crBadge}</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="ticket-body">
+        <div class="field-group">
+          <label class="field-label">Description / תיאור הבעיה</label>
+          <textarea class="desc" data-field="description" rows="5" placeholder="Enter a description of the issue…">${escHtml(t.description || '')}</textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Test Steps / שלבי בדיקה</label>
+          <ul class="steps-list" data-steps="${i}"></ul>
+          <button class="btn-add-step" onclick="addStep(${i})">+ Add step</button>
+        </div>
+      </div>`;
+
+    editorArea.appendChild(card);
+
+    // Populate steps
+    const stepsList = card.querySelector(`[data-steps="${i}"]`);
+    (t.testSteps || []).forEach((s, si) => {
+      stepsList.appendChild(createStepRow(si, s));
+    });
+  });
+
+  renumberAll();
+}
+
+// ── Card toggle ──
+function toggleCard(card) {
+  card.classList.toggle('open');
+}
+
+// ── Steps management ──
+function createStepRow(idx, value) {
+  const li  = document.createElement('li');
+  li.className = 'step-row';
+  li.innerHTML = `
+    <span class="step-num">${idx + 1}</span>
+    <input type="text" dir="rtl" value="${escHtml(value)}" placeholder="Describe test step…" />
+    <button class="btn-del-step" onclick="removeStep(this)" title="Remove step">&times;</button>`;
+  return li;
+}
+
+function addStep(ticketIdx) {
+  const list = document.querySelector(`.steps-list[data-steps="${ticketIdx}"]`);
+  const count = list.querySelectorAll('.step-row').length;
+  const row   = createStepRow(count, '');
+  list.appendChild(row);
+  renumberAll();
+  row.querySelector('input').focus();
+}
+
+function removeStep(btn) {
+  btn.closest('.step-row').remove();
+  renumberAll();
+}
+
+function renumberAll() {
+  document.querySelectorAll('.steps-list').forEach(list => {
+    list.querySelectorAll('.step-num').forEach((span, i) => {
+      span.textContent = i + 1;
+    });
+  });
+}
+
+// ── Collect edited content from DOM ──
+function collectEdits() {
+  const dep = state.data.deployments[state.deploymentIdx];
+  return dep.tickets.map((orig, i) => {
+    const card = editorArea.querySelector(`.ticket-card[data-idx="${i}"]`);
+    if (!card) return orig;
+
+    const desc  = card.querySelector('[data-field="description"]').value.trim();
+    const steps = [...card.querySelectorAll(`.steps-list[data-steps="${i}"] input`)]
+      .map(inp => inp.value.trim())
+      .filter(Boolean);
+
+    return { ...orig, description: desc, testSteps: steps };
+  });
+}
+
+// ── Save ──
+btnSave.addEventListener('click', async () => {
+  btnSave.disabled = true;
+  clearStatus();
+  setStatus('loading', 'Saving to GitHub…');
+
+  try {
+    // Collect current edits before fetching fresh sha
+    const editedTickets = collectEdits();
+
+    // Re-fetch sha so we always use the latest — avoid 409 conflict
+    const { sha } = await fetchDataJson(state.customerSlug);
+    state.sha = sha;
+
+    // Build updated data.json
+    const updated = JSON.parse(JSON.stringify(state.data));
+    updated.deployments[state.deploymentIdx].tickets       = editedTickets;
+    updated.deployments[state.deploymentIdx].contentLocked = true;
+
+    const dtsNum = state.data.deployments[state.deploymentIdx].ticketNumber;
+    const content = toBase64(JSON.stringify(updated, null, 2));
+
+    await ghFetch(`contents/${state.customerSlug}/data.json`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        message: `Edit DTS content: #${dtsNum}`,
+        content,
+        sha:     state.sha,
+      }),
+    });
+
+    // Update local state
+    state.data = updated;
+
+    clearStatus();
+    setStatus('ok',
+      `✓ Saved — DTS #${dtsNum} content locked. ` +
+      `Run Option 5 (DTS Deploy Report) in Claude to regenerate the HTML report.`
+    );
+
+    // Show locked notice if it wasn't already
+    lockedNotice.style.display = 'block';
+
+  } catch (err) {
+    setStatus('err', `Save failed: ${err.message}`);
+  }
+
+  btnSave.disabled = false;
+});
+
+// ── Utilities ──
+function setStatus(type, msg) {
+  statusMsg.className = `status-msg ${type}`;
+  statusMsg.textContent = msg;
+}
+function clearStatus() {
+  statusMsg.className = 'status-msg hidden';
+  statusMsg.textContent = '';
+}
+function escHtml(s) {
+  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+</script>
+
+</body>
+</html>
