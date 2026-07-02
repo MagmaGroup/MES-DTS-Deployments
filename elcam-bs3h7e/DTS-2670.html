@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>דוח DTS #2670 — אלכם מדיקל</title>
+<title>דוח DTS #2670 — Elcam</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -46,25 +46,37 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 .test-steps li:last-child { border-bottom: none; }
 .test-steps li::before { content: "▸"; color: #1a3a5c; font-size: 13px; margin-top: 3px; flex-shrink: 0; font-weight: 700; }
 .footer { text-align: center; font-size: 11px; color: #aaa; margin-top: 24px; letter-spacing: 0.5px; }
+.back-link { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.85); text-decoration: none; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 20px; transition: background 0.2s; }
+.back-link:hover { background: rgba(255,255,255,0.22); color: #fff; }
+.meta-block .value-na { font-size: 18px; font-weight: 400; opacity: 0.35; }
 </style>
 </head>
 <body>
 <div class="page">
 
   <div class="header">
+    <a class="back-link" href="./">← רשימת DTS</a>
     <div class="header-top">
       <div class="header-brand">Magma Group — פירוט תכולה וקריאות</div>
-      <div class="header-dts">Generated 30.06.2026</div>
+      <div class="header-dts">Generated 02.07.2026</div>
     </div>
     <h1>DTS #2670<br>לאחר אישור לקוח - אלכם - 30.7.26 DTS</h1>
     <div class="header-meta">
       <div class="meta-block">
         <span class="label">לקוח</span>
-        <span class="value">אלכם מדיקל</span>
+        <span class="value">Elcam</span>
       </div>
       <div class="meta-block">
-        <span class="label">תאריך</span>
+        <span class="label">נוצר</span>
         <span class="value">30.06.2026</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">תאריך DTS</span>
+        <span class="value-na">—</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">נסגר</span>
+        <span class="value-na">—</span>
       </div>
       <div class="meta-block">
         <span class="label">קריאות</span>
@@ -88,25 +100,25 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <tr>
           <td><a class="ticket-num-link" href="#t2600">#2600</a></td>
           <td>הוספת אפשרות ללוגיקת ביטול לוט</td>
-          <td>ישראלה גילת</td>
+          <td>Israela Gilat</td>
           <td><span class="badge badge-waiting">Waiting DTS</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2534">#2534</a></td>
           <td>עדכון חישוב עלות מוצרים בNC</td>
-          <td>eldan menahem</td>
+          <td>Eldan Menahem</td>
           <td><span class="badge badge-waiting">Waiting DTS</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2542">#2542</a></td>
           <td>בחירת לקוח לפקע</td>
-          <td>ישראלה גילת</td>
+          <td>Israela Gilat</td>
           <td><span class="badge badge-waiting">Waiting for Customer Testing</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2363">#2363</a></td>
           <td>אפשרות לביצוע בדיקה שבוטלה</td>
-          <td>eldan menahem</td>
+          <td>Eldan Menahem</td>
           <td><span class="badge badge-waiting">Waiting for Customer Testing</span></td>
         </tr>
       </tbody>
@@ -121,18 +133,18 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <div>
           <div class="ticket-block-num">#2600</div>
           <div class="ticket-block-title">הוספת אפשרות ללוגיקת ביטול לוט</div>
-          <div class="ticket-block-owner">ישראלה גילת</div>
+          <div class="ticket-block-owner">Israela Gilat</div>
         </div>
         <span class="badge badge-waiting">Waiting DTS</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">לא ניתן לבטל לוט במידה ופיצלו אותו ללוט אחר — משמע הוא מופיע כלוט מקור</div>
+        <div class="block-text">לא ניתן לבטל לוט במידה ופיצלו אותו ללוט אחר — הלוט המפוצל ממשיך להופיע כלוט מקור.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>פצל לוט קיים ללוט אחר — ודא שהלוט המקורי מופיע כ"לוט מקור"</li>
-          <li>נסה לבטל את הלוט המקורי — ודא שהביטול מתאפשר כעת</li>
-          <li>בדוק שהלוטים המפוצלים לא הושפעו מהביטול</li>
+          <li>לפצל לוט ללוט אחר, ואז לנסות לבטל את הלוט המקורי</li>
+          <li>לוודא שהמערכת מאפשרת את הביטול (או מציגה טיפול מתאים) גם כשהלוט מופיע כלוט מקור</li>
+          <li>לבדוק שהיסטוריית הפיצול/הביטול נשמרת נכון בלוט</li>
         </ul>
       </div>
     </div>
@@ -142,18 +154,18 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <div>
           <div class="ticket-block-num">#2534</div>
           <div class="ticket-block-title">עדכון חישוב עלות מוצרים בNC</div>
-          <div class="ticket-block-owner">eldan menahem</div>
+          <div class="ticket-block-owner">Eldan Menahem</div>
         </div>
         <span class="badge badge-waiting">Waiting DTS</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">יש לחלק את עלות המוצרים בהצגה בקונסרן וNC ב-1,000. יש לבצע את השינוי גם בDB על כל הדוחות.</div>
+        <div class="block-text">חלוקת עלות המוצרים בהצגה במסך הקונסרן וב-NC ב-1,000. השינוי יבוצע גם ב-DB בכל הדוחות הרלוונטיים.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>פתח מסך NC ובדוק שעלות המוצרים מוצגת חלוקה ב-1,000</li>
-          <li>פתח מסך קונסרן ובדוק שגם שם הערכים מחולקים ב-1,000</li>
-          <li>הפעל דוחות DB רלוונטיים וודא שהנתונים תואמים</li>
+          <li>לבדוק הצגת עלות מוצר במסך הקונסרן ולוודא שהערך מחולק ב-1,000</li>
+          <li>לבדוק הצגת עלות מוצר במסך ה-NC ולוודא שהערך מחולק ב-1,000</li>
+          <li>להריץ דוח מה-DB ולוודא שהעלות המוצגת בדוחות תואמת לחלוקה החדשה</li>
         </ul>
       </div>
     </div>
@@ -163,18 +175,18 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <div>
           <div class="ticket-block-num">#2542</div>
           <div class="ticket-block-title">בחירת לקוח לפקע</div>
-          <div class="ticket-block-owner">ישראלה גילת</div>
+          <div class="ticket-block-owner">Israela Gilat</div>
         </div>
         <span class="badge badge-waiting">Waiting for Customer Testing</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">במסך Release WO במידה ומוגדר למקט רק לקוח אחד יש לשייך אותו אוטומטית לפקע.</div>
+        <div class="block-text">במסך Release WO — במידה ומוגדר למק"ט לקוח יחיד בלבד, יש לשייך אותו אוטומטית לפקע.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>הגדר מקט עם לקוח יחיד ופתח מסך Release WO — ודא שהלקוח משויך אוטומטית לפקע</li>
-          <li>בדוק מקט עם מספר לקוחות — ודא שאין שיוך אוטומטי ומופיעה בחירה ידנית</li>
-          <li>ודא שהנתון נשמר כראוי לאחר שחרור ה-WO</li>
+          <li>לפתוח מסך Release WO עבור מק"ט עם לקוח יחיד מוגדר</li>
+          <li>לוודא שהמערכת משייכת אוטומטית את הלקוח לפקע</li>
+          <li>לבדוק מק"ט עם יותר מלקוח אחד ולוודא שההתנהגות הקיימת (ללא שיוך אוטומטי) נשמרת</li>
         </ul>
       </div>
     </div>
@@ -184,18 +196,18 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <div>
           <div class="ticket-block-num">#2363</div>
           <div class="ticket-block-title">אפשרות לביצוע בדיקה שבוטלה</div>
-          <div class="ticket-block-owner">eldan menahem</div>
+          <div class="ticket-block-owner">Eldan Menahem</div>
         </div>
         <span class="badge badge-waiting">Waiting for Customer Testing</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">יש להוסיף אפשרות לביצוע בדיקה שבוצעה (שבוטלה בעבר).</div>
+        <div class="block-text">יש להוסיף אפשרות לביצוע בדיקה שבוטלה.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>מצא בדיקה שבוטלה במערכת — ודא שמופיעה אפשרות לבצע אותה מחדש</li>
-          <li>בצע את הבדיקה מחדש ובדוק שהתוצאה נשמרת כראוי</li>
-          <li>ודא שהיסטוריית הביטול נשמרת ומוצגת בצד</li>
+          <li>לאתר בדיקה שבוטלה במערכת</li>
+          <li>לוודא שקיימת אפשרות לבצע אותה מחדש ולסמן אותה כבוצעה</li>
+          <li>לוודא שהסטטוס מתעדכן כראוי לאחר הביצוע</li>
         </ul>
       </div>
     </div>
@@ -203,6 +215,6 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
   </div>
 
 </div>
-<div class="footer">Magma Group DTS Report &nbsp;·&nbsp; Generated 30.06.2026</div>
+<div class="footer">Magma Group DTS Report &nbsp;·&nbsp; Generated 02.07.2026</div>
 </body>
 </html>
