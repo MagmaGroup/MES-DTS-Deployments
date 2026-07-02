@@ -10,20 +10,46 @@
 
     body {
       font-family: 'Heebo', Arial, sans-serif;
-      background: #eef1f5;
+      background: #eef2f8;
       color: #1a2340;
       min-height: 100vh;
     }
 
     .page-header {
-      background: #1a3a5c;
+      background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+      border-bottom: 1px solid #21262d;
       color: #fff;
-      padding: 32px 40px;
+      padding: 44px 40px 40px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
-    .page-header .brand { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; margin-bottom: 12px; }
-    .page-header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
-    .page-header .subtitle { font-size: 13px; opacity: 0.45; margin-top: 8px; }
+    .page-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+    }
+    .page-header::after {
+      content: '';
+      position: absolute;
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(56,139,253,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .page-header .header-inner { position: relative; z-index: 1; }
+    .page-header .brand { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 18px; }
+    .page-header h1 {
+      font-size: 34px; font-weight: 900; letter-spacing: -1px;
+      background: linear-gradient(135deg, #ffffff 30%, #8ab4d8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 6px;
+    }
+    .page-header .subtitle { font-size: 13px; color: rgba(255,255,255,0.35); }
 
     .wrap { max-width: 860px; margin: 0 auto; padding: 32px 24px 64px; }
 
@@ -236,10 +262,12 @@
 <body>
 
 <div class="page-header">
+  <div class="header-inner">
   <a class="back-link" href="./">← Dashboard</a>
   <div class="brand">Magma MES &mdash; Internal Use Only</div>
   <h1>DTS Content Editor</h1>
-  <div class="subtitle">Edit ticket descriptions and test steps &nbsp;&middot;&nbsp; Saves commit data.json + HTML report to GitHub</div>
+  <div class="subtitle">Edit ticket descriptions and test steps &nbsp;&middot;&nbsp; Saves data.json + HTML to GitHub</div>
+  </div>
 </div>
 
 <div class="wrap">
@@ -603,7 +631,7 @@ btnSaveDetails.addEventListener('click', async () => {
     const customer     = customers.find(c => c.slug === slug);
     const customerName = customer ? customer.name : slug;
     const htmlContent  = generateHtml(updated.deployments[state.deploymentIdx], customerName);
-    const indexContent = generateIndexHtml(updated, customerName);
+    const indexContent = generateIndexHtml(updated, customerName, customer ? customer.color : '#0d9488');
     const dtsNum       = dep.ticketNumber;
 
     await commitFile(dataPath, JSON.stringify(updated, null, 2),
@@ -740,27 +768,29 @@ function collectEdits() {
 }
 
 // ── HTML report generator ──
-function generateIndexHtml(data, customerName) {
+function generateIndexHtml(data, customerName, accentColor) {
+  const color = accentColor || '#0d9488';
   function idxBadge(status) {
     const s = (status || '').toLowerCase();
-    if (s === 'closed')    return 'badge-closed';
-    if (s === 'scheduled') return 'badge-scheduled';
-    return 'badge-open';
+    if (s === 'closed')    return ['badge-closed',    'Closed'];
+    if (s === 'scheduled') return ['badge-scheduled', 'Scheduled'];
+    return ['badge-open', status || 'Open'];
   }
   const rows = (data.deployments || []).map(dep => {
     const dtsLink = dep.url || `DTS-${dep.ticketNumber}.html`;
     const count   = dep.ticketCount || (dep.tickets ? dep.tickets.length : 0);
+    const [cls, label] = idxBadge(dep.status);
     const ddCell  = dep.deployDate ? dep.deployDate : '<span class="na">—</span>';
     const cdCell  = dep.closeDate  ? dep.closeDate  : '<span class="na">—</span>';
-    return `      <tr>
-        <td><a class="ticket-link" href="${dtsLink}">DTS-${dep.ticketNumber}</a></td>
-        <td class="title-cell">${dep.title || ''}</td>
-        <td><span class="badge ${idxBadge(dep.status)}">${dep.status || 'Open'}</span></td>
-        <td>${dep.createDate || ''}</td>
-        <td>${ddCell}</td>
-        <td>${cdCell}</td>
-        <td>${count}</td>
-      </tr>`;
+    return `          <tr>
+            <td><a class="ticket-link" href="${dtsLink}">DTS-${dep.ticketNumber}</a></td>
+            <td class="title-cell">${dep.title || ''}</td>
+            <td><span class="badge ${cls}">${label}</span></td>
+            <td>${dep.createDate || ''}</td>
+            <td>${ddCell}</td>
+            <td>${cdCell}</td>
+            <td>${count || '—'}</td>
+          </tr>`;
   }).join('\n');
 
   return `<!DOCTYPE html>
@@ -769,44 +799,54 @@ function generateIndexHtml(data, customerName) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${customerName} — DTS Deployments</title>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Heebo', Arial, sans-serif; background: #f0f4ff; color: #1a2340; min-height: 100vh; }
-    .page-header { background: linear-gradient(135deg, #1a2340 0%, #1e3a6e 100%); padding: 40px 40px 36px; position: relative; overflow: hidden; }
-    .page-header::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.25) 1px, transparent 1px), radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px); background-size: 60px 60px, 97px 97px; background-position: 0 0, 30px 30px; pointer-events: none; }
-    .header-inner { position: relative; max-width: 1100px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
-    .header-back { font-size: 0.75rem; color: rgba(255,255,255,0.45); text-decoration: none; display: block; margin-bottom: 12px; letter-spacing: 0.3px; }
-    .header-back:hover { color: rgba(255,255,255,0.75); }
-    .header-customer { display: inline-block; background: #0d9488; color: #fff; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
-    .header-title { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1.2; }
-    .header-sub { font-size: 0.85rem; color: rgba(255,255,255,0.45); margin-top: 6px; }
-    .header-rocket { font-size: 4rem; opacity: 0.2; line-height: 1; flex-shrink: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Heebo', Arial, sans-serif; background: #eef2f8; color: #1a2340; min-height: 100vh; }
+
+    .page-header { background: linear-gradient(180deg, #161b22 0%, #0d1117 100%); border-bottom: 1px solid #21262d; padding: 44px 40px 40px; position: relative; overflow: hidden; }
+    .page-header::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 24px 24px; pointer-events: none; }
+    .page-header::after { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(56,139,253,0.07) 0%, transparent 60%); pointer-events: none; }
+
+    .header-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+    .header-left { flex: 1; }
+
+    .header-back { font-size: 11px; color: rgba(255,255,255,0.3); text-decoration: none; display: inline-block; margin-bottom: 16px; letter-spacing: 0.5px; transition: color 0.15s; }
+    .header-back:hover { color: rgba(255,255,255,0.65); }
+
+    .header-pill { display: inline-block; color: #fff; font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; }
+
+    .header-title { font-size: 2.2rem; font-weight: 900; letter-spacing: -0.8px; line-height: 1.1; background: linear-gradient(135deg, #ffffff 30%, #8ab4d8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .header-sub { font-size: 13px; color: rgba(255,255,255,0.35); margin-top: 8px; }
+    .header-rocket { font-size: 4.5rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 0 20px rgba(255,200,50,0.3)); }
+
     main { max-width: 1100px; margin: 36px auto; padding: 0 28px 60px; }
-    .table-wrap { background: #fff; border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); overflow: hidden; }
+    .table-wrap { background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04); overflow: hidden; }
     table { width: 100%; border-collapse: collapse; }
-    thead tr { background: linear-gradient(90deg, #1a2340, #1e3a6e); }
-    th { padding: 14px 18px; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.7); text-align: left; white-space: nowrap; }
-    th:first-child { border-left: 4px solid #0d9488; }
-    td { padding: 16px 18px; border-bottom: 1px solid #f0f4ff; font-size: 0.88rem; vertical-align: middle; }
+    thead tr { background: linear-gradient(90deg, #0d1117, #161b22); }
+    th { padding: 14px 18px; font-size: 0.68rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,0.55); text-align: left; white-space: nowrap; }
+    th:first-child { border-left: 4px solid ${color}; }
+    td { padding: 15px 18px; border-bottom: 1px solid #eef2f8; font-size: 0.88rem; vertical-align: middle; color: #1a2340; }
     tr:last-child td { border-bottom: none; }
-    tbody tr:hover td { background: #f8faff; }
-    .ticket-link { color: #0d9488; font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+    tbody tr:hover td { background: #f7f9ff; }
+    .ticket-link { font-weight: 800; text-decoration: none; font-size: 0.88rem; color: ${color}; }
     .ticket-link:hover { text-decoration: underline; }
-    .title-cell { max-width: 300px; color: #1a2340; font-weight: 500; }
-    .na { color: #ccc; }
-    .badge { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.4px; white-space: nowrap; }
-    .badge-open      { background: #dcfce7; color: #166534; }
-    .badge-scheduled { background: #fef9c3; color: #854d0e; }
-    .badge-closed    { background: #f1f5f9; color: #64748b; }
-    .empty { text-align: center; color: #c5cfe8; font-size: 0.95rem; padding: 64px 24px; }
+    .title-cell { max-width: 320px; font-weight: 500; }
+    .na { color: #c8d5e8; }
+    .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.4px; white-space: nowrap; }
+    .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .badge-open      { background: #dcfce7; color: #15803d; } .badge-open::before { background: #4ade80; }
+    .badge-scheduled { background: #fef9c3; color: #92400e; } .badge-scheduled::before { background: #fbbf24; }
+    .badge-closed    { background: #f1f5f9; color: #64748b; } .badge-closed::before { background: #94a3b8; }
+    .empty { text-align: center; color: #c8d5e8; font-size: 0.9rem; padding: 64px 24px; }
   </style>
 </head>
 <body>
   <div class="page-header">
     <div class="header-inner">
-      <div>
-        <div class="header-customer">${customerName}</div>
+      <div class="header-left">
+        <a class="header-back" href="../magma-d8vn3k/">← Dashboard</a>
+        <div class="header-pill" style="background:${color}">${customerName}</div>
         <div class="header-title">DTS Deployment History</div>
         <div class="header-sub">Magma MES releases for ${customerName}</div>
       </div>
