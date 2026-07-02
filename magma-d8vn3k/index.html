@@ -4,199 +4,241 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magma — DTS Internal Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Heebo', Arial, sans-serif;
-      background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 50%, #e8f5e9 100%);
+      background: #eef1f5;
       color: #1a2340;
       min-height: 100vh;
-      padding: 40px 28px 60px;
     }
 
-    header {
+    /* ── Header — matches DTS report page ── */
+    .page-header {
+      background: #1a3a5c;
+      color: #fff;
+      padding: 36px 40px;
       text-align: center;
-      margin-bottom: 40px;
     }
-    header h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #1a2340;
+    .page-header .brand {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 12px;
+    }
+    .page-header h1 {
+      font-size: 30px;
+      font-weight: 700;
       letter-spacing: -0.5px;
     }
-    header p {
-      font-size: 0.85rem;
-      color: #999;
-      margin-top: 6px;
+    .page-header .subtitle {
+      font-size: 13px;
+      opacity: 0.45;
+      margin-top: 8px;
+      letter-spacing: 0.2px;
+    }
+
+    /* ── Grid ── */
+    .grid-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 28px 64px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 22px;
-      max-width: 1100px;
-      margin: 0 auto;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 20px;
     }
 
+    /* ── Card ── */
     .card {
       background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
       text-decoration: none;
       color: #1a2340;
       overflow: hidden;
-      transition: box-shadow 0.2s, transform 0.2s;
       display: flex;
       flex-direction: column;
+      transition: box-shadow 0.2s, transform 0.18s;
     }
     .card:hover {
-      box-shadow: 0 8px 28px rgba(0,0,0,0.14);
-      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.13);
+      transform: translateY(-3px);
     }
 
     .card-banner {
-      height: 8px;
-      width: 100%;
+      height: 5px;
+      flex-shrink: 0;
     }
 
     .card-body {
-      padding: 22px 22px 20px;
+      padding: 20px 22px 22px;
       display: flex;
       flex-direction: column;
       gap: 14px;
       flex: 1;
     }
 
+    /* Card header row */
     .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
     .card-name {
-      font-size: 1.25rem;
+      font-size: 21px;
       font-weight: 800;
       letter-spacing: -0.3px;
     }
     .card-count {
-      font-size: 0.72rem;
+      font-size: 11px;
       font-weight: 600;
       padding: 3px 10px;
-      border-radius: 12px;
-      background: #f0f2f5;
-      color: #888;
+      border-radius: 20px;
+      background: #eef1f5;
+      color: #999;
+      letter-spacing: 0.3px;
     }
 
-    .card-divider {
-      border: none;
-      border-top: 1px solid #f0f2f5;
+    /* DTS title block */
+    .dts-block {
+      background: #f4f7fb;
+      border-radius: 6px;
+      padding: 10px 14px;
+      border-left: 4px solid transparent;
     }
-
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .info-cell {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .info-label {
-      font-size: 0.68rem;
-      color: #bbb;
+    .dts-num {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
+      color: #aab;
+      margin-bottom: 3px;
     }
-    .info-value {
-      font-size: 0.85rem;
+    .dts-subject {
+      font-size: 13px;
       font-weight: 600;
       color: #1a2340;
-    }
-    .info-value.na {
-      color: #ccc;
-      font-weight: 400;
-    }
-
-    .last-title {
-      font-size: 0.82rem;
-      color: #555;
-      background: #f8f9fb;
-      border-radius: 8px;
-      padding: 8px 12px;
-      border-left: 3px solid #e0e0e0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    /* Divider + info grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 16px;
+      padding-top: 12px;
+      border-top: 1px solid #eef1f5;
+    }
+    .info-cell { display: flex; flex-direction: column; gap: 3px; }
+    .info-label {
+      font-size: 10px;
+      color: #c0c8d4;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+    }
+    .info-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a2340;
+    }
+    .info-value.na { color: #ccc; font-weight: 400; }
+
+    /* Status badges */
     .badge {
       display: inline-block;
-      font-size: 0.7rem;
+      font-size: 10px;
       font-weight: 700;
       padding: 3px 10px;
-      border-radius: 12px;
+      border-radius: 20px;
       letter-spacing: 0.4px;
     }
     .badge.open      { background: #dcfce7; color: #166534; }
-    .badge.scheduled { background: #fef9c3; color: #854d0e; }
+    .badge.scheduled { background: #fef3c7; color: #92400e; }
     .badge.closed    { background: #f1f5f9; color: #64748b; }
-    .badge.none      { background: #f1f5f9; color: #cbd5e1; }
+    .badge.none      { background: #f1f5f9; color: #c8d0dc; }
 
+    /* Empty state */
     .empty-state {
-      text-align: center;
-      padding: 16px 0 4px;
-      color: #d1d5db;
-      font-size: 0.85rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 0 10px;
+      gap: 8px;
     }
-    .empty-state .icon { font-size: 2rem; display: block; margin-bottom: 6px; }
+    .empty-icon {
+      width: 32px;
+      height: 32px;
+      color: #d1d9e4;
+    }
+    .empty-text {
+      font-size: 13px;
+      color: #c8d0dc;
+      font-weight: 500;
+    }
 
+    /* Footer */
     footer {
       text-align: center;
-      margin-top: 52px;
-      font-size: 0.75rem;
+      padding: 20px;
+      font-size: 11px;
       color: #bbb;
+      letter-spacing: 0.5px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>🛰️ DTS Internal Dashboard</h1>
-    <p>Magma MES &mdash; Internal use only &mdash; <span id="ts"></span></p>
-  </header>
+  <div class="page-header">
+    <div class="brand">Magma MES &mdash; Internal Use Only</div>
+    <h1>DTS Internal Dashboard</h1>
+    <div class="subtitle">Live deployment status across all customers &nbsp;&middot;&nbsp; <span id="ts"></span></div>
+  </div>
 
-  <div class="grid" id="grid"></div>
+  <div class="grid-wrap">
+    <div class="grid" id="grid"></div>
+  </div>
 
   <footer>Magma Group &copy; 2026</footer>
 
   <script>
     const customers = [
-      { name: 'Tosaf',       slug: 'tosaf-54sfww',      color: '#4f46e5' },
-      { name: 'Elcam',       slug: 'elcam-bs3h7e',      color: '#0891b2' },
-      { name: 'Ytong',       slug: 'ytong-qunmvy',      color: '#059669' },
-      { name: 'Tama',        slug: 'tama-ij6mnp',       color: '#d97706' },
-      { name: 'Carmit',      slug: 'carmit-pys97q',     color: '#dc2626' },
-      { name: 'Motorad',     slug: 'motorad-4yrxcm',    color: '#7c3aed' },
-      { name: 'Rav-Bariach', slug: 'rav-bariach-0ii743',color: '#0d9488' },
-      { name: 'Polybid',     slug: 'polybid-g90djj',    color: '#ea580c' },
-      { name: 'Flex',        slug: 'flex-mestd8',       color: '#be185d' },
-      { name: 'Electra',     slug: 'electra-lg43m8',    color: '#1d4ed8' },
+      { name: 'Tosaf',       slug: 'tosaf-54sfww',       color: '#4f46e5' },
+      { name: 'Elcam',       slug: 'elcam-bs3h7e',       color: '#0891b2' },
+      { name: 'Ytong',       slug: 'ytong-qunmvy',       color: '#059669' },
+      { name: 'Tama',        slug: 'tama-ij6mnp',        color: '#d97706' },
+      { name: 'Carmit',      slug: 'carmit-pys97q',      color: '#dc2626' },
+      { name: 'Motorad',     slug: 'motorad-4yrxcm',     color: '#7c3aed' },
+      { name: 'Rav-Bariach', slug: 'rav-bariach-0ii743', color: '#0d9488' },
+      { name: 'Polybid',     slug: 'polybid-g90djj',     color: '#ea580c' },
+      { name: 'Flex',        slug: 'flex-mestd8',        color: '#be185d' },
+      { name: 'Electra',     slug: 'electra-lg43m8',     color: '#1d4ed8' },
     ];
 
     document.getElementById('ts').textContent = new Date().toLocaleDateString('he-IL', {
       day: '2-digit', month: '2-digit', year: 'numeric'
     });
 
+    const emptyIcon = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"/>
+    </svg>`;
+
     function statusBadge(status) {
       if (!status) return `<span class="badge none">—</span>`;
       const s = status.toLowerCase();
-      if (s === 'open')      return `<span class="badge open">OPEN</span>`;
-      if (s === 'scheduled') return `<span class="badge scheduled">SCHEDULED</span>`;
-      if (s === 'closed')    return `<span class="badge closed">CLOSED</span>`;
+      if (s === 'open')      return `<span class="badge open">Open</span>`;
+      if (s === 'scheduled') return `<span class="badge scheduled">Scheduled</span>`;
+      if (s === 'closed')    return `<span class="badge closed">Closed</span>`;
       return `<span class="badge none">${status}</span>`;
     }
 
@@ -210,34 +252,29 @@
       const last = deployments.length > 0 ? deployments[deployments.length - 1] : null;
       const count = deployments.length;
 
-      if (!last) {
-        return `
-          <a class="card" href="../${customer.slug}/">
-            <div class="card-banner" style="background:${customer.color}"></div>
-            <div class="card-body">
-              <div class="card-header">
-                <span class="card-name" style="color:${customer.color}">${customer.name}</span>
-                <span class="card-count">0 DTS</span>
-              </div>
-              <div class="empty-state">
-                <span class="icon">📭</span>
-                No deployments yet
-              </div>
-            </div>
-          </a>`;
-      }
-
-      return `
+      const top = `
         <a class="card" href="../${customer.slug}/">
           <div class="card-banner" style="background:${customer.color}"></div>
           <div class="card-body">
             <div class="card-header">
               <span class="card-name" style="color:${customer.color}">${customer.name}</span>
               <span class="card-count">${count} DTS</span>
-            </div>
+            </div>`;
 
-            <div class="last-title">
-              #${last.ticketNumber} &nbsp; ${truncate(last.title, 36)}
+      if (!last) {
+        return top + `
+            <div class="empty-state">
+              ${emptyIcon}
+              <span class="empty-text">No deployments yet</span>
+            </div>
+          </div>
+        </a>`;
+      }
+
+      return top + `
+            <div class="dts-block" style="border-left-color:${customer.color}">
+              <div class="dts-num">DTS #${last.ticketNumber}</div>
+              <div class="dts-subject">${truncate(last.title, 48)}</div>
             </div>
 
             <div class="info-grid">
@@ -255,7 +292,7 @@
               </div>
               <div class="info-cell">
                 <span class="info-label">Deploy date</span>
-                <span class="info-value ${last.deployDate ? '' : 'na'}">${last.deployDate || 'Not set'}</span>
+                <span class="info-value ${last.deployDate ? '' : 'na'}">${last.deployDate || '—'}</span>
               </div>
             </div>
           </div>
