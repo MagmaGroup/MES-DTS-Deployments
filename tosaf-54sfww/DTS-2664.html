@@ -17,6 +17,7 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 .meta-block { display: flex; flex-direction: column; gap: 3px; }
 .meta-block .label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.5; }
 .meta-block .value { font-size: 18px; font-weight: 700; }
+.meta-block .value-na { font-size: 18px; font-weight: 400; opacity: 0.35; }
 .card { background: #fff; padding: 32px 40px; border-bottom: 1px solid #e8ecf0; }
 .card:last-child { border-radius: 0 0 10px 10px; border-bottom: none; }
 .section-heading { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #1a3a5c; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #1a3a5c; display: inline-block; }
@@ -29,8 +30,8 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 .ticket-num-link:hover { text-decoration: underline; color: #1e4d7b; }
 .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
 .badge-pending { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
-.badge-waiting  { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
-.badge-done     { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.badge-waiting { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+.badge-done    { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
 .ticket-block { font-family: 'Heebo', Arial, sans-serif; margin-bottom: 28px; border: 1px solid #dde4ed; border-radius: 8px; overflow: hidden; }
 .ticket-block:last-child { margin-bottom: 0; }
 .ticket-block-header { background: linear-gradient(135deg, #1a3a5c 0%, #1e4d7b 100%); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid #4a9fd4; }
@@ -48,7 +49,6 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 .footer { text-align: center; font-size: 11px; color: #aaa; margin-top: 24px; letter-spacing: 0.5px; }
 .back-link { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.85); text-decoration: none; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 20px; transition: background 0.2s; }
 .back-link:hover { background: rgba(255,255,255,0.22); color: #fff; }
-.meta-block .value-na { font-size: 18px; font-weight: 400; opacity: 0.35; }
 </style>
 </head>
 <body>
@@ -72,7 +72,7 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
       </div>
       <div class="meta-block">
         <span class="label">תאריך DTS</span>
-        <span class="value-na">—</span>
+        <span class="value">07.07.2026</span>
       </div>
       <div class="meta-block">
         <span class="label">נסגר</span>
@@ -101,19 +101,19 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
           <td><a class="ticket-num-link" href="#t2476">#2476</a></td>
           <td>יישום Minor station שקילות חול</td>
           <td>Ayala Rov</td>
-          <td><span class="badge badge-pending">New</span></td>
+          <td><span class="badge badge-waiting">New</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2360">#2360</a></td>
           <td>סריקת שקים - חול</td>
           <td>Ayala Rov</td>
-          <td><span class="badge badge-waiting">Waiting for Customer Testing</span></td>
+          <td><span class="badge badge-pending">Waiting for Customer Testing</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2437">#2437</a></td>
           <td>ניהול עדיפות לפי תחנה</td>
           <td>Israela Gilat</td>
-          <td><span class="badge badge-waiting">Waiting for Customer Testing</span></td>
+          <td><span class="badge badge-pending">Waiting for Customer Testing</span></td>
         </tr>
         <tr>
           <td><a class="ticket-num-link" href="#t2440">#2440</a></td>
@@ -139,7 +139,6 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 
   <div class="card">
     <div class="section-heading">פירוט תכולה</div>
-
     <div class="ticket-block" id="t2476">
       <div class="ticket-block-header">
         <div>
@@ -147,7 +146,7 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
           <div class="ticket-block-title">יישום Minor station שקילות חול</div>
           <div class="ticket-block-owner">Ayala Rov</div>
         </div>
-        <span class="badge badge-pending">New</span>
+        <span class="badge badge-waiting">New</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
@@ -157,10 +156,10 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
           <li>לוודא שתחנת Minor Station הוקמה ומוגדרת נכון במערכת</li>
           <li>לוודא שהתחנה מקושרת נכון לתהליך שקילות חול</li>
           <li>לבצע שקילה מלאה בתחנה ולוודא שהנתונים נקלטים כראוי</li>
+          <li>לוודא שיש קונפיגרוציה מתאימה בשרת ישראל ואנגליה</li>
         </ul>
       </div>
     </div>
-
     <div class="ticket-block" id="t2360">
       <div class="ticket-block-header">
         <div>
@@ -168,21 +167,20 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
           <div class="ticket-block-title">סריקת שקים - חול</div>
           <div class="ticket-block-owner">Ayala Rov</div>
         </div>
-        <span class="badge badge-waiting">Waiting for Customer Testing</span>
+        <span class="badge badge-pending">Waiting for Customer Testing</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
-        <div class="block-text">הוספת פרמטרים ברמת המפעל: "Scan Full Bags" — מאפשר הדפסת מדבקה לשקים מלאים ותצוגה בטופס סריקת השקים; "Scan Remainders" — מפעיל/מכבה את כפתור סריקת השקים בתחנת ה-Minor. הוספת פרמטר תחנתי "Minor Station" (או שימוש ב-Machine Stage Type = Load Station), מכונת "Load Station 1" חדשה, ובחירת מספר קיט בתחנות שקילה משניות. כפתור חדש "Scan Bags" (בתחנת Minor בלבד) פותח מסך סריקה המאמת שסטטוס הקיט הוא "בהכנה", מציג את חומרי הגלם שנשקלו עד כה עם הכמויות, ושדה סריקת מזהה שק (SKU + מספר קיט + מספר ריצה). התאמה מסמנת בירוק, אי-התאמה מסמנת באדום. משתמשי SUPPORT/Executive רואים גם את מזהה השק על המסך. בשלב זה רלוונטי לטורקיה בלבד.</div>
+        <div class="block-text">הוספת פרמטרים ברמת המפעל: &quot;Scan Full Bags&quot; — מאפשר הדפסת מדבקה לשקים מלאים ותצוגה בטופס סריקת השקים; &quot;Scan Remainders&quot; — מפעיל/מכבה את כפתור סריקת השקים בתחנת ה-Minor. הוספת פרמטר תחנתי &quot;Minor Station&quot; (או שימוש ב-Machine Stage Type = Load Station), מכונת &quot;Load Station 1&quot; חדשה, ובחירת מספר קיט בתחנות שקילה משניות. כפתור חדש &quot;Scan Bags&quot; (בתחנת Minor בלבד) פותח מסך סריקה המאמת שסטטוס הקיט הוא &quot;בהכנה&quot;, מציג את חומרי הגלם שנשקלו עד כה עם הכמויות, ושדה סריקת מזהה שק (SKU + מספר קיט + מספר ריצה). התאמה מסמנת בירוק, אי-התאמה מסמנת באדום. משתמשי SUPPORT/Executive רואים גם את מזהה השק על המסך. בשלב זה רלוונטי לטורקיה בלבד.</div>
         <div class="block-label">שלבי בדיקה</div>
         <ul class="test-steps">
-          <li>לוודא שפרמטרי המפעל "Scan Full Bags" ו-"Scan Remainders" מוגדרים ומשפיעים כראוי בטופס סריקת השקים</li>
+          <li>לוודא שפרמטרי המפעל &quot;Scan Full Bags&quot; ו-&quot;Scan Remainders&quot; מוגדרים ומשפיעים כראוי בטופס סריקת השקים</li>
           <li>לבצע שקילת שק מלא ולוודא שמופיעה אפשרות הדפסת מדבקה ותצוגה בטופס</li>
-          <li>ללחוץ על כפתור "Scan Bags" בתחנת ה-Minor ולוודא שמוצגים חומרי הגלם שנשקלו עד כה עם הכמויות</li>
+          <li>ללחוץ על כפתור &quot;Scan Bags&quot; בתחנת ה-Minor ולוודא שמוצגים חומרי הגלם שנשקלו עד כה עם הכמויות</li>
           <li>לסרוק מזהה שק (SKU + מספר קיט + מספר ריצה) ולוודא שהתאמה מסמנת בירוק ואי-התאמה מסמנת באדום</li>
         </ul>
       </div>
     </div>
-
     <div class="ticket-block" id="t2437">
       <div class="ticket-block-header">
         <div>
@@ -190,7 +188,7 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
           <div class="ticket-block-title">ניהול עדיפות לפי תחנה</div>
           <div class="ticket-block-owner">Israela Gilat</div>
         </div>
-        <span class="badge badge-waiting">Waiting for Customer Testing</span>
+        <span class="badge badge-pending">Waiting for Customer Testing</span>
       </div>
       <div class="ticket-block-body">
         <div class="block-label">תיאור השינוי</div>
@@ -203,7 +201,6 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         </ul>
       </div>
     </div>
-
     <div class="ticket-block" id="t2440">
       <div class="ticket-block-header">
         <div>
@@ -224,7 +221,6 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         </ul>
       </div>
     </div>
-
     <div class="ticket-block" id="t2376">
       <div class="ticket-block-header">
         <div>
@@ -245,7 +241,6 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         </ul>
       </div>
     </div>
-
     <div class="ticket-block" id="t2439">
       <div class="ticket-block-header">
         <div>
@@ -266,7 +261,6 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         </ul>
       </div>
     </div>
-
   </div>
 
 </div>
