@@ -15,27 +15,18 @@
       min-height: 100vh;
     }
 
-    /* ── Header ── */
     .page-header {
       background: #1a3a5c;
       color: #fff;
       padding: 32px 40px;
       text-align: center;
     }
-    .page-header .brand {
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      opacity: 0.5;
-      margin-bottom: 12px;
-    }
+    .page-header .brand { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; margin-bottom: 12px; }
     .page-header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
     .page-header .subtitle { font-size: 13px; opacity: 0.45; margin-top: 8px; }
 
-    /* ── Layout ── */
     .wrap { max-width: 860px; margin: 0 auto; padding: 32px 24px 64px; }
 
-    /* ── Panel (shared card style) ── */
     .panel {
       background: #fff;
       border-radius: 10px;
@@ -44,31 +35,16 @@
       margin-bottom: 20px;
     }
 
-    /* ── Config bar (token) ── */
-    .config-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .config-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .config-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #8899aa;
-      white-space: nowrap;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #8899aa; white-space: nowrap;
     }
     #inp-token {
-      flex: 1;
-      min-width: 200px;
-      border: 1.5px solid #e0e6ef;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 13px;
-      font-family: monospace;
-      outline: none;
-      transition: border-color 0.15s;
+      flex: 1; min-width: 200px;
+      border: 1.5px solid #e0e6ef; border-radius: 6px;
+      padding: 8px 12px; font-size: 13px; font-family: monospace;
+      outline: none; transition: border-color 0.15s;
     }
     #inp-token:focus { border-color: #3b82f6; }
     .token-status { font-size: 12px; font-weight: 600; white-space: nowrap; }
@@ -76,46 +52,24 @@
     .token-status.err  { color: #dc2626; }
     .token-status.none { color: #aab; }
 
-    /* ── Selector bar ── */
-    .selector-bar {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
+    .selector-bar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
     .selector-bar label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #8899aa;
-      white-space: nowrap;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #8899aa; white-space: nowrap;
     }
     .selector-bar select {
-      border: 1.5px solid #e0e6ef;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 14px;
-      font-family: inherit;
-      background: #fff;
-      color: #1a2340;
-      outline: none;
-      cursor: pointer;
-      transition: border-color 0.15s;
+      border: 1.5px solid #e0e6ef; border-radius: 6px; padding: 8px 12px;
+      font-size: 14px; font-family: inherit; background: #fff; color: #1a2340;
+      outline: none; cursor: pointer; transition: border-color 0.15s;
     }
     .selector-bar select:focus { border-color: #3b82f6; }
     #sel-customer { min-width: 160px; }
     #sel-dts      { min-width: 200px; flex: 1; }
 
     .btn {
-      border: none;
-      border-radius: 6px;
-      padding: 9px 20px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      letter-spacing: 0.3px;
-      transition: background 0.15s, opacity 0.15s;
+      border: none; border-radius: 6px; padding: 9px 20px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      letter-spacing: 0.3px; transition: background 0.15s, opacity 0.15s;
       white-space: nowrap;
     }
     .btn:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -124,233 +78,109 @@
     .btn-green { background: #16a34a; color: #fff; }
     .btn-green:not(:disabled):hover { background: #15803d; }
 
-    /* ── Status message ── */
     .status-msg {
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 16px;
-      line-height: 1.5;
+      border-radius: 8px; padding: 12px 16px;
+      font-size: 13px; font-weight: 500; margin-bottom: 16px; line-height: 1.5;
     }
     .status-msg.ok      { background: #dcfce7; color: #166534; }
     .status-msg.err     { background: #fee2e2; color: #991b1b; }
     .status-msg.loading { background: #eff6ff; color: #1e40af; }
     .status-msg.hidden  { display: none; }
 
-    /* ── Locked notice ── */
     .locked-notice {
-      background: #fefce8;
-      border: 1px solid #fde68a;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 12px;
-      color: #92400e;
-      font-weight: 500;
-      margin-bottom: 16px;
+      background: #fefce8; border: 1px solid #fde68a; border-radius: 8px;
+      padding: 10px 14px; font-size: 12px; color: #92400e;
+      font-weight: 500; margin-bottom: 16px;
     }
 
-    /* ── Placeholder ── */
     .placeholder {
-      text-align: center;
-      padding: 56px 20px;
-      color: #c8d0dc;
-      font-size: 14px;
-      font-weight: 500;
-      line-height: 1.7;
+      text-align: center; padding: 56px 20px;
+      color: #c8d0dc; font-size: 14px; font-weight: 500; line-height: 1.7;
     }
 
-    /* ── Ticket cards ── */
     .ticket-card {
-      background: #fff;
-      border-radius: 10px;
+      background: #fff; border-radius: 10px;
       box-shadow: 0 1px 4px rgba(0,0,0,.06);
-      margin-bottom: 16px;
-      overflow: hidden;
+      margin-bottom: 16px; overflow: hidden;
     }
     .ticket-header {
-      padding: 14px 18px;
-      border-bottom: 1px solid transparent;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.1s;
+      padding: 14px 18px; border-bottom: 1px solid transparent;
+      display: flex; align-items: flex-start; gap: 12px;
+      cursor: pointer; user-select: none; transition: background 0.1s;
     }
     .ticket-header:hover { background: #f9fafb; }
     .ticket-card.open .ticket-header { border-bottom-color: #eef1f5; }
 
     .ticket-num {
-      font-size: 11px;
-      font-weight: 700;
-      color: #fff;
-      background: #1a3a5c;
-      border-radius: 4px;
-      padding: 3px 8px;
-      white-space: nowrap;
-      flex-shrink: 0;
-      margin-top: 1px;
+      font-size: 11px; font-weight: 700; color: #fff;
+      background: #1a3a5c; border-radius: 4px;
+      padding: 3px 8px; white-space: nowrap;
+      flex-shrink: 0; margin-top: 1px;
     }
     .ticket-subject {
-      font-size: 14px;
-      font-weight: 700;
-      color: #1a2340;
-      flex: 1;
-      line-height: 1.4;
-      direction: rtl;
-      text-align: right;
+      font-size: 14px; font-weight: 700; color: #1a2340;
+      flex: 1; line-height: 1.4; direction: rtl; text-align: right;
     }
-    .ticket-badges {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-      flex-shrink: 0;
-      flex-wrap: wrap;
-    }
+    .ticket-badges { display: flex; gap: 5px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
     .badge {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 12px;
-      letter-spacing: 0.3px;
-      white-space: nowrap;
+      font-size: 10px; font-weight: 700; padding: 3px 8px;
+      border-radius: 12px; letter-spacing: 0.3px; white-space: nowrap;
     }
     .badge-status { background: #fef3c7; color: #92400e; }
     .badge-cr     { background: #ede9fe; color: #5b21b6; }
 
-    .chevron {
-      font-size: 14px;
-      color: #ccc;
-      transition: transform 0.2s;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
+    .chevron { font-size: 14px; color: #ccc; transition: transform 0.2s; flex-shrink: 0; margin-top: 2px; }
     .ticket-card.open .chevron { transform: rotate(180deg); }
 
     .ticket-body { padding: 20px; display: none; }
     .ticket-card.open .ticket-body { display: block; }
 
-    /* ── Fields ── */
     .field-group { margin-bottom: 22px; }
     .field-group:last-child { margin-bottom: 0; }
-
     .field-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #8899aa;
-      margin-bottom: 8px;
-      display: block;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #8899aa; margin-bottom: 8px; display: block;
     }
 
     textarea.desc {
-      width: 100%;
-      border: 1.5px solid #e0e6ef;
-      border-radius: 6px;
-      padding: 10px 12px;
-      font-size: 13px;
-      font-family: inherit;
-      resize: vertical;
-      min-height: 96px;
-      line-height: 1.65;
-      color: #1a2340;
-      direction: rtl;
-      text-align: right;
-      outline: none;
-      transition: border-color 0.15s;
+      width: 100%; border: 1.5px solid #e0e6ef; border-radius: 6px;
+      padding: 10px 12px; font-size: 13px; font-family: inherit;
+      resize: vertical; min-height: 96px; line-height: 1.65;
+      color: #1a2340; direction: rtl; text-align: right;
+      outline: none; transition: border-color 0.15s;
     }
     textarea.desc:focus { border-color: #3b82f6; }
 
-    /* ── Steps ── */
-    .steps-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .step-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .step-num {
-      font-size: 12px;
-      font-weight: 700;
-      color: #c0c8d4;
-      width: 18px;
-      text-align: right;
-      flex-shrink: 0;
-    }
+    .steps-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+    .step-row { display: flex; align-items: center; gap: 8px; }
+    .step-num { font-size: 12px; font-weight: 700; color: #c0c8d4; width: 18px; text-align: right; flex-shrink: 0; }
     .step-row input[type="text"] {
-      flex: 1;
-      border: 1.5px solid #e0e6ef;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 13px;
-      font-family: inherit;
-      color: #1a2340;
-      direction: rtl;
-      text-align: right;
-      outline: none;
-      transition: border-color 0.15s;
+      flex: 1; border: 1.5px solid #e0e6ef; border-radius: 6px;
+      padding: 8px 12px; font-size: 13px; font-family: inherit;
+      color: #1a2340; direction: rtl; text-align: right;
+      outline: none; transition: border-color 0.15s;
     }
     .step-row input:focus { border-color: #3b82f6; }
-
     .btn-del-step {
-      background: none;
-      border: none;
-      color: #d0d9e4;
-      font-size: 18px;
-      line-height: 1;
-      cursor: pointer;
-      padding: 0 3px;
-      flex-shrink: 0;
-      transition: color 0.15s;
+      background: none; border: none; color: #d0d9e4;
+      font-size: 18px; line-height: 1; cursor: pointer;
+      padding: 0 3px; flex-shrink: 0; transition: color 0.15s;
     }
     .btn-del-step:hover { color: #dc2626; }
-
     .btn-add-step {
-      background: none;
-      border: 1.5px dashed #d0d9e4;
-      border-radius: 6px;
-      color: #8899aa;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 7px 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+      background: none; border: 1.5px dashed #d0d9e4; border-radius: 6px;
+      color: #8899aa; font-size: 12px; font-weight: 600;
+      padding: 7px 14px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px;
       transition: border-color 0.15s, color 0.15s;
     }
     .btn-add-step:hover { border-color: #3b82f6; color: #3b82f6; }
 
-    /* ── Save bar ── */
-    .save-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .save-note {
-      font-size: 12px;
-      color: #aab;
-      line-height: 1.5;
-    }
+    .save-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .save-note { font-size: 12px; color: #aab; line-height: 1.5; }
     .save-note strong { color: #d97706; }
 
-    /* ── Footer ── */
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 11px;
-      color: #bbb;
-      letter-spacing: 0.5px;
-    }
+    footer { text-align: center; padding: 20px; font-size: 11px; color: #bbb; letter-spacing: 0.5px; }
   </style>
 </head>
 <body>
@@ -358,12 +188,11 @@
 <div class="page-header">
   <div class="brand">Magma MES &mdash; Internal Use Only</div>
   <h1>DTS Content Editor</h1>
-  <div class="subtitle">Edit ticket descriptions and test steps &nbsp;&middot;&nbsp; Changes commit to GitHub</div>
+  <div class="subtitle">Edit ticket descriptions and test steps &nbsp;&middot;&nbsp; Saves commit data.json + HTML report to GitHub</div>
 </div>
 
 <div class="wrap">
 
-  <!-- Token -->
   <div class="panel">
     <div class="config-bar">
       <span class="config-label">GitHub Token</span>
@@ -372,43 +201,31 @@
     </div>
   </div>
 
-  <!-- Customer + DTS selectors -->
   <div class="panel">
     <div class="selector-bar">
       <label for="sel-customer">Customer</label>
-      <select id="sel-customer">
-        <option value="">— Select —</option>
-      </select>
+      <select id="sel-customer"><option value="">— Select —</option></select>
       <label for="sel-dts">DTS</label>
-      <select id="sel-dts" disabled>
-        <option value="">— Select DTS —</option>
-      </select>
+      <select id="sel-dts" disabled><option value="">— Select DTS —</option></select>
       <button class="btn btn-dark" id="btn-load" disabled>Load</button>
     </div>
   </div>
 
-  <!-- Status message -->
   <div class="status-msg hidden" id="status-msg"></div>
-
-  <!-- Locked notice (shown when contentLocked: true) -->
   <div class="locked-notice" id="locked-notice" style="display:none;">
-    &#x1F512; This DTS already has <strong>contentLocked: true</strong> — content was previously manually edited.
-    You are overriding it.
+    &#x1F512; This DTS already has <strong>contentLocked: true</strong> — you are editing previously locked content.
   </div>
 
-  <!-- Ticket editor area -->
   <div id="editor-area">
     <div class="placeholder">Select a customer and DTS,<br>then click Load to begin editing.</div>
   </div>
 
-  <!-- Save bar -->
   <div class="panel" id="save-bar" style="display:none;">
     <div class="save-bar">
       <span class="save-note">
-        Saving will set <strong>contentLocked: true</strong> — Claude will not overwrite this content.<br>
-        After saving, run <strong>Option 5</strong> in Claude to regenerate the HTML report.
+        Save commits <strong>data.json</strong> + regenerates the <strong>HTML report</strong> — both updated in one step.
       </span>
-      <button class="btn btn-green" id="btn-save">Save &amp; Lock Content</button>
+      <button class="btn btn-green" id="btn-save">Save &amp; Publish</button>
     </div>
   </div>
 
@@ -434,13 +251,7 @@ const customers = [
 ];
 
 // ── State ──
-let state = {
-  pat:           '',
-  customerSlug:  '',
-  deploymentIdx: -1,
-  data:          null,
-  sha:           null,
-};
+let state = { pat: '', customerSlug: '', deploymentIdx: -1, data: null, sha: null };
 
 // ── DOM refs ──
 const inpToken     = document.getElementById('inp-token');
@@ -454,7 +265,7 @@ const btnSave      = document.getElementById('btn-save');
 const statusMsg    = document.getElementById('status-msg');
 const lockedNotice = document.getElementById('locked-notice');
 
-// ── Populate customer dropdown ──
+// ── Init ──
 customers.forEach(c => {
   const opt = document.createElement('option');
   opt.value = c.slug;
@@ -462,15 +273,10 @@ customers.forEach(c => {
   selCustomer.appendChild(opt);
 });
 
-// ── Restore PAT from localStorage ──
 const savedPat = localStorage.getItem(TOKEN_KEY) || '';
-if (savedPat) {
-  inpToken.value = savedPat;
-  state.pat = savedPat;
-  updateTokenStatus();
-}
+if (savedPat) { inpToken.value = savedPat; state.pat = savedPat; updateTokenStatus(); }
 
-// ── Token input ──
+// ── Token ──
 inpToken.addEventListener('input', () => {
   state.pat = inpToken.value.trim();
   localStorage.setItem(TOKEN_KEY, state.pat);
@@ -478,31 +284,25 @@ inpToken.addEventListener('input', () => {
 });
 
 function updateTokenStatus() {
-  const len = state.pat.length;
   if (!state.pat) {
-    tokenStatus.textContent = 'Not set';
-    tokenStatus.className = 'token-status none';
-  } else if (state.pat.startsWith('ghp_') || state.pat.startsWith('github_pat_') || len >= 30) {
-    tokenStatus.textContent = '● Ready';
-    tokenStatus.className = 'token-status ok';
+    tokenStatus.textContent = 'Not set'; tokenStatus.className = 'token-status none';
+  } else if (state.pat.startsWith('ghp_') || state.pat.startsWith('github_pat_') || state.pat.length >= 30) {
+    tokenStatus.textContent = '● Ready'; tokenStatus.className = 'token-status ok';
   } else {
-    tokenStatus.textContent = '⚠ Check token format';
-    tokenStatus.className = 'token-status err';
+    tokenStatus.textContent = '⚠ Check token'; tokenStatus.className = 'token-status err';
   }
   updateLoadBtn();
 }
 
-// ── Customer change — load DTS list ──
+// ── Customer ──
 selCustomer.addEventListener('change', async () => {
-  state.customerSlug  = selCustomer.value;
+  state.customerSlug = selCustomer.value;
   state.deploymentIdx = -1;
-  state.data          = null;
-  state.sha           = null;
-
+  state.data = null;
   selDts.innerHTML = '<option value="">— Select DTS —</option>';
-  selDts.disabled  = true;
+  selDts.disabled = true;
   editorArea.innerHTML = '<div class="placeholder">Select a DTS, then click Load.</div>';
-  saveBar.style.display    = 'none';
+  saveBar.style.display = 'none';
   lockedNotice.style.display = 'none';
   clearStatus();
   updateLoadBtn();
@@ -511,11 +311,10 @@ selCustomer.addEventListener('change', async () => {
 
   setStatus('loading', 'Fetching deployments…');
   try {
-    const { data } = await fetchDataJson(state.customerSlug);
+    const { data } = await fetchJson(state.customerSlug + '/data.json');
     clearStatus();
     if (!data.deployments || data.deployments.length === 0) {
-      setStatus('err', 'No deployments found for this customer.');
-      return;
+      setStatus('err', 'No deployments found for this customer.'); return;
     }
     data.deployments.forEach((dep, i) => {
       const opt = document.createElement('option');
@@ -525,12 +324,9 @@ selCustomer.addEventListener('change', async () => {
       selDts.appendChild(opt);
     });
     selDts.disabled = false;
-  } catch (err) {
-    setStatus('err', `Failed to load: ${err.message}`);
-  }
+  } catch (err) { setStatus('err', `Failed to load: ${err.message}`); }
 });
 
-// ── DTS change ──
 selDts.addEventListener('change', () => {
   const v = selDts.value;
   state.deploymentIdx = v !== '' ? parseInt(v, 10) : -1;
@@ -541,40 +337,33 @@ function updateLoadBtn() {
   btnLoad.disabled = !(state.pat && state.customerSlug && state.deploymentIdx >= 0);
 }
 
-// ── Load button ──
+// ── Load ──
 btnLoad.addEventListener('click', async () => {
   clearStatus();
-  saveBar.style.display    = 'none';
+  saveBar.style.display = 'none';
   lockedNotice.style.display = 'none';
   editorArea.innerHTML = '<div class="placeholder">Loading…</div>';
-  btnLoad.disabled     = true;
+  btnLoad.disabled = true;
   setStatus('loading', 'Loading from GitHub…');
 
   try {
-    const { data, sha } = await fetchDataJson(state.customerSlug);
+    const { data, sha } = await fetchJson(state.customerSlug + '/data.json');
     state.data = data;
     state.sha  = sha;
-
     const dep = data.deployments[state.deploymentIdx];
-    if (!dep) throw new Error('Deployment not found at selected index.');
-
+    if (!dep) throw new Error('Deployment not found.');
     clearStatus();
-
-    if (dep.contentLocked) {
-      lockedNotice.style.display = 'block';
-    }
-
+    if (dep.contentLocked) lockedNotice.style.display = 'block';
     renderEditor(dep);
     saveBar.style.display = 'flex';
   } catch (err) {
     setStatus('err', `Load failed: ${err.message}`);
     editorArea.innerHTML = '<div class="placeholder">Load failed. Check token and try again.</div>';
   }
-
   updateLoadBtn();
 });
 
-// ── GitHub API helpers ──
+// ── GitHub API ──
 async function ghFetch(path, opts = {}) {
   const res = await fetch(`https://api.github.com/repos/${REPO}/${path}`, {
     ...opts,
@@ -590,31 +379,44 @@ async function ghFetch(path, opts = {}) {
   return body;
 }
 
-async function fetchDataJson(slug) {
-  const resp = await ghFetch(`contents/${slug}/data.json`);
-  // Decode base64 UTF-8 content from GitHub API
+async function fetchJson(filePath) {
+  const resp = await ghFetch(`contents/${filePath}`);
   const binaryStr = atob(resp.content.replace(/\s/g, ''));
   const bytes     = Uint8Array.from(binaryStr, c => c.charCodeAt(0));
   const json      = new TextDecoder().decode(bytes);
   return { data: JSON.parse(json), sha: resp.sha };
 }
 
+async function getFileSha(filePath) {
+  try {
+    const resp = await ghFetch(`contents/${filePath}`);
+    return resp.sha;
+  } catch { return null; }
+}
+
 function toBase64(str) {
-  // Encode a UTF-8 string to base64 (handles Hebrew and other Unicode)
   const bytes = new TextEncoder().encode(str);
   let binary  = '';
   bytes.forEach(b => binary += String.fromCharCode(b));
   return btoa(binary);
 }
 
-// ── Render editor ──
+async function commitFile(filePath, content, message, sha) {
+  const body = { message, content: toBase64(content) };
+  if (sha) body.sha = sha;
+  return ghFetch(`contents/${filePath}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  });
+}
+
+// ── Editor rendering ──
 function renderEditor(dep) {
   const tickets = dep.tickets || [];
-
   if (tickets.length === 0) {
     editorArea.innerHTML = `
       <div class="placeholder">
-        No ticket content in DTS #${escHtml(String(dep.ticketNumber))}.<br>
+        No ticket content in DTS #${esc(String(dep.ticketNumber))}.<br>
         Run <strong>Option 4 (Populate DTS Ticket)</strong> in Claude first.
       </div>`;
     saveBar.style.display = 'none';
@@ -622,27 +424,23 @@ function renderEditor(dep) {
   }
 
   editorArea.innerHTML = '';
-
   tickets.forEach((t, i) => {
     const card = document.createElement('div');
     card.className = 'ticket-card open';
     card.dataset.idx = i;
-
     const crBadge     = t.isCR ? `<span class="badge badge-cr">CR</span>` : '';
-    const statusLabel = t.status || '';
-    const statusBadge = statusLabel ? `<span class="badge badge-status">${escHtml(statusLabel)}</span>` : '';
-
+    const statusBadge = t.status ? `<span class="badge badge-status">${esc(t.status)}</span>` : '';
     card.innerHTML = `
       <div class="ticket-header" onclick="toggleCard(this.parentElement)">
-        <span class="ticket-num">#${escHtml(String(t.number))}</span>
-        <span class="ticket-subject">${escHtml(t.subject)}</span>
+        <span class="ticket-num">#${esc(String(t.number))}</span>
+        <span class="ticket-subject">${esc(t.subject)}</span>
         <span class="ticket-badges">${statusBadge}${crBadge}</span>
         <span class="chevron">&#9660;</span>
       </div>
       <div class="ticket-body">
         <div class="field-group">
           <label class="field-label">Description / תיאור הבעיה</label>
-          <textarea class="desc" data-field="description" rows="5" placeholder="Enter a description of the issue…">${escHtml(t.description || '')}</textarea>
+          <textarea class="desc" data-field="description" rows="5" placeholder="Enter a description…">${esc(t.description || '')}</textarea>
         </div>
         <div class="field-group">
           <label class="field-label">Test Steps / שלבי בדיקה</label>
@@ -650,115 +448,263 @@ function renderEditor(dep) {
           <button class="btn-add-step" onclick="addStep(${i})">+ Add step</button>
         </div>
       </div>`;
-
     editorArea.appendChild(card);
-
-    // Populate steps
-    const stepsList = card.querySelector(`[data-steps="${i}"]`);
-    (t.testSteps || []).forEach((s, si) => {
-      stepsList.appendChild(createStepRow(si, s));
-    });
+    const list = card.querySelector(`[data-steps="${i}"]`);
+    (t.testSteps || []).forEach((s, si) => list.appendChild(makeStepRow(si, s)));
   });
-
   renumberAll();
 }
 
-// ── Card toggle ──
-function toggleCard(card) {
-  card.classList.toggle('open');
-}
+function toggleCard(card) { card.classList.toggle('open'); }
 
-// ── Steps management ──
-function createStepRow(idx, value) {
-  const li  = document.createElement('li');
+function makeStepRow(idx, value) {
+  const li = document.createElement('li');
   li.className = 'step-row';
   li.innerHTML = `
     <span class="step-num">${idx + 1}</span>
-    <input type="text" dir="rtl" value="${escHtml(value)}" placeholder="Describe test step…" />
-    <button class="btn-del-step" onclick="removeStep(this)" title="Remove step">&times;</button>`;
+    <input type="text" dir="rtl" value="${esc(value)}" placeholder="Describe test step…" />
+    <button class="btn-del-step" onclick="removeStep(this)" title="Remove">&times;</button>`;
   return li;
 }
 
-function addStep(ticketIdx) {
-  const list = document.querySelector(`.steps-list[data-steps="${ticketIdx}"]`);
+function addStep(idx) {
+  const list  = document.querySelector(`.steps-list[data-steps="${idx}"]`);
   const count = list.querySelectorAll('.step-row').length;
-  const row   = createStepRow(count, '');
+  const row   = makeStepRow(count, '');
   list.appendChild(row);
   renumberAll();
   row.querySelector('input').focus();
 }
 
-function removeStep(btn) {
-  btn.closest('.step-row').remove();
-  renumberAll();
-}
+function removeStep(btn) { btn.closest('.step-row').remove(); renumberAll(); }
 
 function renumberAll() {
   document.querySelectorAll('.steps-list').forEach(list => {
-    list.querySelectorAll('.step-num').forEach((span, i) => {
-      span.textContent = i + 1;
-    });
+    list.querySelectorAll('.step-num').forEach((span, i) => span.textContent = i + 1);
   });
 }
 
-// ── Collect edited content from DOM ──
+// ── Collect edits ──
 function collectEdits() {
-  const dep = state.data.deployments[state.deploymentIdx];
-  return dep.tickets.map((orig, i) => {
+  return state.data.deployments[state.deploymentIdx].tickets.map((orig, i) => {
     const card = editorArea.querySelector(`.ticket-card[data-idx="${i}"]`);
     if (!card) return orig;
-
     const desc  = card.querySelector('[data-field="description"]').value.trim();
     const steps = [...card.querySelectorAll(`.steps-list[data-steps="${i}"] input`)]
-      .map(inp => inp.value.trim())
-      .filter(Boolean);
-
+      .map(inp => inp.value.trim()).filter(Boolean);
     return { ...orig, description: desc, testSteps: steps };
   });
+}
+
+// ── HTML report generator ──
+function generateHtml(dep, customerName) {
+  const today   = new Date().toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const tickets = dep.tickets || [];
+
+  function badgeClass(status) {
+    const s = (status || '').toLowerCase();
+    if (s.includes('waiting for customer')) return 'badge-pending';
+    if (s.includes('waiting dts'))          return 'badge-waiting';
+    if (s.includes('done') || s.includes('closed')) return 'badge-done';
+    return 'badge-waiting';
+  }
+
+  const summaryRows = tickets.map(t => `
+        <tr>
+          <td><a class="ticket-num-link" href="#t${t.number}">#${t.number}</a></td>
+          <td>${esc(t.subject)}</td>
+          <td>${esc(t.assignee || '')}</td>
+          <td><span class="badge ${badgeClass(t.status)}">${esc(t.status || '')}</span></td>
+        </tr>`).join('');
+
+  const ticketBlocks = tickets.map(t => {
+    const steps = (t.testSteps || []).map(s => `          <li>${esc(s)}</li>`).join('\n');
+    return `
+    <div class="ticket-block" id="t${t.number}">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#${t.number}</div>
+          <div class="ticket-block-title">${esc(t.subject)}</div>
+          <div class="ticket-block-owner">${esc(t.assignee || '')}</div>
+        </div>
+        <span class="badge ${badgeClass(t.status)}">${esc(t.status || '')}</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">${esc(t.description || '')}</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+${steps}
+        </ul>
+      </div>
+    </div>`;
+  }).join('');
+
+  const deployVal = dep.deployDate
+    ? `<span class="value">${dep.deployDate}</span>`
+    : `<span class="value-na">—</span>`;
+  const closeVal = dep.closeDate
+    ? `<span class="value">${dep.closeDate}</span>`
+    : `<span class="value-na">—</span>`;
+
+  return `<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>דוח DTS #${dep.ticketNumber} — ${esc(customerName)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1a2e; padding: 40px 24px; font-weight: 400; }
+.page { max-width: 860px; margin: 0 auto; }
+.header { background: #1a3a5c; color: #fff; border-radius: 10px 10px 0 0; padding: 32px 40px; }
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.header-brand { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; }
+.header-dts { font-size: 11px; opacity: 0.5; text-align: left; }
+.header h1 { font-size: 28px; font-weight: 500; line-height: 1.3; margin-bottom: 20px; }
+.header-meta { display: flex; gap: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); }
+.meta-block { display: flex; flex-direction: column; gap: 3px; }
+.meta-block .label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.5; }
+.meta-block .value { font-size: 18px; font-weight: 700; }
+.meta-block .value-na { font-size: 18px; font-weight: 400; opacity: 0.35; }
+.card { background: #fff; padding: 32px 40px; border-bottom: 1px solid #e8ecf0; }
+.card:last-child { border-radius: 0 0 10px 10px; border-bottom: none; }
+.section-heading { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #1a3a5c; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #1a3a5c; display: inline-block; }
+.summary-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.summary-table th { background: #f0f4f8; color: #1a3a5c; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 12px 16px; border-bottom: 2px solid #d0d8e4; text-align: right; }
+.summary-table td { padding: 13px 16px; border-bottom: 1px solid #eef1f5; vertical-align: middle; }
+.summary-table tr:last-child td { border-bottom: none; }
+.summary-table tr:hover td { background: #f7f9fc; }
+.ticket-num-link { color: #1a3a5c; font-weight: 700; text-decoration: none; font-size: 14px; }
+.ticket-num-link:hover { text-decoration: underline; color: #1e4d7b; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.badge-pending { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+.badge-waiting { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+.badge-done    { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.ticket-block { font-family: 'Heebo', Arial, sans-serif; margin-bottom: 28px; border: 1px solid #dde4ed; border-radius: 8px; overflow: hidden; }
+.ticket-block:last-child { margin-bottom: 0; }
+.ticket-block-header { background: linear-gradient(135deg, #1a3a5c 0%, #1e4d7b 100%); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid #4a9fd4; }
+.ticket-block-title { font-family: 'Heebo', Arial, sans-serif; font-size: 20px; font-weight: 800; color: #fff; }
+.ticket-block-num { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; font-weight: 700; color: #7eb8e8; margin-bottom: 4px; letter-spacing: 1px; }
+.ticket-block-owner { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; color: #a8c8e8; margin-top: 4px; }
+.ticket-block-body { padding: 20px 24px; }
+.block-label { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; background: #1a3a5c; display: inline-block; padding: 3px 10px; border-radius: 3px; margin-bottom: 10px; margin-top: 20px; }
+.block-label:first-child { margin-top: 0; }
+.block-text { font-size: 15px; line-height: 1.8; color: #222; font-weight: 400; }
+.test-steps { list-style: none; }
+.test-steps li { font-size: 15px; line-height: 1.7; color: #222; padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; border-bottom: 1px solid #f5f5f5; }
+.test-steps li:last-child { border-bottom: none; }
+.test-steps li::before { content: "▸"; color: #1a3a5c; font-size: 13px; margin-top: 3px; flex-shrink: 0; font-weight: 700; }
+.footer { text-align: center; font-size: 11px; color: #aaa; margin-top: 24px; letter-spacing: 0.5px; }
+.back-link { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.85); text-decoration: none; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 20px; transition: background 0.2s; }
+.back-link:hover { background: rgba(255,255,255,0.22); color: #fff; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <a class="back-link" href="./">← רשימת DTS</a>
+    <div class="header-top">
+      <div class="header-brand">Magma Group — פירוט תכולה וקריאות</div>
+      <div class="header-dts">Generated ${today}</div>
+    </div>
+    <h1>DTS #${dep.ticketNumber}<br>${esc(dep.title)}</h1>
+    <div class="header-meta">
+      <div class="meta-block">
+        <span class="label">לקוח</span>
+        <span class="value">${esc(customerName)}</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">נוצר</span>
+        <span class="value">${dep.createDate || '—'}</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">תאריך DTS</span>
+        ${deployVal}
+      </div>
+      <div class="meta-block">
+        <span class="label">נסגר</span>
+        ${closeVal}
+      </div>
+      <div class="meta-block">
+        <span class="label">קריאות</span>
+        <span class="value">${tickets.length}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-heading">תכולת DTS</div>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>שם קריאה</th>
+          <th>אחראי</th>
+          <th>סטטוס</th>
+        </tr>
+      </thead>
+      <tbody>${summaryRows}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="section-heading">פירוט תכולה</div>${ticketBlocks}
+  </div>
+
+</div>
+<div class="footer">Magma Group DTS Report &nbsp;·&nbsp; Generated ${today}</div>
+</body>
+</html>`;
 }
 
 // ── Save ──
 btnSave.addEventListener('click', async () => {
   btnSave.disabled = true;
   clearStatus();
-  setStatus('loading', 'Saving to GitHub…');
+  setStatus('loading', 'Saving…');
 
   try {
-    // Collect current edits before fetching fresh sha
     const editedTickets = collectEdits();
 
-    // Re-fetch sha so we always use the latest — avoid 409 conflict
-    const { sha } = await fetchDataJson(state.customerSlug);
-    state.sha = sha;
+    // Get fresh shas for both files
+    const slug      = state.customerSlug;
+    const dep       = state.data.deployments[state.deploymentIdx];
+    const htmlFile  = dep.url || `DTS-${dep.ticketNumber}.html`;
+    const dataPath  = `${slug}/data.json`;
+    const htmlPath  = `${slug}/${htmlFile}`;
+
+    setStatus('loading', 'Fetching current file versions…');
+    const [{ sha: dataSha }, htmlSha] = await Promise.all([
+      fetchJson(dataPath),
+      getFileSha(htmlPath),
+    ]);
 
     // Build updated data.json
     const updated = JSON.parse(JSON.stringify(state.data));
     updated.deployments[state.deploymentIdx].tickets       = editedTickets;
     updated.deployments[state.deploymentIdx].contentLocked = true;
+    updated.deployments[state.deploymentIdx].ticketCount   = editedTickets.length;
 
-    const dtsNum = state.data.deployments[state.deploymentIdx].ticketNumber;
-    const content = toBase64(JSON.stringify(updated, null, 2));
+    // Find customer name
+    const customer     = customers.find(c => c.slug === slug);
+    const customerName = customer ? customer.name : slug;
 
-    await ghFetch(`contents/${state.customerSlug}/data.json`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        message: `Edit DTS content: #${dtsNum}`,
-        content,
-        sha:     state.sha,
-      }),
-    });
+    // Generate HTML
+    const htmlContent = generateHtml(updated.deployments[state.deploymentIdx], customerName);
 
-    // Update local state
+    setStatus('loading', 'Committing data.json…');
+    await commitFile(dataPath, JSON.stringify(updated, null, 2), `Edit DTS content: #${dep.ticketNumber}`, dataSha);
+
+    setStatus('loading', 'Committing HTML report…');
+    await commitFile(htmlPath, htmlContent, `Regenerate DTS report: #${dep.ticketNumber}`, htmlSha);
+
     state.data = updated;
-
-    clearStatus();
-    setStatus('ok',
-      `✓ Saved — DTS #${dtsNum} content locked. ` +
-      `Run Option 5 (DTS Deploy Report) in Claude to regenerate the HTML report.`
-    );
-
-    // Show locked notice if it wasn't already
     lockedNotice.style.display = 'block';
+    clearStatus();
+    setStatus('ok', `✓ Saved — DTS #${dep.ticketNumber} updated. HTML report regenerated. GitHub Pages will refresh in ~1 minute.`);
 
   } catch (err) {
     setStatus('err', `Save failed: ${err.message}`);
@@ -776,8 +722,8 @@ function clearStatus() {
   statusMsg.className = 'status-msg hidden';
   statusMsg.textContent = '';
 }
-function escHtml(s) {
-  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function esc(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
 
