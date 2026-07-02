@@ -132,6 +132,16 @@
     .chevron { font-size: 14px; color: #ccc; transition: transform 0.2s; flex-shrink: 0; margin-top: 2px; }
     .ticket-card.open .chevron { transform: rotate(180deg); }
 
+    .lock-btn {
+      background: none; border: none; cursor: pointer; padding: 2px 4px;
+      font-size: 16px; line-height: 1; flex-shrink: 0; margin-top: 1px;
+      border-radius: 4px; transition: background 0.15s;
+      color: #c0c8d4;
+    }
+    .lock-btn:hover { background: #f0f4f8; }
+    .lock-btn.locked { color: #1a3a5c; }
+    .ticket-card.locked .ticket-header { border-left: 3px solid #1a3a5c; }
+
     .ticket-body { padding: 20px; display: none; }
     .ticket-card.open .ticket-body { display: block; }
 
@@ -230,7 +240,7 @@
 
   <div class="status-msg hidden" id="status-msg"></div>
   <div class="locked-notice" id="locked-notice" style="display:none;">
-    &#x1F512; This DTS already has <strong>contentLocked: true</strong> — you are editing previously locked content.
+    &#128274; Some tickets in this DTS have locked content — Claude will preserve their descriptions and test steps on future runs.
   </div>
 
   <div id="editor-area">
@@ -240,7 +250,8 @@
   <div class="panel" id="save-bar" style="display:none;">
     <div class="save-bar">
       <span class="save-note">
-        Save commits <strong>data.json</strong> + regenerates the <strong>HTML report</strong> — both updated in one step.
+        Save commits <strong>data.json</strong> + regenerates the <strong>HTML report</strong>.<br>
+        Locked tickets (&#128274;) are preserved on future Claude runs. Unlocked tickets (&#128275;) can be overwritten.
       </span>
       <div style="display:flex;gap:10px;flex-shrink:0;">
         <button class="btn-ghost" id="btn-cancel">Cancel</button>
@@ -271,7 +282,8 @@ const customers = [
 ];
 
 // ── State ──
-let state = { pat: '', customerSlug: '', deploymentIdx: -1, data: null, sha: null };
+let state = { pat: '', customerSlug: '', deploymentIdx: -1, data: null, sha: null, locks: {} };
+// locks: { [ticketIndex]: true/false } — tracks per-ticket lock state in the editor
 
 // ── DOM refs ──
 const inpToken     = document.getElementById('inp-token');
@@ -374,7 +386,11 @@ btnLoad.addEventListener('click', async () => {
     const dep = data.deployments[state.deploymentIdx];
     if (!dep) throw new Error('Deployment not found.');
     clearStatus();
-    if (dep.contentLocked) lockedNotice.style.display = 'block';
+    // Build initial lock state from per-ticket contentLocked
+    state.locks = {};
+    (dep.tickets || []).forEach((t, i) => { state.locks[i] = !!t.contentLocked; });
+    const anyLocked = Object.values(state.locks).some(Boolean);
+    lockedNotice.style.display = anyLocked ? 'block' : 'none';
     renderEditor(dep);
     saveBar.style.display = 'flex';
   } catch (err) {
@@ -446,22 +462,25 @@ function renderEditor(dep) {
 
   editorArea.innerHTML = '';
   tickets.forEach((t, i) => {
+    const isLocked    = !!state.locks[i];
     const card = document.createElement('div');
-    card.className = 'ticket-card open';
+    card.className = `ticket-card open${isLocked ? ' locked' : ''}`;
     card.dataset.idx = i;
     const crBadge     = t.isCR ? `<span class="badge badge-cr">CR</span>` : '';
     const statusBadge = t.status ? `<span class="badge badge-status">${esc(t.status)}</span>` : '';
+    const lockIcon    = isLocked ? '&#128274;' : '&#128275;'; // 🔒 / 🔓
     card.innerHTML = `
       <div class="ticket-header" onclick="toggleCard(this.parentElement)">
         <span class="ticket-num">#${esc(String(t.number))}</span>
         <span class="ticket-subject">${esc(t.subject)}</span>
         <span class="ticket-badges">${statusBadge}${crBadge}</span>
+        <button class="lock-btn${isLocked ? ' locked' : ''}" title="${isLocked ? 'Locked — click to unlock' : 'Unlocked — click to lock'}" onclick="toggleLock(event, ${i})">${lockIcon}</button>
         <span class="chevron">&#9660;</span>
       </div>
       <div class="ticket-body">
         <div class="field-group">
           <label class="field-label">Description / תיאור הבעיה</label>
-          <textarea class="desc" data-field="description" rows="5" placeholder="Enter a description…">${esc(t.description || '')}</textarea>
+          <textarea class="desc" data-field="description" rows="5" placeholder="Enter a description…" oninput="autoLock(${i})">${esc(t.description || '')}</textarea>
         </div>
         <div class="field-group">
           <label class="field-label">Test Steps / שלבי בדיקה</label>
@@ -471,33 +490,61 @@ function renderEditor(dep) {
       </div>`;
     editorArea.appendChild(card);
     const list = card.querySelector(`[data-steps="${i}"]`);
-    (t.testSteps || []).forEach((s, si) => list.appendChild(makeStepRow(si, s)));
+    (t.testSteps || []).forEach((s, si) => list.appendChild(makeStepRow(si, s, i)));
   });
   renumberAll();
 }
 
 function toggleCard(card) { card.classList.toggle('open'); }
 
-function makeStepRow(idx, value) {
+function toggleLock(event, idx) {
+  event.stopPropagation(); // don't collapse the card
+  state.locks[idx] = !state.locks[idx];
+  applyLockUI(idx);
+}
+
+function autoLock(idx) {
+  if (state.locks[idx]) return; // already locked
+  state.locks[idx] = true;
+  applyLockUI(idx);
+}
+
+function applyLockUI(idx) {
+  const card = editorArea.querySelector(`.ticket-card[data-idx="${idx}"]`);
+  if (!card) return;
+  const locked  = state.locks[idx];
+  const btn     = card.querySelector('.lock-btn');
+  btn.innerHTML = locked ? '&#128274;' : '&#128275;';
+  btn.title     = locked ? 'Locked — click to unlock' : 'Unlocked — click to lock';
+  btn.className = `lock-btn${locked ? ' locked' : ''}`;
+  card.className = `ticket-card open${locked ? ' locked' : ''}`;
+}
+
+function makeStepRow(idx, value, ticketIdx = 0) {
   const li = document.createElement('li');
   li.className = 'step-row';
   li.innerHTML = `
     <span class="step-num">${idx + 1}</span>
-    <input type="text" dir="rtl" value="${esc(value)}" placeholder="Describe test step…" />
-    <button class="btn-del-step" onclick="removeStep(this)" title="Remove">&times;</button>`;
+    <input type="text" dir="rtl" value="${esc(value)}" placeholder="Describe test step…" oninput="autoLock(${ticketIdx})" />
+    <button class="btn-del-step" onclick="removeStep(this, ${ticketIdx})" title="Remove">&times;</button>`;
   return li;
 }
 
 function addStep(idx) {
   const list  = document.querySelector(`.steps-list[data-steps="${idx}"]`);
   const count = list.querySelectorAll('.step-row').length;
-  const row   = makeStepRow(count, '');
+  const row   = makeStepRow(count, '', idx);
   list.appendChild(row);
+  autoLock(idx);
   renumberAll();
   row.querySelector('input').focus();
 }
 
-function removeStep(btn) { btn.closest('.step-row').remove(); renumberAll(); }
+function removeStep(btn, ticketIdx) {
+  btn.closest('.step-row').remove();
+  autoLock(ticketIdx);
+  renumberAll();
+}
 
 function renumberAll() {
   document.querySelectorAll('.steps-list').forEach(list => {
@@ -513,7 +560,7 @@ function collectEdits() {
     const desc  = card.querySelector('[data-field="description"]').value.trim();
     const steps = [...card.querySelectorAll(`.steps-list[data-steps="${i}"] input`)]
       .map(inp => inp.value.trim()).filter(Boolean);
-    return { ...orig, description: desc, testSteps: steps };
+    return { ...orig, description: desc, testSteps: steps, contentLocked: !!state.locks[i] };
   });
 }
 
@@ -712,11 +759,12 @@ btnSave.addEventListener('click', async () => {
       getFileSha(htmlPath),
     ]);
 
-    // Build updated data.json
+    // Build updated data.json — contentLocked is now per-ticket only
     const updated = JSON.parse(JSON.stringify(state.data));
-    updated.deployments[state.deploymentIdx].tickets       = editedTickets;
-    updated.deployments[state.deploymentIdx].contentLocked = true;
-    updated.deployments[state.deploymentIdx].ticketCount   = editedTickets.length;
+    updated.deployments[state.deploymentIdx].tickets     = editedTickets;
+    updated.deployments[state.deploymentIdx].ticketCount = editedTickets.length;
+    // Remove stale deployment-level contentLocked if it exists from old format
+    delete updated.deployments[state.deploymentIdx].contentLocked;
 
     // Find customer name
     const customer     = customers.find(c => c.slug === slug);
