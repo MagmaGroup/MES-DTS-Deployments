@@ -3,74 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Magma — DTS Internal Dashboard</title>
+  <title>Magma — DTS Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0d1117;
+      --card-bg:      #161b22;
+      --card-border:  #21262d;
+      --text:         #e6edf3;
+      --text-muted:   #7d8590;
+      --text-dim:     #484f58;
+    }
 
     body {
       font-family: 'Heebo', Arial, sans-serif;
-      background: #0b1120;
-      color: #1a2340;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
     }
 
     /* ── Header ── */
     .page-header {
-      background: linear-gradient(150deg, #0d1830 0%, #152040 40%, #0d1830 100%);
-      color: #fff;
-      padding: 52px 40px 44px;
+      background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+      border-bottom: 1px solid var(--card-border);
+      padding: 56px 40px 48px;
       text-align: center;
       position: relative;
       overflow: hidden;
     }
-
-    /* Dot grid */
     .page-header::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,0.055) 1px, transparent 1px);
-      background-size: 26px 26px;
+      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 24px 24px;
       pointer-events: none;
     }
-
-    /* Purple glow */
     .page-header::after {
       content: '';
       position: absolute;
-      top: 40%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 700px;
-      height: 300px;
-      background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 65%);
+      top: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 500px;
+      background: radial-gradient(ellipse, rgba(56,139,253,0.07) 0%, transparent 60%);
       pointer-events: none;
     }
-
     .header-inner { position: relative; z-index: 1; }
 
     .brand {
       font-size: 10px;
-      letter-spacing: 3.5px;
+      letter-spacing: 4px;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.28);
-      margin-bottom: 18px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
     }
-
     .page-header h1 {
-      font-size: 38px;
+      font-size: 44px;
       font-weight: 900;
-      letter-spacing: -1.2px;
-      color: #fff;
+      letter-spacing: -1.5px;
+      background: linear-gradient(135deg, #ffffff 30%, #8ab4d8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 8px;
+      line-height: 1.1;
     }
-
     .subtitle {
       font-size: 13px;
-      color: rgba(255,255,255,0.3);
-      margin-bottom: 28px;
-      letter-spacing: 0.3px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
     }
 
     /* Stats pills */
@@ -79,64 +82,57 @@
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 26px;
-      min-height: 30px;
+      margin-bottom: 28px;
+      min-height: 34px;
     }
     .stat-pill {
       display: flex;
       align-items: center;
-      gap: 7px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 20px;
-      padding: 5px 14px;
-      font-size: 12px;
+      padding: 6px 16px;
+      font-size: 13px;
       font-weight: 700;
-      color: rgba(255,255,255,0.65);
-      letter-spacing: 0.2px;
+      color: rgba(255,255,255,0.7);
     }
-    .stat-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .stat-dot.open      { background: #4ade80; box-shadow: 0 0 6px #4ade8088; }
-    .stat-dot.scheduled { background: #fbbf24; box-shadow: 0 0 6px #fbbf2488; }
-    .stat-dot.closed    { background: #64748b; }
+    .stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .stat-dot.open      { background: #3fb950; box-shadow: 0 0 8px #3fb95088; }
+    .stat-dot.scheduled { background: #d29922; box-shadow: 0 0 8px #d2992288; }
+    .stat-dot.closed    { background: #6e7681; }
 
     /* Edit button */
     .edit-btn {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      background: rgba(255,255,255,0.07);
-      color: rgba(255,255,255,0.65);
-      font-size: 12px;
+      gap: 8px;
+      background: rgba(56,139,253,0.1);
+      color: #58a6ff;
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.4px;
-      padding: 9px 20px;
+      padding: 9px 22px;
       border-radius: 8px;
       text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.13);
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      border: 1px solid rgba(56,139,253,0.25);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
     }
     .edit-btn:hover {
-      background: rgba(255,255,255,0.13);
-      color: #fff;
-      border-color: rgba(255,255,255,0.22);
+      background: rgba(56,139,253,0.18);
+      border-color: rgba(56,139,253,0.5);
+      color: #79b8ff;
     }
 
     /* ── Grid ── */
     .grid-wrap {
-      max-width: 1120px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 40px 28px 80px;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
+      gap: 16px;
     }
     @media (max-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 780px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
@@ -144,221 +140,225 @@
 
     /* ── Card ── */
     .card {
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
       text-decoration: none;
-      color: #1a2340;
+      color: var(--text);
       overflow: hidden;
       display: flex;
       flex-direction: column;
       opacity: 0;
-      animation: fadeUp 0.4s ease forwards;
-      transition: box-shadow 0.22s, transform 0.2s;
+      animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      transition: transform 0.22s cubic-bezier(0.22,1,0.36,1),
+                  border-color 0.22s,
+                  box-shadow 0.22s;
     }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(14px); }
+      from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .card:hover {
-      box-shadow: 0 20px 56px rgba(0,0,0,0.22);
-      transform: translateY(-6px);
+      transform: translateY(-7px);
+      border-color: var(--accent);
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+        0 28px 72px color-mix(in srgb, var(--accent) 16%, transparent),
+        0 8px 24px rgba(0,0,0,0.4);
     }
-    .card:hover .card-accent { height: 6px; }
 
-    /* Top accent bar */
-    .card-accent { height: 4px; flex-shrink: 0; transition: height 0.2s; }
+    .card-accent {
+      height: 3px;
+      background: var(--accent);
+      flex-shrink: 0;
+      transition: height 0.22s;
+    }
+    .card:hover .card-accent { height: 5px; }
 
     .card-body {
-      padding: 20px 22px 22px;
+      padding: 18px 20px 20px;
       display: flex;
       flex-direction: column;
       gap: 14px;
       flex: 1;
     }
 
-    /* Card header */
     .card-header {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
     }
     .card-name {
-      font-size: 23px;
+      font-size: 20px;
       font-weight: 900;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.4px;
+      color: var(--accent);
       line-height: 1.1;
     }
     .card-count {
       font-size: 10px;
       font-weight: 700;
-      padding: 3px 9px;
+      padding: 2px 8px;
       border-radius: 20px;
-      background: #f0f4ff;
-      color: #8899bb;
-      letter-spacing: 0.3px;
+      background: rgba(255,255,255,0.05);
+      color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.08);
       white-space: nowrap;
       flex-shrink: 0;
-      margin-top: 5px;
+      margin-top: 4px;
     }
 
     /* DTS block */
     .dts-block {
-      background: #f7f9ff;
-      border-radius: 9px;
-      padding: 10px 13px;
-      border-left: 3px solid transparent;
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--accent);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
     }
     .dts-block-text { flex: 1; min-width: 0; }
     .dts-num {
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 0.9px;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      color: #b8c4d8;
+      color: var(--text-dim);
       margin-bottom: 3px;
     }
     .dts-subject {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
-      color: #1a2340;
+      color: var(--text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* Status badge */
+    /* Status badges */
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 5px;
       font-size: 10px;
       font-weight: 700;
-      padding: 4px 10px;
+      padding: 3px 9px;
       border-radius: 20px;
-      letter-spacing: 0.4px;
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .badge-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      flex-shrink: 0;
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+    .badge.open      { background: rgba(63,185,80,0.12);  color: #3fb950; border: 1px solid rgba(63,185,80,0.25); }
+    .badge.open .badge-dot { background: #3fb950; animation: pulse-green 2s infinite; }
+    .badge.scheduled { background: rgba(210,153,34,0.12); color: #d29922; border: 1px solid rgba(210,153,34,0.25); }
+    .badge.scheduled .badge-dot { background: #d29922; }
+    .badge.closed    { background: rgba(110,118,129,0.1); color: #8b949e; border: 1px solid rgba(110,118,129,0.2); }
+    .badge.closed .badge-dot { background: #6e7681; }
+    .badge.none      { background: rgba(110,118,129,0.08); color: var(--text-dim); border: 1px solid rgba(110,118,129,0.12); }
+
+    @keyframes pulse-green {
+      0%, 100% { box-shadow: 0 0 4px #3fb95088; }
+      50%       { box-shadow: 0 0 10px #3fb950cc, 0 0 20px #3fb95044; }
     }
-    .badge.open      { background: #dcfce7; color: #15803d; }
-    .badge.open .badge-dot      { background: #4ade80; }
-    .badge.scheduled { background: #fef9c3; color: #92400e; }
-    .badge.scheduled .badge-dot { background: #fbbf24; }
-    .badge.closed    { background: #f1f5f9; color: #64748b; }
-    .badge.closed .badge-dot    { background: #94a3b8; }
-    .badge.none      { background: #f1f5f9; color: #b0bcd4; }
 
     /* ── Timeline ── */
     .timeline {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 12px 8px 10px;
       display: flex;
       align-items: flex-start;
-      background: #f7f9ff;
-      border-radius: 9px;
-      padding: 14px 10px 12px;
     }
     .tl-step {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       position: relative;
       min-width: 0;
     }
-    /* Connector line between steps */
     .tl-step:not(:last-child)::after {
       content: '';
       position: absolute;
       top: 4px;
-      left: calc(50% + 6px);
-      right: calc(-50% + 6px);
+      left: calc(50% + 7px);
+      right: calc(-50% + 7px);
       height: 1.5px;
-      background: #e0e8f4;
+      background: var(--card-border);
     }
     .tl-dot {
       width: 10px; height: 10px;
       border-radius: 50%;
-      border: 2px solid #dce5f0;
-      background: #fff;
+      border: 2px solid #30363d;
+      background: var(--card-bg);
       flex-shrink: 0;
       z-index: 1;
-      transition: border-color 0.2s, background 0.2s;
     }
     .tl-dot.filled {
-      border-color: currentColor;
-      background: currentColor;
+      border-color: var(--accent);
+      background: var(--accent);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 55%, transparent);
     }
     .tl-label {
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.7px;
-      color: #b8c4d8;
+      color: var(--text-dim);
       text-align: center;
     }
     .tl-value {
-      font-size: 11.5px;
+      font-size: 10.5px;
       font-weight: 700;
-      color: #1a2340;
+      color: var(--text);
       text-align: center;
     }
-    .tl-value.na {
-      color: #d1dae8;
-      font-weight: 400;
-    }
+    .tl-value.na { color: #30363d; font-weight: 400; }
 
-    /* Changes row */
+    /* Changes */
     .changes-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding-top: 12px;
-      border-top: 1px solid #f0f4ff;
+      border-top: 1px solid var(--card-border);
     }
     .changes-label {
-      font-size: 10px;
+      font-size: 9.5px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: #c0c8d8;
+      color: var(--text-dim);
       font-weight: 700;
     }
-    .changes-count {
-      font-size: 12px;
-      font-weight: 700;
-      color: #1a2340;
-    }
-    .changes-count.na { color: #ccc; font-weight: 400; }
+    .changes-value { font-size: 12px; font-weight: 700; color: var(--text); }
+    .changes-value.na { color: #30363d; font-weight: 400; }
 
-    /* Empty state */
+    /* Empty */
     .empty-state {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 22px 0 14px;
+      padding: 28px 0 18px;
       gap: 10px;
     }
-    .empty-icon { width: 30px; height: 30px; color: #d8e0ee; }
-    .empty-text { font-size: 12px; color: #c8d0dc; font-weight: 500; }
+    .empty-icon { width: 28px; height: 28px; color: #21262d; }
+    .empty-text { font-size: 12px; color: var(--text-dim); font-weight: 500; }
 
     /* Footer */
     footer {
       text-align: center;
       padding: 28px;
       font-size: 11px;
-      color: rgba(255,255,255,0.13);
+      color: var(--text-dim);
       letter-spacing: 0.6px;
+      border-top: 1px solid var(--card-border);
     }
   </style>
 </head>
@@ -388,23 +388,23 @@
 
   <script>
     const customers = [
-      { name: 'Tosaf',       slug: 'tosaf-54sfww',       color: '#4f46e5' },
-      { name: 'Elcam',       slug: 'elcam-bs3h7e',       color: '#0891b2' },
-      { name: 'Ytong',       slug: 'ytong-qunmvy',       color: '#059669' },
-      { name: 'Tama',        slug: 'tama-ij6mnp',        color: '#d97706' },
-      { name: 'Carmit',      slug: 'carmit-pys97q',      color: '#dc2626' },
-      { name: 'Motorad',     slug: 'motorad-4yrxcm',     color: '#7c3aed' },
-      { name: 'Rav-Bariach', slug: 'rav-bariach-0ii743', color: '#0d9488' },
-      { name: 'Polybid',     slug: 'polybid-g90djj',     color: '#ea580c' },
-      { name: 'Flex',        slug: 'flex-mestd8',        color: '#be185d' },
-      { name: 'Electra',     slug: 'electra-lg43m8',     color: '#1d4ed8' },
+      { name: 'Tosaf',       slug: 'tosaf-54sfww',       color: '#818cf8' },
+      { name: 'Elcam',       slug: 'elcam-bs3h7e',       color: '#38bdf8' },
+      { name: 'Ytong',       slug: 'ytong-qunmvy',       color: '#34d399' },
+      { name: 'Tama',        slug: 'tama-ij6mnp',        color: '#fbbf24' },
+      { name: 'Carmit',      slug: 'carmit-pys97q',      color: '#f87171' },
+      { name: 'Motorad',     slug: 'motorad-4yrxcm',     color: '#a78bfa' },
+      { name: 'Rav-Bariach', slug: 'rav-bariach-0ii743', color: '#2dd4bf' },
+      { name: 'Polybid',     slug: 'polybid-g90djj',     color: '#fb923c' },
+      { name: 'Flex',        slug: 'flex-mestd8',        color: '#f472b6' },
+      { name: 'Electra',     slug: 'electra-lg43m8',     color: '#60a5fa' },
     ];
 
     document.getElementById('ts').textContent = new Date().toLocaleDateString('he-IL', {
       day: '2-digit', month: '2-digit', year: 'numeric'
     });
 
-    const emptyIcon = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+    const emptyIcon = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"/>
     </svg>`;
 
@@ -422,67 +422,62 @@
       return str.length > len ? str.slice(0, len) + '…' : str;
     }
 
-    function tlStep(hasValue, label, value, color) {
-      const dotStyle = hasValue ? `style="color:${color}"` : '';
-      return `
-        <div class="tl-step">
-          <div class="tl-dot ${hasValue ? 'filled' : ''}" ${dotStyle}></div>
-          <div class="tl-label">${label}</div>
-          <div class="tl-value ${hasValue ? '' : 'na'}">${value || '—'}</div>
-        </div>`;
+    function tlStep(hasValue, label, value) {
+      return `<div class="tl-step">
+        <div class="tl-dot ${hasValue ? 'filled' : ''}"></div>
+        <div class="tl-label">${label}</div>
+        <div class="tl-value ${hasValue ? '' : 'na'}">${value || '—'}</div>
+      </div>`;
     }
 
     function renderCard(customer, data, idx) {
       const deployments = data?.deployments || [];
       const last  = deployments.length > 0 ? deployments[deployments.length - 1] : null;
       const count = deployments.length;
-      const delay = `animation-delay:${idx * 55}ms`;
 
-      const cardOpen = `
-        <a class="card" href="../${customer.slug}/" style="${delay}">
-          <div class="card-accent" style="background:${customer.color}"></div>
-          <div class="card-body">
-            <div class="card-header">
-              <span class="card-name" style="color:${customer.color}">${customer.name}</span>
-              <span class="card-count">${count} DTS</span>
-            </div>`;
+      const cardOpen = `<a class="card" href="../${customer.slug}/" style="--accent:${customer.color};animation-delay:${idx * 50}ms">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          <div class="card-header">
+            <span class="card-name">${customer.name}</span>
+            <span class="card-count">${count} DTS</span>
+          </div>`;
 
       if (!last) {
         return cardOpen + `
-            <div class="empty-state">${emptyIcon}<span class="empty-text">No deployments yet</span></div>
-          </div>
-        </a>`;
+          <div class="empty-state">${emptyIcon}<span class="empty-text">No deployments yet</span></div>
+        </div></a>`;
       }
 
       const ticketCount = last.ticketCount || (last.tickets ? last.tickets.length : 0);
+      const ticketLabel = ticketCount ? `${ticketCount} ${ticketCount === 1 ? 'ticket' : 'tickets'}` : '—';
 
       return cardOpen + `
-            <div class="dts-block" style="border-left-color:${customer.color}">
-              <div class="dts-block-text">
-                <div class="dts-num">DTS #${last.ticketNumber}</div>
-                <div class="dts-subject">${truncate(last.title, 42)}</div>
-              </div>
-              ${statusBadge(last.status)}
+          <div class="dts-block">
+            <div class="dts-block-text">
+              <div class="dts-num">DTS #${last.ticketNumber}</div>
+              <div class="dts-subject">${truncate(last.title, 36)}</div>
             </div>
-
-            <div class="timeline">
-              ${tlStep(!!last.createDate,  'Created', last.createDate,  customer.color)}
-              ${tlStep(!!last.deployDate,  'Deploy',  last.deployDate,  customer.color)}
-              ${tlStep(!!last.closeDate,   'Closed',  last.closeDate,   customer.color)}
-            </div>
-
-            <div class="changes-row">
-              <span class="changes-label">Changes in this DTS</span>
-              <span class="changes-count ${ticketCount ? '' : 'na'}">${ticketCount ? ticketCount + ' tickets' : '—'}</span>
-            </div>
+            ${statusBadge(last.status)}
           </div>
-        </a>`;
+
+          <div class="timeline">
+            ${tlStep(!!last.createDate, 'Created', last.createDate)}
+            ${tlStep(!!last.deployDate, 'Deploy',  last.deployDate)}
+            ${tlStep(!!last.closeDate,  'Closed',  last.closeDate)}
+          </div>
+
+          <div class="changes-row">
+            <span class="changes-label">Changes</span>
+            <span class="changes-value ${ticketCount ? '' : 'na'}">${ticketLabel}</span>
+          </div>
+        </div></a>`;
     }
 
     async function loadCustomer(customer, idx) {
       try {
         const res = await fetch(`../${customer.slug}/data.json?_=${Date.now()}`);
-        if (!res.ok) throw new Error('no data');
+        if (!res.ok) throw new Error();
         const data = await res.json();
         return { html: renderCard(customer, data, idx), data };
       } catch {
@@ -494,13 +489,11 @@
       const results = await Promise.all(customers.map((c, i) => loadCustomer(c, i)));
       document.getElementById('grid').innerHTML = results.map(r => r.html).join('');
 
-      // Compute stats from latest deployment per customer
       let open = 0, scheduled = 0, closed = 0;
       results.forEach(({ data }) => {
         const deps = data?.deployments;
         if (!deps?.length) return;
-        const last = deps[deps.length - 1];
-        const s = (last.status || '').toLowerCase();
+        const s = (deps[deps.length - 1].status || '').toLowerCase();
         if (s === 'open')           open++;
         else if (s === 'scheduled') scheduled++;
         else if (s === 'closed')    closed++;
