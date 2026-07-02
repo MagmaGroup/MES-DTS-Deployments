@@ -4,77 +4,166 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magma — DTS Internal Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Heebo', Arial, sans-serif;
-      background: #eef1f5;
+      background: #0b1120;
       color: #1a2340;
       min-height: 100vh;
     }
 
-    /* ── Header — matches DTS report page ── */
+    /* ── Header ── */
     .page-header {
-      background: #1a3a5c;
+      background: linear-gradient(150deg, #0d1830 0%, #152040 40%, #0d1830 100%);
       color: #fff;
-      padding: 36px 40px;
+      padding: 52px 40px 44px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
-    .page-header .brand {
-      font-size: 11px;
-      letter-spacing: 2px;
+
+    /* Dot grid */
+    .page-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.055) 1px, transparent 1px);
+      background-size: 26px 26px;
+      pointer-events: none;
+    }
+
+    /* Purple glow */
+    .page-header::after {
+      content: '';
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .header-inner { position: relative; z-index: 1; }
+
+    .brand {
+      font-size: 10px;
+      letter-spacing: 3.5px;
       text-transform: uppercase;
-      opacity: 0.5;
-      margin-bottom: 12px;
+      color: rgba(255,255,255,0.28);
+      margin-bottom: 18px;
     }
+
     .page-header h1 {
-      font-size: 30px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: -1.2px;
+      color: #fff;
+      margin-bottom: 8px;
     }
-    .page-header .subtitle {
+
+    .subtitle {
       font-size: 13px;
-      opacity: 0.45;
-      margin-top: 8px;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 28px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Stats pills */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+      min-height: 30px;
+    }
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.65);
       letter-spacing: 0.2px;
+    }
+    .stat-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .stat-dot.open      { background: #4ade80; box-shadow: 0 0 6px #4ade8088; }
+    .stat-dot.scheduled { background: #fbbf24; box-shadow: 0 0 6px #fbbf2488; }
+    .stat-dot.closed    { background: #64748b; }
+
+    /* Edit button */
+    .edit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.65);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      padding: 9px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.13);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .edit-btn:hover {
+      background: rgba(255,255,255,0.13);
+      color: #fff;
+      border-color: rgba(255,255,255,0.22);
     }
 
     /* ── Grid ── */
     .grid-wrap {
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 36px 28px 64px;
+      padding: 40px 28px 80px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 18px;
     }
 
     /* ── Card ── */
     .card {
       background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      border-radius: 14px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
       text-decoration: none;
       color: #1a2340;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: box-shadow 0.2s, transform 0.18s;
+      opacity: 0;
+      animation: fadeUp 0.4s ease forwards;
+      transition: box-shadow 0.22s, transform 0.2s;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
     .card:hover {
-      box-shadow: 0 10px 28px rgba(0,0,0,0.13);
-      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+      transform: translateY(-5px);
     }
 
-    .card-banner {
-      height: 5px;
-      flex-shrink: 0;
-    }
+    /* Top accent bar */
+    .card-accent { height: 4px; flex-shrink: 0; }
 
     .card-body {
       padding: 20px 22px 22px;
@@ -84,40 +173,50 @@
       flex: 1;
     }
 
-    /* Card header row */
+    /* Card header */
     .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-name {
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .card-count {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: #f0f4ff;
+      color: #8899bb;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    /* DTS block */
+    .dts-block {
+      background: #f7f9ff;
+      border-radius: 9px;
+      padding: 10px 13px;
+      border-left: 3px solid transparent;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
     }
-    .card-name {
-      font-size: 21px;
-      font-weight: 800;
-      letter-spacing: -0.3px;
-    }
-    .card-count {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 20px;
-      background: #eef1f5;
-      color: #999;
-      letter-spacing: 0.3px;
-    }
-
-    /* DTS title block */
-    .dts-block {
-      background: #f4f7fb;
-      border-radius: 6px;
-      padding: 10px 14px;
-      border-left: 4px solid transparent;
-    }
+    .dts-block-text { flex: 1; min-width: 0; }
     .dts-num {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.9px;
       text-transform: uppercase;
-      color: #aab;
+      color: #b8c4d8;
       margin-bottom: 3px;
     }
     .dts-subject {
@@ -129,42 +228,112 @@
       text-overflow: ellipsis;
     }
 
-    /* Divider + info grid */
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px 16px;
-      padding-top: 12px;
-      border-top: 1px solid #eef1f5;
-    }
-    .info-cell { display: flex; flex-direction: column; gap: 3px; }
-    .info-label {
+    /* Status badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       font-size: 10px;
-      color: #c0c8d4;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .badge.open      { background: #dcfce7; color: #15803d; }
+    .badge.open .badge-dot      { background: #4ade80; }
+    .badge.scheduled { background: #fef9c3; color: #92400e; }
+    .badge.scheduled .badge-dot { background: #fbbf24; }
+    .badge.closed    { background: #f1f5f9; color: #64748b; }
+    .badge.closed .badge-dot    { background: #94a3b8; }
+    .badge.none      { background: #f1f5f9; color: #b0bcd4; }
+
+    /* ── Timeline ── */
+    .timeline {
+      display: flex;
+      align-items: flex-start;
+      background: #f7f9ff;
+      border-radius: 9px;
+      padding: 14px 10px 12px;
+    }
+    .tl-step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      position: relative;
+      min-width: 0;
+    }
+    /* Connector line between steps */
+    .tl-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: calc(50% + 6px);
+      right: calc(-50% + 6px);
+      height: 1.5px;
+      background: #e0e8f4;
+    }
+    .tl-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 2px solid #dce5f0;
+      background: #fff;
+      flex-shrink: 0;
+      z-index: 1;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .tl-dot.filled {
+      border-color: currentColor;
+      background: currentColor;
+    }
+    .tl-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #b8c4d8;
+      text-align: center;
+    }
+    .tl-value {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1a2340;
+      text-align: center;
+    }
+    .tl-value.na {
+      color: #d1dae8;
+      font-weight: 400;
+    }
+
+    /* Changes row */
+    .changes-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid #f0f4ff;
+    }
+    .changes-label {
+      font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      font-weight: 600;
+      color: #c0c8d8;
+      font-weight: 700;
     }
-    .info-value {
-      font-size: 13px;
+    .changes-count {
+      font-size: 12px;
       font-weight: 700;
       color: #1a2340;
     }
-    .info-value.na { color: #ccc; font-weight: 400; }
-
-    /* Status badges */
-    .badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      letter-spacing: 0.4px;
-    }
-    .badge.open      { background: #dcfce7; color: #166534; }
-    .badge.scheduled { background: #fef3c7; color: #92400e; }
-    .badge.closed    { background: #f1f5f9; color: #64748b; }
-    .badge.none      { background: #f1f5f9; color: #c8d0dc; }
+    .changes-count.na { color: #ccc; font-weight: 400; }
 
     /* Empty state */
     .empty-state {
@@ -173,39 +342,36 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 18px 0 10px;
-      gap: 8px;
+      padding: 22px 0 14px;
+      gap: 10px;
     }
-    .empty-icon {
-      width: 32px;
-      height: 32px;
-      color: #d1d9e4;
-    }
-    .empty-text {
-      font-size: 13px;
-      color: #c8d0dc;
-      font-weight: 500;
-    }
+    .empty-icon { width: 30px; height: 30px; color: #d8e0ee; }
+    .empty-text { font-size: 12px; color: #c8d0dc; font-weight: 500; }
 
     /* Footer */
     footer {
       text-align: center;
-      padding: 20px;
+      padding: 28px;
       font-size: 11px;
-      color: #bbb;
-      letter-spacing: 0.5px;
+      color: rgba(255,255,255,0.13);
+      letter-spacing: 0.6px;
     }
   </style>
 </head>
 <body>
 
   <div class="page-header">
-    <div class="brand">Magma MES &mdash; Internal Use Only</div>
-    <h1>DTS Internal Dashboard</h1>
-    <div class="subtitle">Live deployment status across all customers &nbsp;&middot;&nbsp; <span id="ts"></span></div>
-    <div style="margin-top:16px;">
-      <a href="editor.html" style="display:inline-block;background:rgba(255,255,255,0.12);color:#fff;font-size:12px;font-weight:600;letter-spacing:0.5px;padding:7px 18px;border-radius:6px;text-decoration:none;border:1px solid rgba(255,255,255,0.25);transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">
-        &#9998; Edit DTS Content
+    <div class="header-inner">
+      <div class="brand">Magma MES &mdash; Internal Use Only</div>
+      <h1>DTS Dashboard</h1>
+      <div class="subtitle">Live deployment status across all customers &nbsp;&middot;&nbsp; <span id="ts"></span></div>
+      <div class="stats-bar" id="stats-bar"></div>
+      <a href="editor.html" class="edit-btn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Edit DTS Content
       </a>
     </div>
   </div>
@@ -241,9 +407,9 @@
     function statusBadge(status) {
       if (!status) return `<span class="badge none">—</span>`;
       const s = status.toLowerCase();
-      if (s === 'open')      return `<span class="badge open">Open</span>`;
-      if (s === 'scheduled') return `<span class="badge scheduled">Scheduled</span>`;
-      if (s === 'closed')    return `<span class="badge closed">Closed</span>`;
+      if (s === 'open')      return `<span class="badge open"><span class="badge-dot"></span>Open</span>`;
+      if (s === 'scheduled') return `<span class="badge scheduled"><span class="badge-dot"></span>Scheduled</span>`;
+      if (s === 'closed')    return `<span class="badge closed"><span class="badge-dot"></span>Closed</span>`;
       return `<span class="badge none">${status}</span>`;
     }
 
@@ -252,14 +418,25 @@
       return str.length > len ? str.slice(0, len) + '…' : str;
     }
 
-    function renderCard(customer, data) {
-      const deployments = data?.deployments || [];
-      const last = deployments.length > 0 ? deployments[deployments.length - 1] : null;
-      const count = deployments.length;
+    function tlStep(hasValue, label, value, color) {
+      const dotStyle = hasValue ? `style="color:${color}"` : '';
+      return `
+        <div class="tl-step">
+          <div class="tl-dot ${hasValue ? 'filled' : ''}" ${dotStyle}></div>
+          <div class="tl-label">${label}</div>
+          <div class="tl-value ${hasValue ? '' : 'na'}">${value || '—'}</div>
+        </div>`;
+    }
 
-      const top = `
-        <a class="card" href="../${customer.slug}/">
-          <div class="card-banner" style="background:${customer.color}"></div>
+    function renderCard(customer, data, idx) {
+      const deployments = data?.deployments || [];
+      const last  = deployments.length > 0 ? deployments[deployments.length - 1] : null;
+      const count = deployments.length;
+      const delay = `animation-delay:${idx * 55}ms`;
+
+      const cardOpen = `
+        <a class="card" href="../${customer.slug}/" style="${delay}">
+          <div class="card-accent" style="background:${customer.color}"></div>
           <div class="card-body">
             <div class="card-header">
               <span class="card-name" style="color:${customer.color}">${customer.name}</span>
@@ -267,57 +444,69 @@
             </div>`;
 
       if (!last) {
-        return top + `
-            <div class="empty-state">
-              ${emptyIcon}
-              <span class="empty-text">No deployments yet</span>
-            </div>
+        return cardOpen + `
+            <div class="empty-state">${emptyIcon}<span class="empty-text">No deployments yet</span></div>
           </div>
         </a>`;
       }
 
-      return top + `
+      const ticketCount = last.ticketCount || (last.tickets ? last.tickets.length : 0);
+
+      return cardOpen + `
             <div class="dts-block" style="border-left-color:${customer.color}">
-              <div class="dts-num">DTS #${last.ticketNumber}</div>
-              <div class="dts-subject">${truncate(last.title, 48)}</div>
+              <div class="dts-block-text">
+                <div class="dts-num">DTS #${last.ticketNumber}</div>
+                <div class="dts-subject">${truncate(last.title, 42)}</div>
+              </div>
+              ${statusBadge(last.status)}
             </div>
 
-            <div class="info-grid">
-              <div class="info-cell">
-                <span class="info-label">Status</span>
-                <span>${statusBadge(last.status)}</span>
-              </div>
-              <div class="info-cell">
-                <span class="info-label">Changes</span>
-                <span class="info-value ${last.ticketCount ? '' : 'na'}">${last.ticketCount ? last.ticketCount + ' tickets' : '—'}</span>
-              </div>
-              <div class="info-cell">
-                <span class="info-label">Created</span>
-                <span class="info-value ${last.createDate ? '' : 'na'}">${last.createDate || '—'}</span>
-              </div>
-              <div class="info-cell">
-                <span class="info-label">Deploy date</span>
-                <span class="info-value ${last.deployDate ? '' : 'na'}">${last.deployDate || '—'}</span>
-              </div>
+            <div class="timeline">
+              ${tlStep(!!last.createDate,  'Created', last.createDate,  customer.color)}
+              ${tlStep(!!last.deployDate,  'Deploy',  last.deployDate,  customer.color)}
+              ${tlStep(!!last.closeDate,   'Closed',  last.closeDate,   customer.color)}
+            </div>
+
+            <div class="changes-row">
+              <span class="changes-label">Changes in this DTS</span>
+              <span class="changes-count ${ticketCount ? '' : 'na'}">${ticketCount ? ticketCount + ' tickets' : '—'}</span>
             </div>
           </div>
         </a>`;
     }
 
-    async function loadCustomer(customer) {
+    async function loadCustomer(customer, idx) {
       try {
         const res = await fetch(`../${customer.slug}/data.json?_=${Date.now()}`);
         if (!res.ok) throw new Error('no data');
         const data = await res.json();
-        return renderCard(customer, data);
+        return { html: renderCard(customer, data, idx), data };
       } catch {
-        return renderCard(customer, null);
+        return { html: renderCard(customer, null, idx), data: null };
       }
     }
 
     async function init() {
-      const cards = await Promise.all(customers.map(loadCustomer));
-      document.getElementById('grid').innerHTML = cards.join('');
+      const results = await Promise.all(customers.map((c, i) => loadCustomer(c, i)));
+      document.getElementById('grid').innerHTML = results.map(r => r.html).join('');
+
+      // Compute stats from latest deployment per customer
+      let open = 0, scheduled = 0, closed = 0;
+      results.forEach(({ data }) => {
+        const deps = data?.deployments;
+        if (!deps?.length) return;
+        const last = deps[deps.length - 1];
+        const s = (last.status || '').toLowerCase();
+        if (s === 'open')           open++;
+        else if (s === 'scheduled') scheduled++;
+        else if (s === 'closed')    closed++;
+      });
+
+      const pills = [];
+      if (open)      pills.push(`<div class="stat-pill"><div class="stat-dot open"></div>${open} Open</div>`);
+      if (scheduled) pills.push(`<div class="stat-pill"><div class="stat-dot scheduled"></div>${scheduled} Scheduled</div>`);
+      if (closed)    pills.push(`<div class="stat-pill"><div class="stat-dot closed"></div>${closed} Closed</div>`);
+      document.getElementById('stats-bar').innerHTML = pills.join('');
     }
 
     init();
