@@ -281,13 +281,18 @@
       </div>
       <div class="detail-field">
         <label class="field-label">Deploy Date</label>
-        <input type="text" id="det-deploy" placeholder="DD.MM.YYYY" />
+        <input type="text" id="det-deploy" placeholder="DD.MM.YYYY" maxlength="10" />
       </div>
       <div class="detail-field">
         <label class="field-label">Close Date</label>
-        <input type="text" id="det-close" placeholder="DD.MM.YYYY" />
+        <input type="text" id="det-close" placeholder="DD.MM.YYYY" maxlength="10" />
       </div>
     </div>
+    <div style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <button class="btn btn-dark" id="btn-save-details">Save Details</button>
+      <span style="font-size:12px;color:#aab;">Updates status and dates only — ticket content unchanged.</span>
+    </div>
+    <div class="status-msg hidden" id="details-msg" style="margin-top:10px;margin-bottom:0;"></div>
   </div>
 
   <div class="locked-notice" id="locked-notice" style="display:none;">
@@ -346,11 +351,13 @@ const editorArea   = document.getElementById('editor-area');
 const saveBar      = document.getElementById('save-bar');
 const btnSave         = document.getElementById('btn-save');
 const btnCancel       = document.getElementById('btn-cancel');
+const btnSaveDetails  = document.getElementById('btn-save-details');
 const dtsDetailsPanel = document.getElementById('dts-details-panel');
 const detStatus       = document.getElementById('det-status');
 const detCreate       = document.getElementById('det-create');
 const detDeploy       = document.getElementById('det-deploy');
 const detClose        = document.getElementById('det-close');
+const detailsMsg      = document.getElementById('details-msg');
 const statusMsg    = document.getElementById('status-msg');
 const lockedNotice = document.getElementById('locked-notice');
 
@@ -533,6 +540,14 @@ detStatus.addEventListener('change', () => {
   if (detStatus.value === 'Open')                        detClose.value  = '';
 });
 
+const DATE_RE = /^\d{2}\.\d{2}\.\d{4}$/;
+
+function validateDate(val, label) {
+  if (!val) return null; // empty = allowed (null in data)
+  if (!DATE_RE.test(val)) return `${label}: invalid format — use DD.MM.YYYY`;
+  return null;
+}
+
 function collectDtsDetails() {
   return {
     status:     detStatus.value,
@@ -540,6 +555,67 @@ function collectDtsDetails() {
     closeDate:  detClose.value.trim()  || null,
   };
 }
+
+function validateDtsDetails() {
+  const d = detDeploy.value.trim();
+  const c = detClose.value.trim();
+  return validateDate(d, 'Deploy Date') || validateDate(c, 'Close Date');
+}
+
+function setDetailsMsg(type, msg) {
+  detailsMsg.className = `status-msg ${type}`;
+  detailsMsg.textContent = msg;
+}
+function clearDetailsMsg() {
+  detailsMsg.className = 'status-msg hidden';
+  detailsMsg.textContent = '';
+}
+
+// ── Save Details only ──
+btnSaveDetails.addEventListener('click', async () => {
+  clearDetailsMsg();
+  const err = validateDtsDetails();
+  if (err) { setDetailsMsg('err', err); return; }
+
+  btnSaveDetails.disabled = true;
+  setDetailsMsg('loading', 'Saving…');
+
+  try {
+    const meta    = collectDtsDetails();
+    const slug    = state.customerSlug;
+    const dep     = state.data.deployments[state.deploymentIdx];
+    const dataPath = `${slug}/data.json`;
+    const htmlPath = `${slug}/${dep.url || 'DTS-' + dep.ticketNumber + '.html'}`;
+
+    const [{ sha: dataSha }, htmlSha] = await Promise.all([
+      fetchJson(dataPath),
+      getFileSha(htmlPath),
+    ]);
+
+    const updated = JSON.parse(JSON.stringify(state.data));
+    updated.deployments[state.deploymentIdx].status     = meta.status;
+    updated.deployments[state.deploymentIdx].deployDate = meta.deployDate;
+    updated.deployments[state.deploymentIdx].closeDate  = meta.closeDate;
+    delete updated.deployments[state.deploymentIdx].contentLocked;
+
+    const customer     = customers.find(c => c.slug === slug);
+    const customerName = customer ? customer.name : slug;
+    const htmlContent  = generateHtml(updated.deployments[state.deploymentIdx], customerName);
+    const dtsNum       = dep.ticketNumber;
+
+    await commitFile(dataPath, JSON.stringify(updated, null, 2),
+      `Update DTS metadata: #${dtsNum}`, dataSha);
+    await commitFile(htmlPath, htmlContent,
+      `Regenerate DTS report: #${dtsNum}`, htmlSha);
+
+    state.data = updated;
+    setDetailsMsg('ok', `✓ Details saved — DTS #${dtsNum} updated.`);
+  } catch (err) {
+    setDetailsMsg('err', `Save failed: ${err.message}`);
+  }
+
+  btnSaveDetails.disabled = false;
+});
 
 // ── Editor rendering ──
 function renderEditor(dep) {
