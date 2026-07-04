@@ -783,7 +783,7 @@ function generateIndexHtml(data, customerName, accentColor) {
     const ddCell  = dep.deployDate ? dep.deployDate : '<span class="na">—</span>';
     const cdCell  = dep.closeDate  ? dep.closeDate  : '<span class="na">—</span>';
     return `          <tr>
-            <td><a class="ticket-link" href="${dtsLink}">DTS-${dep.ticketNumber}</a></td>
+            <td><a class="ticket-link" href="${dtsLink}" target="_blank">DTS-${dep.ticketNumber}</a></td>
             <td class="title-cell">${dep.title || ''}</td>
             <td><span class="badge ${cls}">${label}</span></td>
             <td>${dep.createDate || ''}</td>
@@ -804,9 +804,9 @@ function generateIndexHtml(data, customerName, accentColor) {
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Heebo', Arial, sans-serif; background: #eef2f8; color: #1a2340; min-height: 100vh; }
 
-    .page-header { background: linear-gradient(180deg, #161b22 0%, #0d1117 100%); border-bottom: 1px solid #21262d; padding: 44px 40px 40px; position: relative; overflow: hidden; }
-    .page-header::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 24px 24px; pointer-events: none; }
-    .page-header::after { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(56,139,253,0.07) 0%, transparent 60%); pointer-events: none; }
+    .page-header { background: linear-gradient(180deg, #060d1f 0%, #0a1628 100%); border-bottom: 1px solid #1a2744; padding: 32px 40px 28px; position: relative; overflow: hidden; }
+    .star-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .page-header::after { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(56,139,253,0.08) 0%, transparent 60%); pointer-events: none; }
 
     .header-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
     .header-left { flex: 1; }
@@ -840,12 +840,21 @@ function generateIndexHtml(data, customerName, accentColor) {
     .badge-closed    { background: #f1f5f9; color: #64748b; } .badge-closed::before { background: #94a3b8; }
     .empty { text-align: center; color: #c8d5e8; font-size: 0.9rem; padding: 64px 24px; }
   </style>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var c = document.querySelector('.star-canvas');
+    if (!c) return;
+    var ctx = c.getContext('2d');
+    function d() { c.width = c.offsetWidth; c.height = c.offsetHeight; for (var i = 0; i < 160; i++) { ctx.beginPath(); ctx.arc(Math.random()*c.width, Math.random()*c.height, Math.random()*1.3+0.2, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,'+(Math.random()*.55+.15).toFixed(2)+')'; ctx.fill(); } }
+    d(); window.addEventListener('resize', d);
+  });
+  </script>
 </head>
 <body>
   <div class="page-header">
+    <canvas class="star-canvas"></canvas>
     <div class="header-inner">
       <div class="header-left">
-        <a class="header-back" href="../magma-d8vn3k/">← Dashboard</a>
         <div class="header-pill" style="background:${color}">${customerName}</div>
         <div class="header-title">DTS Deployment History</div>
         <div class="header-sub">Magma MES releases for ${customerName}</div>
@@ -873,6 +882,7 @@ ${rows || '          <tr><td colspan="7" class="empty">No deployments yet.</td><
       </table>
     </div>
   </main>
+  <script>(function(){var c=document.querySelector('.star-canvas');if(!c)return;var ctx=c.getContext('2d');function d(){c.width=c.offsetWidth;c.height=c.offsetHeight;for(var i=0;i<160;i++){ctx.beginPath();ctx.arc(Math.random()*c.width,Math.random()*c.height,Math.random()*1.3+.2,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(Math.random()*.55+.15).toFixed(2)+')';ctx.fill();}}d();window.addEventListener('resize',d);})();</script>
 </body>
 </html>`;
 }
@@ -937,11 +947,16 @@ ${steps}
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1a2e; padding: 40px 24px; font-weight: 400; }
 .page { max-width: 860px; margin: 0 auto; }
-.header { background: #1a3a5c; color: #fff; border-radius: 10px 10px 0 0; padding: 32px 40px; }
+.header { background: linear-gradient(180deg, #060d1f 0%, #0a1628 100%); border: 1px solid #1a2744; color: #fff; border-radius: 10px 10px 0 0; padding: 32px 40px; position: relative; overflow: hidden; }
+.header-star-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.header-glow { position: absolute; top: -60px; left: 50%; transform: translateX(-50%); width: 700px; height: 350px; background: radial-gradient(ellipse, rgba(56,139,253,0.08) 0%, transparent 60%); pointer-events: none; }
+.header-body { position: relative; z-index: 1; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.header-main { flex: 1; }
+.header-deco { font-size: 4rem; line-height: 1; flex-shrink: 0; filter: drop-shadow(0 0 20px rgba(255,200,50,0.3)); }
 .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
 .header-brand { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; }
 .header-dts { font-size: 11px; opacity: 0.5; text-align: left; }
-.header h1 { font-size: 28px; font-weight: 500; line-height: 1.3; margin-bottom: 20px; }
+.header h1 { font-size: 28px; font-weight: 800; line-height: 1.3; margin-bottom: 20px; background: linear-gradient(135deg, #ffffff 30%, #8ab4d8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .header-meta { display: flex; gap: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); }
 .meta-block { display: flex; flex-direction: column; gap: 3px; }
 .meta-block .label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.5; }
@@ -984,13 +999,17 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 <div class="page">
 
   <div class="header">
-    <a class="back-link" href="./">← רשימת DTS</a>
-    <div class="header-top">
-      <div class="header-brand">Magma Group — פירוט תכולה וקריאות</div>
-      <div class="header-dts">Generated ${today}</div>
-    </div>
-    <h1>DTS #${dep.ticketNumber}<br>${esc(dep.title)}</h1>
-    <div class="header-meta">
+    <canvas class="header-star-canvas" id="hsc"></canvas>
+    <div class="header-glow"></div>
+    <div class="header-body">
+      <div class="header-main">
+        <a class="back-link" href="./">← רשימת DTS</a>
+        <div class="header-top">
+          <div class="header-brand">Magma Group — פירוט תכולה וקריאות</div>
+          <div class="header-dts">Generated ${today}</div>
+        </div>
+        <h1>DTS #${dep.ticketNumber}<br>${esc(dep.title)}</h1>
+        <div class="header-meta">
       <div class="meta-block">
         <span class="label">לקוח</span>
         <span class="value">${esc(customerName)}</span>
@@ -1012,6 +1031,9 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
         <span class="value">${tickets.length}</span>
       </div>
     </div>
+      </div><!-- /header-main -->
+      <div class="header-deco">🚀</div>
+    </div><!-- /header-body -->
   </div>
 
   <div class="card">
@@ -1036,6 +1058,7 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 
 </div>
 <div class="footer">Magma Group DTS Report &nbsp;·&nbsp; Generated ${today}</div>
+<script>(function(){var c=document.getElementById('hsc');if(!c)return;var ctx=c.getContext('2d');function d(){c.width=c.offsetWidth;c.height=c.offsetHeight;for(var i=0;i<160;i++){ctx.beginPath();ctx.arc(Math.random()*c.width,Math.random()*c.height,Math.random()*1.3+.2,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(Math.random()*.55+.15).toFixed(2)+')';ctx.fill();}}d();window.addEventListener('resize',d);})();</script>
 </body>
 </html>`;
 }
