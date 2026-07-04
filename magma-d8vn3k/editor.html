@@ -840,15 +840,6 @@ function generateIndexHtml(data, customerName, accentColor) {
     .badge-closed    { background: #f1f5f9; color: #64748b; } .badge-closed::before { background: #94a3b8; }
     .empty { text-align: center; color: #c8d5e8; font-size: 0.9rem; padding: 64px 24px; }
   </style>
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var c = document.querySelector('.star-canvas');
-    if (!c) return;
-    var ctx = c.getContext('2d');
-    function d() { c.width = c.offsetWidth; c.height = c.offsetHeight; for (var i = 0; i < 160; i++) { ctx.beginPath(); ctx.arc(Math.random()*c.width, Math.random()*c.height, Math.random()*1.3+0.2, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,'+(Math.random()*.55+.15).toFixed(2)+')'; ctx.fill(); } }
-    d(); window.addEventListener('resize', d);
-  });
-  </script>
 </head>
 <body>
   <div class="page-header">
@@ -882,7 +873,7 @@ ${rows || '          <tr><td colspan="7" class="empty">No deployments yet.</td><
       </table>
     </div>
   </main>
-  <script>(function(){var c=document.querySelector('.star-canvas');if(!c)return;var ctx=c.getContext('2d');function d(){c.width=c.offsetWidth;c.height=c.offsetHeight;for(var i=0;i<160;i++){ctx.beginPath();ctx.arc(Math.random()*c.width,Math.random()*c.height,Math.random()*1.3+.2,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(Math.random()*.55+.15).toFixed(2)+')';ctx.fill();}}d();window.addEventListener('resize',d);})();</script>
+  <script>(function(){var c=document.querySelector('.star-canvas');if(!c)return;var ctx=c.getContext('2d');function d(){c.width=c.offsetWidth;c.height=c.offsetHeight;for(var i=0;i<160;i++){ctx.beginPath();ctx.arc(Math.random()*c.width,Math.random()*c.height,Math.random()*1.3+.2,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(Math.random()*.55+.15).toFixed(2)+')';ctx.fill();}}d();window.addEventListener('resize',d);})();<\/script>
 </body>
 </html>`;
 }
@@ -1058,7 +1049,7 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 
 </div>
 <div class="footer">Magma Group DTS Report &nbsp;·&nbsp; Generated ${today}</div>
-<script>(function(){var c=document.getElementById('hsc');if(!c)return;var ctx=c.getContext('2d');function d(){c.width=c.offsetWidth;c.height=c.offsetHeight;for(var i=0;i<160;i++){ctx.beginPath();ctx.arc(Math.random()*c.width,Math.random()*c.height,Math.random()*1.3+.2,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(Math.random()*.55+.15).toFixed(2)+')';ctx.fill();}}d();window.addEventListener('resize',d);})();</script>
+<script>(function(){var c=document.getElementById('hsc');if(!c)return;var ctx=c.getContext('2d');function d(){c.width=c.offsetWidth;c.height=c.offsetHeight;for(var i=0;i<160;i++){ctx.beginPath();ctx.arc(Math.random()*c.width,Math.random()*c.height,Math.random()*1.3+.2,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(Math.random()*.55+.15).toFixed(2)+')';ctx.fill();}}d();window.addEventListener('resize',d);})();<\/script>
 </body>
 </html>`;
 }
@@ -1145,6 +1136,25 @@ function clearStatus() {
 function esc(s) {
   return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+// ── Star field (editor header) ──
+(function() {
+  const canvas = document.querySelector('.page-header .star-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  function drawStars() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+    for (let i = 0; i < 160; i++) {
+      ctx.beginPath();
+      ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*1.3+0.2, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(255,255,255,${(Math.random()*0.55+0.15).toFixed(2)})`;
+      ctx.fill();
+    }
+  }
+  drawStars();
+  window.addEventListener('resize', drawStars);
+})();
 </script>
 
 </body>
