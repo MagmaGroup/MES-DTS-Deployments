@@ -8,23 +8,9 @@
       "createDate": "29.06.2026",
       "deployDate": "07.08.2026",
       "closeDate": "10.08.2026",
-      "ticketCount": 6,
+      "ticketCount": 5,
       "url": "DTS-2664.html",
       "tickets": [
-        {
-          "number": "2476",
-          "subject": "יישום Minor station שקילות חול",
-          "assignee": "Ayala Rov",
-          "status": "New",
-          "isCR": true,
-          "description": "יישום תחנת Minor Station לתהליך שקילות חול.",
-          "testSteps": [
-            "לוודא שתחנת Minor Station הוקמה ומוגדרת נכון במערכת",
-            "לוודא שהתחנה מקושרת נכון לתהליך שקילות חול",
-            "לבצע שקילה מלאה בתחנה ולוודא שהנתונים נקלטים כראוי"
-          ],
-          "contentLocked": false
-        },
         {
           "number": "2360",
           "subject": "סריקת שקים - חול",
