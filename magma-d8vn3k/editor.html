@@ -203,6 +203,13 @@
       padding: 0 3px; flex-shrink: 0; transition: color 0.15s;
     }
     .btn-del-step:hover { color: #dc2626; }
+    .btn-del-ticket {
+      background: none; border: none; cursor: pointer; padding: 3px 5px;
+      font-size: 14px; line-height: 1; flex-shrink: 0; margin-top: 1px;
+      border-radius: 4px; transition: background 0.15s, color 0.15s;
+      color: #d0d9e4; opacity: 0.6;
+    }
+    .btn-del-ticket:hover { background: #fee2e2; color: #dc2626; opacity: 1; }
     .btn-add-step {
       background: none; border: 1.5px dashed #d0d9e4; border-radius: 6px;
       color: #8899aa; font-size: 12px; font-weight: 600;
@@ -678,6 +685,7 @@ function renderEditor(dep) {
         <span class="ticket-subject">${esc(t.subject)}</span>
         <span class="ticket-badges">${statusBadge}${crBadge}</span>
         <button class="lock-btn${isLocked ? ' locked' : ''}" title="${isLocked ? 'Locked — click to unlock' : 'Unlocked — click to lock'}" onclick="toggleLock(event, ${i})">${lockIcon}</button>
+        <button class="btn-del-ticket" title="Remove ticket from DTS" onclick="deleteTicket(event, ${i}, '${esc(String(t.number))}')">&#128465;</button>
         <span class="chevron">&#9660;</span>
       </div>
       <div class="ticket-body">
@@ -710,6 +718,18 @@ function autoLock(idx) {
   if (state.locks[idx]) return; // already locked
   state.locks[idx] = true;
   applyLockUI(idx);
+}
+
+function deleteTicket(event, idx, num) {
+  event.stopPropagation();
+  if (!confirm(`Remove ticket #${num} from this DTS?\n\nThis only takes effect when you click Save & Publish.`)) return;
+  const card = editorArea.querySelector(`.ticket-card[data-idx="${idx}"]`);
+  if (card) card.remove();
+  delete state.locks[idx];
+  // Show empty state if all tickets removed
+  if (!editorArea.querySelector('.ticket-card')) {
+    editorArea.innerHTML = '<div class="placeholder">All tickets removed. Save to commit changes.</div>';
+  }
 }
 
 function applyLockUI(idx) {
@@ -756,15 +776,18 @@ function renumberAll() {
 }
 
 // ── Collect edits ──
+// Reads from DOM cards — tickets deleted via deleteTicket() are excluded automatically.
 function collectEdits() {
-  return state.data.deployments[state.deploymentIdx].tickets.map((orig, i) => {
-    const card = editorArea.querySelector(`.ticket-card[data-idx="${i}"]`);
-    if (!card) return orig;
+  const allTickets = state.data.deployments[state.deploymentIdx].tickets;
+  return [...editorArea.querySelectorAll('.ticket-card')].map(card => {
+    const i    = parseInt(card.dataset.idx, 10);
+    const orig = allTickets[i];
+    if (!orig) return null;
     const desc  = card.querySelector('[data-field="description"]').value.trim();
     const steps = [...card.querySelectorAll(`.steps-list[data-steps="${i}"] input`)]
       .map(inp => inp.value.trim()).filter(Boolean);
     return { ...orig, description: desc, testSteps: steps, contentLocked: !!state.locks[i] };
-  });
+  }).filter(Boolean);
 }
 
 // ── HTML report generator ──
