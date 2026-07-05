@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>דוח DTS #2709 — Tosaf</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1a2e; padding: 40px 24px; font-weight: 400; }
+.page { max-width: 860px; margin: 0 auto; }
+.header { background: #1a3a5c; color: #fff; border-radius: 10px 10px 0 0; padding: 32px 40px; }
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.header-brand { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; }
+.header-dts { font-size: 11px; opacity: 0.5; text-align: left; }
+.header h1 { font-size: 28px; font-weight: 500; line-height: 1.3; margin-bottom: 20px; }
+.header-meta { display: flex; gap: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); }
+.meta-block { display: flex; flex-direction: column; gap: 3px; }
+.meta-block .label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.5; }
+.meta-block .value { font-size: 18px; font-weight: 700; }
+.card { background: #fff; padding: 32px 40px; border-bottom: 1px solid #e8ecf0; }
+.card:last-child { border-radius: 0 0 10px 10px; border-bottom: none; }
+.section-heading { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #1a3a5c; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #1a3a5c; display: inline-block; }
+.summary-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.summary-table th { background: #f0f4f8; color: #1a3a5c; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 12px 16px; border-bottom: 2px solid #d0d8e4; text-align: right; }
+.summary-table td { padding: 13px 16px; border-bottom: 1px solid #eef1f5; vertical-align: middle; }
+.summary-table tr:last-child td { border-bottom: none; }
+.summary-table tr:hover td { background: #f7f9fc; }
+.ticket-num-link { color: #1a3a5c; font-weight: 700; text-decoration: none; font-size: 14px; }
+.ticket-num-link:hover { text-decoration: underline; color: #1e4d7b; }
+.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.badge-pending { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+.badge-waiting  { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+.badge-done     { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.ticket-block { font-family: 'Heebo', Arial, sans-serif; margin-bottom: 28px; border: 1px solid #dde4ed; border-radius: 8px; overflow: hidden; }
+.ticket-block:last-child { margin-bottom: 0; }
+.ticket-block-header { background: linear-gradient(135deg, #1a3a5c 0%, #1e4d7b 100%); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid #4a9fd4; }
+.ticket-block-title { font-family: 'Heebo', Arial, sans-serif; font-size: 20px; font-weight: 800; color: #fff; }
+.ticket-block-num { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; font-weight: 700; color: #7eb8e8; margin-bottom: 4px; letter-spacing: 1px; }
+.ticket-block-owner { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; color: #a8c8e8; margin-top: 4px; }
+.ticket-block-body { padding: 20px 24px; }
+.block-label { font-family: 'Heebo', Arial, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; background: #1a3a5c; display: inline-block; padding: 3px 10px; border-radius: 3px; margin-bottom: 10px; margin-top: 20px; }
+.block-label:first-child { margin-top: 0; }
+.block-text { font-size: 15px; line-height: 1.8; color: #222; font-weight: 400; white-space: pre-line; }
+.test-steps { list-style: none; }
+.test-steps li { font-size: 15px; line-height: 1.7; color: #222; padding: 5px 0; display: flex; align-items: flex-start; gap: 10px; border-bottom: 1px solid #f5f5f5; }
+.test-steps li:last-child { border-bottom: none; }
+.test-steps li::before { content: "▸"; color: #1a3a5c; font-size: 13px; margin-top: 3px; flex-shrink: 0; font-weight: 700; }
+.footer { text-align: center; font-size: 11px; color: #aaa; margin-top: 24px; letter-spacing: 0.5px; }
+.back-link { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.85); text-decoration: none; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 20px; transition: background 0.2s; }
+.back-link:hover { background: rgba(255,255,255,0.22); color: #fff; }
+.meta-block .value-na { font-size: 18px; font-weight: 400; opacity: 0.35; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <a class="back-link" href="./">← רשימת DTS</a>
+    <div class="header-top">
+      <div class="header-brand">Magma Group — פירוט תכולה וקריאות</div>
+      <div class="header-dts">Generated 05.07.2026</div>
+    </div>
+    <h1>DTS #2709<br>לאחר אישור לקוח - תוסף - 07.07-ישראל DTS</h1>
+    <div class="header-meta">
+      <div class="meta-block">
+        <span class="label">לקוח</span>
+        <span class="value">Tosaf</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">נוצר</span>
+        <span class="value">05.07.2026</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">תאריך DTS</span>
+        <span class="value-na">—</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">נסגר</span>
+        <span class="value-na">—</span>
+      </div>
+      <div class="meta-block">
+        <span class="label">קריאות</span>
+        <span class="value">13</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-heading">תכולת DTS</div>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>שם קריאה</th>
+          <th>אחראי</th>
+          <th>סטטוס</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a class="ticket-num-link" href="#t1906">#1906</a></td>
+          <td>ניסוי הרחבה של איתור 101.BB.09</td>
+          <td>Shlomi Zion</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t1970">#1970</a></td>
+          <td>LAWER שלב ב - יישום</td>
+          <td>Ayala Rov</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2314">#2314</a></td>
+          <td>תקלה של עדכון נתונים בטופס בדיקות</td>
+          <td>Tamar Baranes</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2539">#2539</a></td>
+          <td>אין הדפסות בגלבוע</td>
+          <td>Ayala Rov</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2553">#2553</a></td>
+          <td>בנוגע לשקילות ידניות לחומרים של TG</td>
+          <td>Shlomi Zion</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t1915">#1915</a></td>
+          <td>חיבור סילו לעמדה לא זמין בלבנים</td>
+          <td>Israela Gilat</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t1971">#1971</a></td>
+          <td>אלגוריתם להמלצת שקילה - יישום</td>
+          <td>Ayala Rov</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t1990">#1990</a></td>
+          <td>התייעצות לגבי עבודה אוף ליין מול פריוריטי בזמני השבתות - רכבת/שאר תהליכים</td>
+          <td>Shlomi Zion</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2228">#2228</a></td>
+          <td>התייעצות לגבי איסוף נתוני מכונת אריזה</td>
+          <td>Eldan Menahem</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t1484">#1484</a></td>
+          <td>שוב בעיות ב ECO</td>
+          <td>Israela Gilat</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2055">#2055</a></td>
+          <td>הוספת בחירה משטח/ביגבג בטופס ריקון עמדה</td>
+          <td>Shlomi Zion</td>
+          <td><span class="badge badge-waiting">Waiting for Customer Testing</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2156">#2156</a></td>
+          <td>מקט טחון לא מגיע למס</td>
+          <td>Tamar Baranes</td>
+          <td><span class="badge badge-waiting">Waiting DTS</span></td>
+        </tr>
+        <tr>
+          <td><a class="ticket-num-link" href="#t2113">#2113</a></td>
+          <td>הצעת מחיר העברת המידע ל BI לטבלאות במקום VIEW</td>
+          <td>Ayala Rov</td>
+          <td><span class="badge badge-waiting">waiting For Client</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="section-heading">פירוט תכולה</div>
+
+    <div class="ticket-block" id="t1906">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#1906</div>
+          <div class="ticket-block-title">ניסוי הרחבה של איתור 101.BB.09</div>
+          <div class="ticket-block-owner">Shlomi Zion</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">לידיעתנו איתור הרתק של ביגבג 9 כיום ושל שאר הביגבגים הוא TR.01, האיתור הספציפי של 9 הוא BB.09 (BigBag Station). אנו מעוניינים להגדיר את האיתור הכללי TR.01 כאיתור המזין BB.09 — כיום בכל סריקת מסופון המשטח עובר בין TR.01 ל-BB.09, ואנו רוצים להעביר את המשטח ישירות ל-BB.09 כך שהמערכת תזהה מלאי במסופון לפי BB.09 ותשאיר אותו שם לאחר הסריקה. הלקוח לא הצליח לאתר היכן מגדירים זאת במיקומים.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>להגדיר את איתור TR.01 כמזין ישיר של תחנת BB.09</li>
+          <li>לבצע סריקת מסופון של משטח ב-TR.01 ולוודא שהוא נרשם כמלאי BB.09 ללא מעבר ביניים</li>
+          <li>לוודא שהמשטח נשאר רשום ב-BB.09 לאחר הסריקה</li>
+          <li>לבדוק שאין השפעה על תהליכי סריקה קיימים העוברים דרך TR.01</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t1970">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#1970</div>
+          <div class="ticket-block-title">LAWER שלב ב - יישום</div>
+          <div class="ticket-block-owner">Ayala Rov</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">נפתחה קריאה חדשה לצורכי הפיתוח. מקושר לקריאה 722.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>לבדוק את תכולת הפיתוח המקושרת לקריאה 722</li>
+          <li>לאמת שהפונקציונליות החדשה של LAWER שלב ב' פועלת כצפוי</li>
+          <li>לבדוק תרחישי קצה רלוונטיים לשלב זה</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2314">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2314</div>
+          <div class="ticket-block-title">תקלה של עדכון נתונים בטופס בדיקות</div>
+          <div class="ticket-block-owner">Tamar Baranes</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">בקשה לדבר עם עמרי שושן (0549992022) לבירור תקלת עדכון הנתונים בטופס הבדיקות. מצורף צילום מסך.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>ליצור קשר עם עמרי שושן לבירור פרטי התקלה</li>
+          <li>לשחזר את תקלת עדכון הנתונים בטופס הבדיקות</li>
+          <li>לוודא שהנתונים מתעדכנים כצפוי בטופס לאחר התיקון</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2539">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2539</div>
+          <div class="ticket-block-title">אין הדפסות בגלבוע</div>
+          <div class="ticket-block-owner">Ayala Rov</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">אין הדפסות בגלבוע — מה שנשלח מהמס לא מגיע למדפסת בכלל, אך הדפסה ישירה מהמדפסת תקינה. נדרשה בדיקה דחופה. נמצא כי תור ההדפסה נחסם עקב הדפסה כפולה של 4012 עותקים ב-06/10 בשעה 22:07; התור נוקה ותוגבל הדפסה חוזרת למקסימום 70 עותקים למניעת הישנות.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>לוודא שתור ההדפסה מהמס פנוי ואינו חסום</li>
+          <li>לבצע הדפסה מהמס ולוודא שהיא מגיעה למדפסת בגלבוע</li>
+          <li>לאמת שהוגדרה הגבלת מקסימום 70 עותקים להדפסה חוזרת</li>
+          <li>לבדוק שהדפסה ישירה מהמדפסת ממשיכה לפעול תקין</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2553">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2553</div>
+          <div class="ticket-block-title">בנוגע לשקילות ידניות לחומרים של TG</div>
+          <div class="ticket-block-owner">Shlomi Zion</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">לפני כשבועיים עבדה שקילה אוטומטית לכל משקל (כנראה לאחר DTS). מאז שקילות מעל 50 ק"ג מוגבלות — רק המשתמש הספציפי יכול לבחור משקל מעל 50 ק"ג, לא כל המשתמשים. נדרשת בדיקה של הנושא.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>לבדוק הרשאות משתמשים לבחירת משקל מעל 50 ק"ג</li>
+          <li>לאמת שכלל המשתמשים הרלוונטיים יכולים לבחור משקל מעל 50 ק"ג</li>
+          <li>לזהות אם שינוי DTS קודם השפיע על ההרשאה</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t1915">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#1915</div>
+          <div class="ticket-block-title">חיבור סילו לעמדה לא זמין בלבנים</div>
+          <div class="ticket-block-owner">Israela Gilat</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">בקשה להפעיל את פונקציונליות ה-"משחטה" (Mashcheta) באתר לבנים, בדומה למשחטה הקיימת באתר תוספים.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>להגדיר את פונקציונליות ה-Mashcheta באתר לבנים</li>
+          <li>להשוות את ההתנהגות להגדרה הקיימת באתר תוספים</li>
+          <li>לבדוק תרחיש מלא של חיבור סילו לעמדה לאחר ההפעלה</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t1971">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#1971</div>
+          <div class="ticket-block-title">אלגוריתם להמלצת שקילה - יישום</div>
+          <div class="ticket-block-owner">Ayala Rov</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">קריאה חדשה לצורכי יישום. מקושר לקריאה 818.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>לבדוק את תכולת הפיתוח המקושרת לקריאה 818</li>
+          <li>לאמת שאלגוריתם המלצת השקילה פועל כצפוי</li>
+          <li>לבדוק תרחישים מרכזיים של המלצת שקילה</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t1990">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#1990</div>
+          <div class="ticket-block-title">התייעצות לגבי עבודה אוף ליין מול פריוריטי בזמני השבתות - רכבת/שאר תהליכים</div>
+          <div class="ticket-block-owner">Shlomi Zion</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">פנייה ללילך לתיאום מול מי ניתן לקבוע פגישה בנושא עבודה אוף-ליין מול פריוריטי בזמני השבתות.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>לתאם פגישה עם הגורם הרלוונטי בנושא עבודה אוף-ליין מול פריוריטי</li>
+          <li>לתעד את המסקנות מהפגישה כתכולה לפיתוח עתידי</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2228">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2228</div>
+          <div class="ticket-block-title">התייעצות לגבי איסוף נתוני מכונת אריזה</div>
+          <div class="ticket-block-owner">Eldan Menahem</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">כיום מכונת אריזה משויכת למכונת אקסטרודר דרך מסופון ומוצגת במסך המכונה. הלקוח מעוניין לאסוף ולשמור נתוני מכונת האריזה (ערכים בפועל, טמפרטורה), שכן מכונת האריזה ומכונת האקסטרודר הן שתי ישויות נפרדות. המטרה: לשלוף פקע ולזהות איזו מכונת אריזה הייתה מעורבת ומהם הערכים שהתקבלו בה. כרגע אין תיעוד/שמירה של זה מעבר לתצוגה חיה. ההצעה הראשונית של הלקוח: העברת ערכי מכונת האריזה לבקר האקסטרודר באמצעות advanced tags, אך לא ידוע הטריגר או מיפוי המכונות.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>לבדוק אפשרות העברת ערכי מכונת האריזה לבקר מכונת האקסטרודר באמצעות advanced tags</li>
+          <li>להגדיר טריגר להעברת הנתונים בין מכונת האריזה למכונת האקסטרודר המתאימה</li>
+          <li>לוודא שניתן לשלוף פקע ולזהות את מכונת האריזה והערכים שהתקבלו בו</li>
+          <li>לבדוק תרחיש עם מספר מכונות אריזה ואקסטרודרים במקביל</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t1484">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#1484</div>
+          <div class="ticket-block-title">שוב בעיות ב ECO</div>
+          <div class="ticket-block-owner">Israela Gilat</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">הפניה 25F00132 עוברת אך לא מוצגת בעץ במסך ניהול הקונפיגורציה (מצורפים צילומי מסך). זוהה כי התהליך האוטומטי הסוגר ECO באופן אוטומטי הושבת בינתיים.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>לוודא שהתהליך האוטומטי לסגירת ECO נשאר מושבת כצפוי</li>
+          <li>ליצור הפניית ECO ולוודא שהיא מוצגת בעץ במסך ניהול הקונפיגורציה</li>
+          <li>לבדוק את הפניה הקיימת (25F00132) ולאמת הצגה תקינה</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2055">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2055</div>
+          <div class="ticket-block-title">הוספת בחירה משטח/ביגבג בטופס ריקון עמדה</div>
+          <div class="ticket-block-owner">Shlomi Zion</div>
+        </div>
+        <span class="badge badge-waiting">Waiting for Customer Testing</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">"ריקון עמדה" נבדקה יחד עם שלומי ציון ושלומי רחום — הדיווח עובד ומדווח משטח לאיתור שנבחר. נדרש להוסיף לטופס שדה חובה לבחירת משטח/ביגבג בעת ריקון עמדה (משקל ביגבג 2 ק"ג, משקל משטח 20 ק"ג). בנוסף נדרש להוסיף שם משתמש וסיסמה כדי לאפשר ביצוע לפי רמת הרשאה — ממנהל משמרת ומעלה, בדומה לטופס "ריקון מזין".</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>לפתוח את טופס "ריקון עמדה" ולוודא שמופיע שדה חובה לבחירת משטח/ביגבג</li>
+          <li>לבצע ריקון עמדה עם בחירת ביגבג (משקל 2 ק"ג) ולוודא דיווח תקין לאיתור שנבחר</li>
+          <li>לבצע ריקון עמדה עם בחירת משטח (משקל 20 ק"ג) ולוודא דיווח תקין</li>
+          <li>לוודא שהמערכת דורשת שם משתמש וסיסמה ומאפשרת ביצוע רק מרמת מנהל משמרת ומעלה</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2156">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2156</div>
+          <div class="ticket-block-title">מקט טחון לא מגיע למס</div>
+          <div class="ticket-block-owner">Tamar Baranes</div>
+        </div>
+        <span class="badge badge-waiting">Waiting DTS</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">(אין תיאור טקסטואלי בקריאה — התיאור מכיל תמונות בלבד, יש להוסיף פרטים ידנית)</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>לבדוק את זרימת הנתונים של המקט הטחון מהמכונה למערכת ה-MES</li>
+          <li>לוודא שהמקט הטחון מתקבל ונרשם במס כצפוי</li>
+          <li>לפנות לקריאה המקורית לקבלת פרטים נוספים מהצילומים המצורפים</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ticket-block" id="t2113">
+      <div class="ticket-block-header">
+        <div>
+          <div class="ticket-block-num">#2113</div>
+          <div class="ticket-block-title">הצעת מחיר העברת המידע ל BI לטבלאות במקום VIEW</div>
+          <div class="ticket-block-owner">Ayala Rov</div>
+        </div>
+        <span class="badge badge-waiting">waiting For Client</span>
+      </div>
+      <div class="ticket-block-body">
+        <div class="block-label">תיאור השינוי</div>
+        <div class="block-text">בקשת עזרה בהצעת מחיר להעברת נתוני ה-BI מ-VIEW לטבלאות.</div>
+        <div class="block-label">שלבי בדיקה</div>
+        <ul class="test-steps">
+          <li>להכין הצעת מחיר להעברת המידע ל-BI מ-VIEW לטבלאות</li>
+          <li>לשלוח את ההצעה ללקוח ולעקוב אחר אישור</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<div class="footer">Magma Group DTS Report &nbsp;·&nbsp; Generated 05.07.2026</div>
+</body>
+</html>
