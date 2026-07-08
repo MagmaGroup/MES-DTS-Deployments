@@ -1,0 +1,27 @@
+{
+  "customer": "Flex",
+  "deployments": [
+    {
+      "ticketNumber": "DTS_00001",
+      "title": "DTS_00001 # Flex # 08.07.2026",
+      "status": "Open",
+      "createDate": "08.07.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 1,
+      "url": "DTS_00001.html",
+      "tickets": [
+        {
+          "number": "2698",
+          "subject": "COPY MBOM",
+          "assignee": "Eldan Menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "שלום, כאשר אנחנו מבצעים COPY MBOM האופריישן מועתק והסאב אופריישן לא מועתק לעץ החדש וגם כל השייכות שעשינו בעץ הישן נעלם :(",
+          "testSteps": []
+        }
+      ]
+    }
+  ]
+}

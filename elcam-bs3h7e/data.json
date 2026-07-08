@@ -2,15 +2,14 @@
   "customer": "Elcam",
   "deployments": [
     {
-      "ticketNumber": "2670",
-      "title": "לאחר אישור לקוח - אלכם - 30.7.26 DTS",
+      "ticketNumber": "DTS_00002",
+      "title": "DTS_00002 # Elcam # 08.07.2026",
       "status": "Open",
-      "createDate": "30.06.2026",
+      "createDate": "08.07.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 4,
-      "url": "DTS-2670.html",
-      "contentLocked": false,
+      "ticketCount": 2,
+      "url": "DTS_00002.html",
       "tickets": [
         {
           "number": "2600",
@@ -18,12 +17,9 @@
           "assignee": "Israela Gilat",
           "status": "Waiting DTS",
           "isCR": true,
-          "description": "לא ניתן לבטל לוט במידה ופיצלו אותו ללוט אחר — הלוט המפוצל ממשיך להופיע כלוט מקור.",
-          "testSteps": [
-            "לפצל לוט ללוט אחר, ואז לנסות לבטל את הלוט המקורי",
-            "לוודא שהמערכת מאפשרת את הביטול (או מציגה טיפול מתאים) גם כשהלוט מופיע כלוט מקור",
-            "לבדוק שהיסטוריית הפיצול/הביטול נשמרת נכון בלוט"
-          ]
+          "contentLocked": false,
+          "description": "לא ניתן לבטל לוט במידה ופיצלו אותו ללוט אחר - משמע הוא מופיע כלוט מקור",
+          "testSteps": []
         },
         {
           "number": "2534",
@@ -31,38 +27,9 @@
           "assignee": "Eldan Menahem",
           "status": "Waiting DTS",
           "isCR": true,
-          "description": "חלוקת עלות המוצרים בהצגה במסך הקונסרן וב-NC ב-1,000. השינוי יבוצע גם ב-DB בכל הדוחות הרלוונטיים.",
-          "testSteps": [
-            "לבדוק הצגת עלות מוצר במסך הקונסרן ולוודא שהערך מחולק ב-1,000",
-            "לבדוק הצגת עלות מוצר במסך ה-NC ולוודא שהערך מחולק ב-1,000",
-            "להריץ דוח מה-DB ולוודא שהעלות המוצגת בדוחות תואמת לחלוקה החדשה"
-          ]
-        },
-        {
-          "number": "2542",
-          "subject": "בחירת לקוח לפקע",
-          "assignee": "Israela Gilat",
-          "status": "Waiting for Customer Testing",
-          "isCR": true,
-          "description": "במסך Release WO — במידה ומוגדר למק\"ט לקוח יחיד בלבד, יש לשייך אותו אוטומטית לפקע.",
-          "testSteps": [
-            "לפתוח מסך Release WO עבור מק\"ט עם לקוח יחיד מוגדר",
-            "לוודא שהמערכת משייכת אוטומטית את הלקוח לפקע",
-            "לבדוק מק\"ט עם יותר מלקוח אחד ולוודא שההתנהגות הקיימת (ללא שיוך אוטומטי) נשמרת"
-          ]
-        },
-        {
-          "number": "2363",
-          "subject": "אפשרות לביצוע בדיקה שבוטלה",
-          "assignee": "Eldan Menahem",
-          "status": "Waiting for Customer Testing",
-          "isCR": true,
-          "description": "יש להוסיף אפשרות לביצוע בדיקה שבוטלה.",
-          "testSteps": [
-            "לאתר בדיקה שבוטלה במערכת",
-            "לוודא שקיימת אפשרות לבצע אותה מחדש ולסמן אותה כבוצעה",
-            "לוודא שהסטטוס מתעדכן כראוי לאחר הביצוע"
-          ]
+          "contentLocked": false,
+          "description": "הי יש לחלק את עלות המוצרים בהצגה בקונסרן וNC ב-1,000. יש לבצע את השינוי גם ב-DB על כל הדוחות",
+          "testSteps": []
         }
       ]
     }

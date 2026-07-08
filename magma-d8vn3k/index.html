@@ -399,18 +399,37 @@
   <footer>Magma Group &copy; 2026</footer>
 
   <script>
-    const customers = [
-      { name: 'Tosaf',       slug: 'tosaf-54sfww',       color: '#818cf8' },
-      { name: 'Elcam',       slug: 'elcam-bs3h7e',       color: '#38bdf8' },
-      { name: 'Ytong',       slug: 'ytong-qunmvy',       color: '#34d399' },
-      { name: 'Tama',        slug: 'tama-ij6mnp',        color: '#fbbf24' },
-      { name: 'Carmit',      slug: 'carmit-pys97q',      color: '#f87171' },
-      { name: 'Motorad',     slug: 'motorad-4yrxcm',     color: '#a78bfa' },
-      { name: 'Rav-Bariach', slug: 'rav-bariach-0ii743', color: '#2dd4bf' },
-      { name: 'Polybid',     slug: 'polybid-g90djj',     color: '#fb923c' },
-      { name: 'Flex',        slug: 'flex-mestd8',        color: '#f472b6' },
-      { name: 'Electra',     slug: 'electra-lg43m8',     color: '#60a5fa' },
+    // Customer list is no longer hardcoded — it's read from account-map.json,
+    // which the DTS sync keeps up to date automatically (new customers get
+    // appended there the first time they have a Waiting-DTS ticket). Colors
+    // are assigned deterministically from a fixed palette so a given slug
+    // always gets the same color across page loads.
+    const palette = [
+      '#818cf8', '#38bdf8', '#34d399', '#fbbf24', '#f87171',
+      '#a78bfa', '#2dd4bf', '#fb923c', '#f472b6', '#60a5fa',
+      '#c084fc', '#4ade80', '#facc15', '#fb7185', '#22d3ee',
     ];
+
+    function hashSlug(slug) {
+      let h = 0;
+      for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) >>> 0;
+      return h;
+    }
+
+    async function loadCustomerList() {
+      try {
+        const res = await fetch(`../account-map.json?_=${Date.now()}`);
+        if (!res.ok) throw new Error();
+        const map = await res.json();
+        return (map.customers || []).map((c) => ({
+          name: c.name,
+          slug: c.slug,
+          color: palette[hashSlug(c.slug) % palette.length],
+        }));
+      } catch {
+        return [];
+      }
+    }
 
     document.getElementById('ts').textContent = new Date().toLocaleDateString('he-IL', {
       day: '2-digit', month: '2-digit', year: 'numeric'
@@ -467,7 +486,7 @@
       return cardOpen + `
           <div class="dts-block">
             <div class="dts-block-text">
-              <div class="dts-num">DTS #${last.ticketNumber}</div>
+              <div class="dts-num">${last.ticketNumber}</div>
               <div class="dts-subject">${truncate(last.title, 36)}</div>
             </div>
             ${statusBadge(last.status)}
@@ -498,6 +517,12 @@
     }
 
     async function init() {
+      const customers = await loadCustomerList();
+      if (!customers.length) {
+        document.getElementById('grid').innerHTML =
+          '<p style="color:#8b949e;font-size:13px;">Could not load account-map.json — no customers to show.</p>';
+        return;
+      }
       const results = await Promise.all(customers.map((c, i) => loadCustomer(c, i)));
       document.getElementById('grid').innerHTML = results.map(r => r.html).join('');
 
