@@ -47,7 +47,7 @@
         <div><div class="meta-col-label">Created</div><div class="meta-col-value">${cell(escapeHtml(dep.createDate))}</div></div>
         <div><div class="meta-col-label">Deploy Date</div><div class="meta-col-value ${dep.deployDate ? '' : 'na'}">${cell(escapeHtml(dep.deployDate))}</div></div>
         <div><div class="meta-col-label">Close Date</div><div class="meta-col-value ${dep.closeDate ? '' : 'na'}">${cell(escapeHtml(dep.closeDate))}</div></div>
-        <div><div class="meta-col-label">Changes</div><div class="meta-col-value">${count}</div></div>
+        <div><div class="meta-col-label">Tickets</div><div class="meta-col-value">${count}</div></div>
       </div>
       <div class="deploy-footer">
         <a class="view-link" href="${escapeHtml(dep.url)}" target="_blank">View report →</a>
@@ -56,21 +56,23 @@
   }
 
   function buildFilterBar(container, deployments, onFilter) {
-    const counts = { all: deployments.length, open: 0, scheduled: 0, closed: 0 };
+    // "Active" unifies Open + Scheduled — the two statuses that still need
+    // attention. Closed is its own filter since it's just historical record.
+    const counts = { active: 0, all: deployments.length, closed: 0 };
     deployments.forEach((d) => {
       const s = (d.status || '').toLowerCase();
-      if (counts[s] !== undefined) counts[s]++;
+      if (s === 'closed') counts.closed++;
+      else counts.active++;
     });
     const filters = [
+      { key: 'active', label: 'Active' },
       { key: 'all', label: 'All' },
-      { key: 'open', label: 'Open' },
-      { key: 'scheduled', label: 'Scheduled' },
       { key: 'closed', label: 'Closed' },
     ];
     container.innerHTML = filters
       .map(
         (f) =>
-          `<button type="button" class="filter-pill${f.key === 'all' ? ' active' : ''}" data-filter="${f.key}">${f.label} <span class="filter-count">${counts[f.key] || 0}</span></button>`
+          `<button type="button" class="filter-pill${f.key === 'active' ? ' active' : ''}" data-filter="${f.key}">${f.label} <span class="filter-count">${counts[f.key] || 0}</span></button>`
       )
       .join('');
     container.querySelectorAll('.filter-pill').forEach((btn) => {
@@ -121,10 +123,12 @@
     }
 
     function render(filter) {
-      const filtered =
-        filter && filter !== 'all'
-          ? deployments.filter((d) => (d.status || '').toLowerCase() === filter)
-          : deployments;
+      let filtered = deployments;
+      if (filter === 'active') {
+        filtered = deployments.filter((d) => (d.status || '').toLowerCase() !== 'closed');
+      } else if (filter === 'closed') {
+        filtered = deployments.filter((d) => (d.status || '').toLowerCase() === 'closed');
+      }
       if (!filtered.length) {
         list.innerHTML = `<div class="empty-block">🚀 ${
           deployments.length ? 'No deployments match this filter' : 'No deployments yet'
@@ -142,7 +146,7 @@
       }
     }
 
-    render('all');
+    render('active');
   }
 
   if (document.readyState === 'loading') {
