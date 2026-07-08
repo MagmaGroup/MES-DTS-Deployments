@@ -18,13 +18,28 @@ main {
 }
 
 .back-link {
-  display: inline-block;
-  font-size: 0.8rem;
-  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a2340;
   text-decoration: none;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  padding: 9px 18px;
+  background: #fff;
+  border: 1px solid #dbe4f3;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
-.back-link:hover { color: #1a2340; }
+.back-link:hover {
+  background: var(--accent, #38bdf8);
+  border-color: var(--accent, #38bdf8);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
 
 /* ── Report header ── */
 .report-header {
