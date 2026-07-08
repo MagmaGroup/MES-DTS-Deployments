@@ -217,34 +217,78 @@
       margin-top: 4px;
     }
 
-    /* DTS block */
-    .dts-block {
+    /* ── Ticket stub ── */
+    .ticket-stub {
       background: var(--bg);
-      border-radius: 8px;
-      padding: 10px 12px;
+      border-radius: 10px;
+      padding: 14px 16px 12px;
       border-left: 3px solid var(--accent);
+    }
+    .stub-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      margin-bottom: 12px;
     }
-    .dts-block-text { flex: 1; min-width: 0; }
-    .dts-num {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 3px;
-    }
-    .dts-subject {
-      font-size: 12.5px;
-      font-weight: 600;
+    .stub-id {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
       color: var(--text);
-      white-space: nowrap;
+    }
+    .stub-divider {
+      border-top: 1.5px dashed var(--card-border);
+      margin: 0 0 12px;
+    }
+    .stub-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 12px;
+      min-height: 20px;
+    }
+    .stub-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      font-size: 12.5px;
+      line-height: 1.4;
+      color: var(--text);
+      font-weight: 500;
+    }
+    .stub-item::before {
+      content: '';
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .stub-item span {
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
+    .stub-item.dim { color: var(--text-dim); font-weight: 400; }
+    .stub-item.dim::before { background: var(--text-dim); }
+    .stub-more {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 700;
+      padding-right: 11px;
+    }
+    .stub-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 11px;
+      border-top: 1px solid var(--card-border);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .stub-footer strong { color: var(--text); font-weight: 700; }
 
     /* Status badges */
     .badge {
@@ -272,79 +316,6 @@
       0%, 100% { box-shadow: 0 0 4px #3fb95088; }
       50%       { box-shadow: 0 0 10px #3fb950cc, 0 0 20px #3fb95044; }
     }
-
-    /* ── Timeline ── */
-    .timeline {
-      background: var(--bg);
-      border-radius: 8px;
-      padding: 12px 8px 10px;
-      display: flex;
-      align-items: flex-start;
-    }
-    .tl-step {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      position: relative;
-      min-width: 0;
-    }
-    .tl-step:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      top: 4px;
-      left: calc(50% + 7px);
-      right: calc(-50% + 7px);
-      height: 1.5px;
-      background: var(--card-border);
-    }
-    .tl-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      border: 2px solid #d1dae8;
-      background: var(--card-bg);
-      flex-shrink: 0;
-      z-index: 1;
-    }
-    .tl-dot.filled {
-      border-color: var(--accent);
-      background: var(--accent);
-      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 55%, transparent);
-    }
-    .tl-label {
-      font-size: 8.5px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      color: var(--text-dim);
-      text-align: center;
-    }
-    .tl-value {
-      font-size: 10.5px;
-      font-weight: 700;
-      color: var(--text);
-      text-align: center;
-    }
-    .tl-value.na { color: #c8d5e8; font-weight: 400; }
-
-    /* Changes */
-    .changes-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 12px;
-      border-top: 1px solid var(--card-border);
-    }
-    .changes-label {
-      font-size: 9.5px;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--text-dim);
-      font-weight: 700;
-    }
-    .changes-value { font-size: 12px; font-weight: 700; color: var(--text); }
-    .changes-value.na { color: #c8d5e8; font-weight: 400; }
 
     /* Empty */
     .empty-state {
@@ -453,14 +424,6 @@
       return str.length > len ? str.slice(0, len) + '…' : str;
     }
 
-    function tlStep(hasValue, label, value) {
-      return `<div class="tl-step">
-        <div class="tl-dot ${hasValue ? 'filled' : ''}"></div>
-        <div class="tl-label">${label}</div>
-        <div class="tl-value ${hasValue ? '' : 'na'}">${value || '—'}</div>
-      </div>`;
-    }
-
     function renderCard(customer, data, idx) {
       const deployments = data?.deployments || [];
       const last  = deployments.length > 0 ? deployments[deployments.length - 1] : null;
@@ -480,27 +443,30 @@
         </div></a>`;
       }
 
-      const ticketCount = last.ticketCount || (last.tickets ? last.tickets.length : 0);
-      const ticketLabel = ticketCount ? `${ticketCount} ${ticketCount === 1 ? 'ticket' : 'tickets'}` : '—';
+      const tickets = last.tickets || [];
+      const ticketCount = last.ticketCount || tickets.length;
+      const shown = tickets.slice(0, 3);
+      const extra = tickets.length - shown.length;
+
+      const listHtml = shown.length
+        ? shown.map(t => `<li class="stub-item"><span>${truncate(t.subject || t.number, 42)}</span></li>`).join('')
+        : `<li class="stub-item dim"><span>No ticket content yet</span></li>`;
 
       return cardOpen + `
-          <div class="dts-block">
-            <div class="dts-block-text">
-              <div class="dts-num">${last.ticketNumber}</div>
-              <div class="dts-subject">${truncate(last.title, 36)}</div>
+          <div class="ticket-stub">
+            <div class="stub-head">
+              <span class="stub-id">${last.ticketNumber}</span>
+              ${statusBadge(last.status)}
             </div>
-            ${statusBadge(last.status)}
-          </div>
-
-          <div class="timeline">
-            ${tlStep(!!last.createDate, 'Created', last.createDate)}
-            ${tlStep(!!last.deployDate, 'Deploy',  last.deployDate)}
-            ${tlStep(!!last.closeDate,  'Closed',  last.closeDate)}
-          </div>
-
-          <div class="changes-row">
-            <span class="changes-label">Changes</span>
-            <span class="changes-value ${ticketCount ? '' : 'na'}">${ticketLabel}</span>
+            <div class="stub-divider"></div>
+            <ul class="stub-list">
+              ${listHtml}
+              ${extra > 0 ? `<li class="stub-more">+${extra} more</li>` : ''}
+            </ul>
+            <div class="stub-footer">
+              <span>Created <strong>${last.createDate || '—'}</strong></span>
+              <span><strong>${ticketCount}</strong> ${ticketCount === 1 ? 'ticket' : 'tickets'}</span>
+            </div>
           </div>
         </div></a>`;
     }
