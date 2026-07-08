@@ -1,9 +1,11 @@
 // Shared DTS history renderer for every customer's index.html.
 // Reads ./data.json (same folder as the page), sorts deployments newest-first
-// by createDate, renders the table body, and wires up the status filter bar.
-// Table markup expected on the page:
+// by createDate, renders a deployment-card list, and wires up the toolbar
+// stats + status filter bar.
+// Markup expected on the page:
+//   <div class="toolbar-stats" id="toolbar-stats"></div>
 //   <div class="filter-bar" id="filter-bar"></div>
-//   <table>...<tbody id="dts-tbody"><tr><td colspan="7" class="empty">...</td></tr></tbody></table>
+//   <div class="deploy-list" id="dts-list" style="--accent:#xxxxxx"></div>
 (function () {
   function parseDate(d) {
     // Expects "DD.MM.YYYY". Returns a Date, or null if missing/unparseable.
@@ -17,9 +19,9 @@
 
   function badgeHtml(status) {
     const s = (status || '').toLowerCase();
-    if (s === 'open')      return '<span class="badge badge-open">Open</span>';
-    if (s === 'scheduled') return '<span class="badge badge-scheduled">Scheduled</span>';
-    if (s === 'closed')    return '<span class="badge badge-closed">Closed</span>';
+    if (s === 'open')      return '<span class="badge badge-open"><span class="badge-dot"></span>Open</span>';
+    if (s === 'scheduled') return '<span class="badge badge-scheduled"><span class="badge-dot"></span>Scheduled</span>';
+    if (s === 'closed')    return '<span class="badge badge-closed"><span class="badge-dot"></span>Closed</span>';
     return `<span class="badge">${status || '—'}</span>`;
   }
 
@@ -33,17 +35,24 @@
     return div.innerHTML;
   }
 
-  function rowHtml(dep) {
+  function cardHtml(dep) {
     const count = dep.ticketCount != null ? dep.ticketCount : (dep.tickets ? dep.tickets.length : 0);
-    return `<tr data-status="${(dep.status || '').toLowerCase()}">
-      <td><a class="ticket-link" href="${escapeHtml(dep.url)}" target="_blank">${escapeHtml(dep.ticketNumber)}</a></td>
-      <td class="title-cell">${escapeHtml(dep.title)}</td>
-      <td>${badgeHtml(dep.status)}</td>
-      <td>${cell(escapeHtml(dep.createDate))}</td>
-      <td>${cell(escapeHtml(dep.deployDate))}</td>
-      <td>${cell(escapeHtml(dep.closeDate))}</td>
-      <td>${count}</td>
-    </tr>`;
+    return `<div class="deploy-card" data-status="${(dep.status || '').toLowerCase()}">
+      <div class="deploy-card-head">
+        <span class="deploy-id">${escapeHtml(dep.ticketNumber)}</span>
+        ${badgeHtml(dep.status)}
+      </div>
+      <div class="deploy-title">${escapeHtml(dep.title)}</div>
+      <div class="deploy-meta">
+        <div><div class="meta-col-label">Created</div><div class="meta-col-value">${cell(escapeHtml(dep.createDate))}</div></div>
+        <div><div class="meta-col-label">Deploy Date</div><div class="meta-col-value ${dep.deployDate ? '' : 'na'}">${cell(escapeHtml(dep.deployDate))}</div></div>
+        <div><div class="meta-col-label">Close Date</div><div class="meta-col-value ${dep.closeDate ? '' : 'na'}">${cell(escapeHtml(dep.closeDate))}</div></div>
+        <div><div class="meta-col-label">Changes</div><div class="meta-col-value">${count}</div></div>
+      </div>
+      <div class="deploy-footer">
+        <a class="view-link" href="${escapeHtml(dep.url)}" target="_blank">View report →</a>
+      </div>
+    </div>`;
   }
 
   function buildFilterBar(container, deployments, onFilter) {
@@ -74,9 +83,10 @@
   }
 
   async function init() {
-    const tbody = document.getElementById('dts-tbody');
+    const list = document.getElementById('dts-list');
     const filterBar = document.getElementById('filter-bar');
-    if (!tbody) return;
+    const statsEl = document.getElementById('toolbar-stats');
+    if (!list) return;
 
     let deployments = [];
     try {
@@ -99,18 +109,29 @@
       return db - da;
     });
 
+    if (statsEl) {
+      if (deployments.length) {
+        const openCount = deployments.filter((d) => (d.status || '').toLowerCase() !== 'closed').length;
+        statsEl.innerHTML = `<strong>${deployments.length}</strong> deployment${deployments.length === 1 ? '' : 's'}${
+          openCount ? ` &middot; <strong>${openCount}</strong> active` : ''
+        }`;
+      } else {
+        statsEl.innerHTML = '';
+      }
+    }
+
     function render(filter) {
       const filtered =
         filter && filter !== 'all'
           ? deployments.filter((d) => (d.status || '').toLowerCase() === filter)
           : deployments;
       if (!filtered.length) {
-        tbody.innerHTML = `<tr><td colspan="7" class="empty">🚀 ${
+        list.innerHTML = `<div class="empty-block">🚀 ${
           deployments.length ? 'No deployments match this filter' : 'No deployments yet'
-        }</td></tr>`;
+        }</div>`;
         return;
       }
-      tbody.innerHTML = filtered.map(rowHtml).join('');
+      list.innerHTML = filtered.map(cardHtml).join('');
     }
 
     if (filterBar) {
