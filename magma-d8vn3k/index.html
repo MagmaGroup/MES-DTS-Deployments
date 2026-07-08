@@ -374,10 +374,14 @@
         const res = await fetch(`../account-map.json?_=${Date.now()}`);
         if (!res.ok) throw new Error();
         const map = await res.json();
+        // Prefer the customer's real brand color from account-map.json (the
+        // same color their own DTS page uses) so the two never disagree.
+        // Only hash-derive a color when none is on record yet — i.e. a
+        // freshly auto-created customer that hasn't been assigned one.
         return (map.customers || []).map((c) => ({
           name: c.name,
           slug: c.slug,
-          color: palette[hashSlug(c.slug) % palette.length],
+          color: c.color || palette[hashSlug(c.slug) % palette.length],
         }));
       } catch {
         return [];

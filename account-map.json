@@ -1,12 +1,12 @@
 {
-  "_comment": "Maps a known Zoho accountId to its deployment folder slug — purely a cache so repeat customers reuse their existing folder instead of a new one being created every run. One rule, no exceptions: accountId found here -> use the mapped slug. accountId not found here -> auto-create a fresh folder (new slug, data.json, index.html, dashboard entry) using accountName from list_accounts, then add the new mapping here. No manual resolution step for anyone.",
+  "_comment": "Maps a known Zoho accountId to its deployment folder slug and brand color — the single source of truth both the dashboard and the customer's own page should read from, so a customer's color is never derived two different ways in two different places. One rule, no exceptions: accountId found here -> use the mapped slug/color. accountId not found here -> auto-create a fresh folder (new slug, data.json, index.html, dashboard entry) using accountName from list_accounts and a hash-derived color, then add the new mapping here including that color.",
   "customers": [
-    { "name": "Ytong",       "slug": "ytong-qunmvy",       "accountId": "1041021000001133160" },
-    { "name": "Motorad",     "slug": "motorad-4yrxcm",     "accountId": "1041021000001133077" },
-    { "name": "Elcam",       "slug": "elcam-bs3h7e",       "accountId": "1041021000000287503" },
-    { "name": "Tama",        "slug": "tama-ij6mnp",        "accountId": "1041021000001133117" },
-    { "name": "Polybid",     "slug": "polybid-g90djj",     "accountId": "1041021000001133097" },
-    { "name": "Flex",        "slug": "flex-mestd8",        "accountId": "1041021000011101001" },
-    { "name": "Electra",     "slug": "electra-lg43m8",     "accountId": "1041021000001428679" }
+    { "name": "Ytong",       "slug": "ytong-qunmvy",       "accountId": "1041021000001133160", "color": "#059669" },
+    { "name": "Motorad",     "slug": "motorad-4yrxcm",     "accountId": "1041021000001133077", "color": "#7c3aed" },
+    { "name": "Elcam",       "slug": "elcam-bs3h7e",       "accountId": "1041021000000287503", "color": "#38bdf8" },
+    { "name": "Tama",        "slug": "tama-ij6mnp",        "accountId": "1041021000001133117", "color": "#d97706" },
+    { "name": "Polybid",     "slug": "polybid-g90djj",     "accountId": "1041021000001133097", "color": "#ea580c" },
+    { "name": "Flex",        "slug": "flex-mestd8",        "accountId": "1041021000011101001", "color": "#be185d" },
+    { "name": "Electra",     "slug": "electra-lg43m8",     "accountId": "1041021000001428679", "color": "#1d4ed8" }
   ]
 }
