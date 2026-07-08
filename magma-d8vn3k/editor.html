@@ -273,7 +273,7 @@
   <a class="back-link" href="./">← Dashboard</a>
   <div class="brand">Magma MES &mdash; Internal Use Only</div>
   <h1>DTS Content Editor</h1>
-  <div class="subtitle">Edit ticket descriptions and test steps &nbsp;&middot;&nbsp; Saves data.json + HTML to GitHub</div>
+  <div class="subtitle">Edit ticket descriptions and test steps &nbsp;&middot;&nbsp; Saves data.json to GitHub — pages render live from it</div>
   </div>
 </div>
 
@@ -341,7 +341,7 @@
   <div class="panel" id="save-bar" style="display:none;">
     <div class="save-bar">
       <span class="save-note">
-        Save commits <strong>data.json</strong> + regenerates the <strong>HTML report</strong>.<br>
+        Save commits <strong>data.json</strong> only — the history and report pages render live from it, no rebuild needed.<br>
         Locked tickets (&#128274;) are preserved on future Claude runs. Unlocked tickets (&#128275;) can be overwritten.
       </span>
       <div style="display:flex;gap:10px;flex-shrink:0;">
@@ -620,14 +620,8 @@ btnSaveDetails.addEventListener('click', async () => {
     const slug    = state.customerSlug;
     const dep     = state.data.deployments[state.deploymentIdx];
     const dataPath  = `${slug}/data.json`;
-    const htmlPath  = `${slug}/${dep.url || 'DTS-' + dep.ticketNumber + '.html'}`;
-    const indexPath = `${slug}/index.html`;
 
-    const [{ sha: dataSha }, htmlSha, indexSha] = await Promise.all([
-      fetchJson(dataPath),
-      getFileSha(htmlPath),
-      getFileSha(indexPath),
-    ]);
+    const { sha: dataSha } = await fetchJson(dataPath);
 
     const updated = JSON.parse(JSON.stringify(state.data));
     updated.deployments[state.deploymentIdx].status     = meta.status;
@@ -635,21 +629,13 @@ btnSaveDetails.addEventListener('click', async () => {
     updated.deployments[state.deploymentIdx].closeDate  = meta.closeDate;
     delete updated.deployments[state.deploymentIdx].contentLocked;
 
-    const customer     = customers.find(c => c.slug === slug);
-    const customerName = customer ? customer.name : slug;
-    const htmlContent  = generateHtml(updated.deployments[state.deploymentIdx], customerName);
-    const indexContent = generateIndexHtml(updated, customerName, customer ? customer.color : '#0d9488');
-    const dtsNum       = dep.ticketNumber;
+    const dtsNum = dep.ticketNumber;
 
     await commitFile(dataPath, JSON.stringify(updated, null, 2),
       `Update DTS metadata: #${dtsNum}`, dataSha);
-    await commitFile(htmlPath, htmlContent,
-      `Regenerate DTS report: #${dtsNum}`, htmlSha);
-    await commitFile(indexPath, indexContent,
-      `Regenerate index: #${dtsNum}`, indexSha);
 
     state.data = updated;
-    setDetailsMsg('ok', `✓ Details saved — DTS #${dtsNum} updated.`);
+    setDetailsMsg('ok', `✓ Details saved — DTS #${dtsNum} updated. Pages render live from data.json.`);
   } catch (err) {
     setDetailsMsg('err', `Save failed: ${err.message}`);
   }
@@ -790,7 +776,10 @@ function collectEdits() {
   }).filter(Boolean);
 }
 
-// ── HTML report generator ──
+// ── HTML report generation removed: index.html and DTS_XXXXX.html now render
+// live from data.json via assets/dts-history.js and assets/dts-report.js.
+// This editor only ever needs to commit data.json.
+/* REMOVED_GENERATOR_START
 function generateIndexHtml(data, customerName, accentColor) {
   const color = accentColor || '#0d9488';
   function idxBadge(status) {
@@ -1076,6 +1065,7 @@ body { font-family: 'Heebo', Arial, sans-serif; background: #eef1f5; color: #1a1
 </body>
 </html>`;
 }
+REMOVED_GENERATOR_END */
 
 // ── Cancel ──
 btnCancel.addEventListener('click', () => {
@@ -1098,18 +1088,12 @@ btnSave.addEventListener('click', async () => {
   try {
     const editedTickets = collectEdits();
 
-    // Get fresh shas for both files
     const slug      = state.customerSlug;
     const dep       = state.data.deployments[state.deploymentIdx];
-    const htmlFile  = dep.url || `DTS-${dep.ticketNumber}.html`;
     const dataPath  = `${slug}/data.json`;
-    const htmlPath  = `${slug}/${htmlFile}`;
 
-    setStatus('loading', 'Fetching current file versions…');
-    const [{ sha: dataSha }, htmlSha] = await Promise.all([
-      fetchJson(dataPath),
-      getFileSha(htmlPath),
-    ]);
+    setStatus('loading', 'Fetching current file version…');
+    const { sha: dataSha } = await fetchJson(dataPath);
 
     // Build updated data.json — contentLocked is now per-ticket only
     const updated = JSON.parse(JSON.stringify(state.data));
@@ -1122,23 +1106,13 @@ btnSave.addEventListener('click', async () => {
     // Remove stale deployment-level contentLocked if it exists from old format
     delete updated.deployments[state.deploymentIdx].contentLocked;
 
-    // Find customer name
-    const customer     = customers.find(c => c.slug === slug);
-    const customerName = customer ? customer.name : slug;
-
-    // Generate HTML
-    const htmlContent = generateHtml(updated.deployments[state.deploymentIdx], customerName);
-
     setStatus('loading', 'Committing data.json…');
     await commitFile(dataPath, JSON.stringify(updated, null, 2), `Edit DTS content: #${dep.ticketNumber}`, dataSha);
-
-    setStatus('loading', 'Committing HTML report…');
-    await commitFile(htmlPath, htmlContent, `Regenerate DTS report: #${dep.ticketNumber}`, htmlSha);
 
     state.data = updated;
     lockedNotice.style.display = 'block';
     clearStatus();
-    setStatus('ok', `✓ Saved — DTS #${dep.ticketNumber} updated. HTML report regenerated. GitHub Pages will refresh in ~1 minute.`);
+    setStatus('ok', `✓ Saved — DTS #${dep.ticketNumber} updated. The history and report pages render live from data.json — no rebuild needed.`);
 
   } catch (err) {
     setStatus('err', `Save failed: ${err.message}`);
