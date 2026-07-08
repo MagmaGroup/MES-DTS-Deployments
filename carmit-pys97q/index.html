@@ -173,6 +173,12 @@
       font-size: 0.95rem;
       padding: 64px 24px;
     }
+    /* ── Filters ── */
+    .filter-bar { display: flex; gap: 8px; padding: 16px 18px 0; flex-wrap: wrap; }
+    .filter-pill { font-family: 'Heebo', Arial, sans-serif; font-size: 0.72rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; border: 1px solid #e2e8f2; background: #fff; color: #64748b; cursor: pointer; transition: all 0.15s; }
+    .filter-pill:hover { border-color: #c8d5e8; }
+    .filter-pill.active { background: #1a2340; border-color: #1a2340; color: #fff; }
+    .filter-count { opacity: 0.65; margin-left: 2px; }
   </style>
 </head>
 <body>
@@ -190,6 +196,7 @@
 
   <main>
     <div class="table-wrap">
+      <div class="filter-bar" id="filter-bar"></div>
       <table>
         <thead>
           <tr>
@@ -202,12 +209,13 @@
             <th>Changes</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="dts-tbody">
           <tr><td colspan="7" class="empty">🚀 No deployments yet</td></tr>
         </tbody>
       </table>
     </div>
   </main>
 
+  <script src="../assets/dts-history.js"></script>
 </body>
 </html>
