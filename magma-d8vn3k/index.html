@@ -241,44 +241,26 @@
       border-top: 1.5px dashed var(--card-border);
       margin: 0 0 12px;
     }
-    .stub-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
+    .stub-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
       margin-bottom: 12px;
-      min-height: 20px;
     }
-    .stub-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 7px;
-      font-size: 12.5px;
-      line-height: 1.4;
-      color: var(--text);
-      font-weight: 500;
-    }
-    .stub-item::before {
-      content: '';
-      width: 4px; height: 4px;
-      border-radius: 50%;
-      background: var(--accent);
-      margin-top: 6px;
-      flex-shrink: 0;
-    }
-    .stub-item span {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .stub-item.dim { color: var(--text-dim); font-weight: 400; }
-    .stub-item.dim::before { background: var(--text-dim); }
-    .stub-more {
-      font-size: 11px;
-      color: var(--text-dim);
+    .meta-label {
+      font-size: 9.5px;
       font-weight: 700;
-      padding-right: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--text-dim);
+      margin-bottom: 3px;
     }
+    .meta-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .meta-value.na { color: var(--text-dim); font-weight: 400; }
     .stub-footer {
       display: flex;
       align-items: center;
@@ -426,8 +408,13 @@
 
     function renderCard(customer, data, idx) {
       const deployments = data?.deployments || [];
-      const last  = deployments.length > 0 ? deployments[deployments.length - 1] : null;
       const count = deployments.length;
+      // Only surface a deployment on the dashboard if it's still active (Open
+      // or Scheduled). A Closed one has nothing pending, so it falls back to
+      // the empty state here — its history still lives on the customer's own page.
+      const active = deployments.find(
+        (d) => (d.status || '').toLowerCase() === 'open' || (d.status || '').toLowerCase() === 'scheduled'
+      );
 
       const cardOpen = `<a class="card" href="../${customer.slug}/" target="_blank" style="--accent:${customer.color};animation-delay:${idx * 50}ms">
         <div class="card-accent"></div>
@@ -437,35 +424,34 @@
             <span class="card-count">${count} DTS</span>
           </div>`;
 
-      if (!last) {
+      if (!active) {
         return cardOpen + `
           <div class="empty-state">${emptyIcon}<span class="empty-text">No deployments yet</span></div>
         </div></a>`;
       }
 
-      const tickets = last.tickets || [];
-      const ticketCount = last.ticketCount || tickets.length;
-      const shown = tickets.slice(0, 3);
-      const extra = tickets.length - shown.length;
-
-      const listHtml = shown.length
-        ? shown.map(t => `<li class="stub-item"><span>${truncate(t.subject || t.number, 42)}</span></li>`).join('')
-        : `<li class="stub-item dim"><span>No ticket content yet</span></li>`;
+      const ticketCount = active.ticketCount || (active.tickets ? active.tickets.length : 0);
 
       return cardOpen + `
           <div class="ticket-stub">
             <div class="stub-head">
-              <span class="stub-id">${last.ticketNumber}</span>
-              ${statusBadge(last.status)}
+              <span class="stub-id">${active.ticketNumber}</span>
+              ${statusBadge(active.status)}
             </div>
             <div class="stub-divider"></div>
-            <ul class="stub-list">
-              ${listHtml}
-              ${extra > 0 ? `<li class="stub-more">+${extra} more</li>` : ''}
-            </ul>
+            <div class="stub-meta">
+              <div>
+                <div class="meta-label">Created</div>
+                <div class="meta-value">${active.createDate || '—'}</div>
+              </div>
+              <div>
+                <div class="meta-label">Deploy</div>
+                <div class="meta-value ${active.deployDate ? '' : 'na'}">${active.deployDate || '—'}</div>
+              </div>
+            </div>
             <div class="stub-footer">
-              <span>Created <strong>${last.createDate || '—'}</strong></span>
-              <span><strong>${ticketCount}</strong> ${ticketCount === 1 ? 'ticket' : 'tickets'}</span>
+              <span>Tickets</span>
+              <strong>${ticketCount}</strong>
             </div>
           </div>
         </div></a>`;
