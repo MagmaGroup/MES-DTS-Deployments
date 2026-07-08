@@ -7,6 +7,9 @@
     { "name": "Tama",        "slug": "tama-ij6mnp",        "accountId": "1041021000001133117", "color": "#d97706" },
     { "name": "Polybid",     "slug": "polybid-g90djj",     "accountId": "1041021000001133097", "color": "#ea580c" },
     { "name": "Flex",        "slug": "flex-mestd8",        "accountId": "1041021000011101001", "color": "#be185d" },
-    { "name": "Electra",     "slug": "electra-lg43m8",     "accountId": "1041021000001428679", "color": "#1d4ed8" }
+    { "name": "Electra",     "slug": "electra-lg43m8",     "accountId": "1041021000001428679", "color": "#1d4ed8" },
+    { "name": "Tosaf",       "slug": "tosaf-54sfww",       "accountId": "1041021000000287563", "color": "#818cf8" },
+    { "name": "Rav-Bariach", "slug": "rav-bariach-0ii743", "accountId": "1041021000000287543", "color": "#2dd4bf" },
+    { "name": "Carmit",      "slug": "carmit-pys97q",      "accountId": "1041021000003111001", "color": "#dc2626" }
   ]
 }
