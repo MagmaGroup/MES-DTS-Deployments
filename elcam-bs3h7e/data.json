@@ -4,9 +4,9 @@
     {
       "ticketNumber": "DTS_00002",
       "title": "DTS_00002 # Elcam # 08.07.2026",
-      "status": "Open",
+      "status": "Scheduled",
       "createDate": "08.07.2026",
-      "deployDate": null,
+      "deployDate": "20.08.2026",
       "closeDate": null,
       "ticketCount": 2,
       "url": "DTS_00002.html",
@@ -17,9 +17,12 @@
           "assignee": "Israela Gilat",
           "status": "Waiting DTS",
           "isCR": true,
-          "contentLocked": false,
+          "contentLocked": true,
           "description": "לא ניתן לבטל לוט במידה ופיצלו אותו ללוט אחר - משמע הוא מופיע כלוט מקור",
-          "testSteps": []
+          "testSteps": [
+            "יש לבחור לוט מפוצל",
+            "לבדוק פעולת ביטול"
+          ]
         },
         {
           "number": "2534",
