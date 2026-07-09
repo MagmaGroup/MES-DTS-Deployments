@@ -23,10 +23,12 @@
         }
       ],
       "checklist": {
-        "spot_check_items": true,
-        "check_udi_events": true,
-        "check_opc_items": true,
-        "check_audit_log": true
+        "spot_check_items": false,
+        "check_udi_events": false,
+        "check_opc_items": false,
+        "check_audit_log": false,
+        "familiarize_scope": false,
+        "prepare_sql": false
       }
     }
   ]
