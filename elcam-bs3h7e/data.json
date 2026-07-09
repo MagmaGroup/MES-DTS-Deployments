@@ -4,9 +4,9 @@
     {
       "ticketNumber": "DTS_00002",
       "title": "DTS_00002 # Elcam # 08.07.2026",
-      "status": "Open",
+      "status": "Scheduled",
       "createDate": "08.07.2026",
-      "deployDate": null,
+      "deployDate": "01.09.2026",
       "closeDate": null,
       "ticketCount": 2,
       "url": "DTS_00002.html",
