@@ -4,14 +4,18 @@ GitHub Pages hosting for Magma MES customer DTS deployment reports.
 
 **Base URL:** `https://magmagroup.github.io/MES-DTS-Deployments/`
 
+All DTS content lives in this repo — Zoho tickets are only the data *source*, never the
+content container. Deployment IDs are global and sequential (`DTS_00001`, `DTS_00002`, ...),
+shared across all customers.
+
 ---
 
 ## Internal Tools
 
 | Tool | URL | Purpose |
 |---|---|---|
-| Dashboard | `/magma-d8vn3k/` | Live status across all 10 customers |
-| Content Editor | `/magma-d8vn3k/editor.html` | Edit ticket descriptions and test steps |
+| Dashboard | `/magma-d8vn3k/` | Live status across every customer, populated dynamically from `account-map.json` |
+| Content Editor | `/magma-d8vn3k/editor.html` | Edit ticket descriptions, test steps, status, and dates |
 
 Both URLs are internal-only (security by obscurity — not linked publicly).
 
@@ -21,50 +25,54 @@ Both URLs are internal-only (security by obscurity — not linked publicly).
 
 ```
 MES-DTS-Deployments/
-├── magma-d8vn3k/           ← Internal tools (dashboard + editor)
-│   ├── index.html
-│   └── editor.html
-├── {customer-slug}/        ← One folder per customer
-│   ├── index.html          ← Customer DTS history page
-│   ├── data.json           ← Source of truth for DTS content
-│   └── DTS-{number}.html  ← Generated deployment report
+├── account-map.json         ← accountId → {slug, name, color} — single source of truth
+├── assets/
+│   ├── dts-history.js       ← renders every customer index.html from its data.json
+│   ├── dts-report.js        ← renders every DTS_#####.html report from its data.json
+│   └── dts-report.css       ← shared styling for report pages
+├── magma-d8vn3k/             ← Internal tools
+│   ├── index.html           ← Dashboard (dynamic customer list from account-map.json)
+│   └── editor.html          ← Content editor — writes data.json only, nothing else
+├── {customer-slug}/          ← One folder per customer (slug from account-map.json)
+│   ├── index.html            ← Customer DTS history page — renders live from data.json
+│   ├── data.json             ← Source of truth for this customer's DTS content
+│   └── DTS_#####.html        ← Generic report shell — same 12 lines for every deployment,
+│                                 renders live from data.json, never hand-edited
 └── README.md
 ```
 
+**Nothing renders HTML content directly.** `index.html` and every `DTS_#####.html` are static
+shells that fetch `data.json` client-side and render from it. Updating a customer's history or
+report page means writing `data.json` — never touching the `.html` files themselves (except the
+one-time creation of a new `DTS_#####.html` shell, which is always the same boilerplate).
+
 ### Customer Slugs
 
-| Customer | Slug |
-|---|---|
-| Tosaf | `tosaf-54sfww` |
-| Elcam | `elcam-bs3h7e` |
-| Ytong | `ytong-qunmvy` |
-| Tama | `tama-ij6mnp` |
-| Carmit | `carmit-pys97q` |
-| Motorad | `motorad-4yrxcm` |
-| Rav-Bariach | `rav-bariach-0ii743` |
-| Polybid | `polybid-g90djj` |
-| Flex | `flex-mestd8` |
-| Electra | `electra-lg43m8` |
+Defined in `account-map.json` — do not duplicate this list elsewhere. As of this writing:
+Tosaf, Elcam, Ytong, Tama, Carmit, Motorad, Rav-Bariach, Polybid, Flex, Electra.
+New customers are auto-created (new slug, folder, `data.json`, `index.html`, color, and
+`account-map.json` entry) the first time a ticket is seen for an unmapped `accountId`.
 
 ---
 
 ## data.json Schema
 
-`data.json` is the source of truth for all DTS content. It is read by the editor and by Claude when generating HTML reports.
+`data.json` is the single source of truth for a customer's DTS content. Both the dashboard,
+the customer history page, and every report page read it directly — nothing else does.
 
 ```json
 {
   "customer": "Rav-Bariach",
   "deployments": [
     {
-      "ticketNumber": "2695",
-      "title": "DTS title from Zoho",
+      "ticketNumber": "DTS_00003",
+      "title": "DTS_00003 # Rav-Bariach # 02.07.2026",
       "status": "Open",
       "createDate": "02.07.2026",
       "deployDate": null,
       "closeDate": null,
       "ticketCount": 2,
-      "url": "DTS-2695.html",
+      "url": "DTS_00003.html",
       "tickets": [
         {
           "number": "2554",
@@ -73,7 +81,7 @@ MES-DTS-Deployments/
           "status": "Waiting DTS",
           "isCR": false,
           "contentLocked": true,
-          "description": "Manually edited description — preserved by Claude.",
+          "description": "Manually edited description — preserved on next sync.",
           "testSteps": [
             "Step one",
             "Step two"
@@ -86,7 +94,7 @@ MES-DTS-Deployments/
           "status": "Waiting DTS",
           "isCR": true,
           "contentLocked": false,
-          "description": "Fetched from Zoho — Claude may update this.",
+          "description": "Fetched from Zoho — sync may update this.",
           "testSteps": []
         }
       ]
@@ -95,51 +103,46 @@ MES-DTS-Deployments/
 }
 ```
 
+`ticketNumber` and `url` always use the global `DTS_#####` ID — never the underlying Zoho
+ticket number. `title` follows the fixed format `{DTS_ID} # {CustomerName} # {createDate}`.
+
 ### `contentLocked` — Per-Ticket Content Lock
 
 `contentLocked` lives on each individual ticket, not on the deployment.
 
 | Value | Meaning |
 |---|---|
-| `false` | Claude fetches fresh description + test steps from Zoho on next report run |
-| `true` | Claude preserves existing description + test steps — only updates subject / assignee / status / isCR from Zoho |
+| `false` | The next DTS Sync run may refresh subject/assignee/status/description from Zoho |
+| `true` | Sync preserves the existing description + test steps — only status/subject/assignee sync from Zoho |
 
-**What sets `contentLocked: true`:**
-- Editing any field in the Content Editor (auto-locks on input)
-- Clicking the lock icon manually in the Content Editor
-- Running Option 6 (Edit DTS Content) via Claude
+**What sets `contentLocked: true`:** editing any field in the Content Editor (auto-locks on
+input), or clicking the lock icon manually in the Content Editor.
 
-**What sets `contentLocked: false`:**
-- Clicking the lock icon to unlock in the Content Editor
+**What sets `contentLocked: false`:** clicking the lock icon to unlock in the Content Editor.
 
 ---
 
 ## Workflow
 
 ```
-Option 4 (Populate DTS Ticket)
-  → Updates Zoho DTS ticket table
-  → No data.json write
+DTS Sync (Claude, task intake Option 4)
+  → Scans Zoho for "Waiting DTS" tickets across all customers
+  → New ticket, customer has an Open/Scheduled deployment → added to it
+  → New ticket, no Open/Scheduled deployment exists       → new DTS_##### created
+  → Ticket already present anywhere (any status)          → left untouched
+  → Writes data.json per affected customer, plus a new report shell for any new DTS_#####
+  → Git commits + pushes
 
-Option 5 (DTS Deploy Report)
-  → Reads data.json — checks contentLocked per ticket
-  → Locked tickets: use stored content, skip Zoho fetch
-  → Unlocked tickets: fetch description + test steps from Zoho
-  → Generates DTS-{number}.html
-  → Writes data.json with per-ticket contentLocked state
-  → Git commits + pushes both files
-
-Content Editor (browser)
-  → Reads data.json from GitHub API
-  → Edit description + test steps per ticket
-  → Any edit auto-locks that ticket
-  → Save commits data.json + regenerated HTML in one operation
-
-Option 6 (Edit DTS Content) — Claude
-  → Edit a specific ticket's content via Claude
-  → Sets contentLocked: true on that ticket
-  → Regenerates HTML + pushes
+Content Editor (browser, magma-d8vn3k/editor.html)
+  → Reads data.json via the GitHub API
+  → Edit description, test steps, status, or dates
+  → Any content edit auto-locks that ticket (contentLocked: true)
+  → Save commits data.json only — history and report pages update on next page load,
+    no HTML regeneration, no separate publish step
 ```
+
+There is no "generate report" or "update index" step anywhere in this workflow — both were
+retired once the pages moved to rendering live from `data.json`.
 
 ---
 
@@ -148,9 +151,10 @@ Option 6 (Edit DTS Content) — Claude
 1. Open `https://magmagroup.github.io/MES-DTS-Deployments/magma-d8vn3k/editor.html`
 2. Enter a GitHub Personal Access Token with `repo` write scope (saved in browser localStorage)
 3. Select customer → DTS → Load
-4. Edit descriptions and test steps per ticket
+4. Edit descriptions, test steps, status, or dates
 5. Lock icon (🔒 / 🔓) on each ticket — toggle manually or edit to auto-lock
-6. Click **Save & Publish** — commits `data.json` and regenerates the HTML report
+6. Click **Save & Publish** — commits `data.json`. The customer page and report page reflect
+   the change on their next load; nothing else needs to run.
 
 **GitHub PAT setup:** `github.com → Settings → Developer settings → Personal access tokens (classic)` → scope: `repo`
 
@@ -158,11 +162,19 @@ Option 6 (Edit DTS Content) — Claude
 
 ## Deployment
 
-All changes are served via GitHub Pages from the `master` branch. After any `git push`, GitHub Pages redeploys automatically (~1 minute).
+All changes are served via GitHub Pages from the `master` branch. After any `git push`, GitHub
+Pages redeploys automatically (~1 minute) — check
+`https://github.com/MagmaGroup/MES-DTS-Deployments/actions` if a page doesn't update as expected.
 
 ```bash
 cd "C:\Git Repos\MagmaGroup\MES-DTS-Deployments"
-git add {slug}/
-git commit -m "feat: DTS-{number} — {Customer}"
+git add {slug}/ account-map.json
+git commit -m "sync: DTS_##### — {Customer}"
 git push origin master
 ```
+
+**Known sandbox quirk:** if committing from an AI sandbox mount of this repo, verify file
+content via a direct read (not just the sandbox's own file listing) before committing — this
+repo's mount has intermittently served stale or null-padded file reads mid-session. When in
+doubt, run `git status` / open the file directly on the actual machine, not just through the
+sandbox.
