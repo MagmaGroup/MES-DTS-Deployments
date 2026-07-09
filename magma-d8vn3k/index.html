@@ -361,11 +361,17 @@
     }
     .cl-phase:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
     .cl-phase-title {
-      display: flex; align-items: center; gap: 7px; cursor: pointer; user-select: none;
+      display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;
       font-size: 10.5px; font-weight: 800; text-transform: uppercase;
       letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 8px;
+      padding: 4px 6px; margin: 0 -6px 8px; border-radius: 6px;
+      transition: background 0.12s;
     }
-    .cl-phase-chevron { font-size: 9px; color: var(--text-dim); transition: transform 0.15s; flex-shrink: 0; }
+    .cl-phase-title:hover { background: var(--bg); }
+    .cl-phase-chevron {
+      font-size: 13px; color: var(--text-dim); transition: transform 0.15s; flex-shrink: 0;
+      display: inline-block;
+    }
     .cl-phase.collapsed .cl-phase-chevron { transform: rotate(-90deg); }
     .cl-phase-name { flex: 1; }
     .cl-phase-check { color: #16a34a; font-weight: 900; font-size: 12px; }
@@ -375,8 +381,7 @@
       text-transform: none; letter-spacing: 0; cursor: pointer; padding: 0; text-decoration: underline;
       flex-shrink: 0;
     }
-    .cl-phase.situational .cl-phase-title { color: #b98900; }
-    .cl-phase-items { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+    .cl-phase-items { display: flex; flex-direction: column; }
     .cl-phase.collapsed .cl-phase-items { display: none; }
     .cl-item {
       display: flex; align-items: flex-start; gap: 9px;
