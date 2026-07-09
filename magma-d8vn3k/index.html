@@ -308,6 +308,74 @@
     }
     .stub-footer strong { color: var(--text); font-weight: 700; }
 
+    .card-name { text-decoration: none; }
+
+    /* ── Checklist progress bar (on card) ── */
+    .checklist-bar-wrap { cursor: pointer; margin-top: 12px; }
+    .checklist-bar-label {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 5px;
+      transition: color 0.15s;
+    }
+    .checklist-bar-wrap:hover .checklist-bar-label { color: var(--accent); }
+    .checklist-bar-frac { color: var(--text-muted); font-weight: 800; text-transform: none; letter-spacing: 0; }
+    .checklist-bar-track { height: 6px; border-radius: 4px; background: var(--card-border); overflow: hidden; }
+    .checklist-bar-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 70%, white), var(--accent));
+      transition: width 0.25s;
+    }
+
+    /* ── Checklist modal ── */
+    .cl-modal-backdrop {
+      position: fixed; inset: 0; background: rgba(6,10,20,0.6);
+      display: none; align-items: center; justify-content: center;
+      z-index: 50; padding: 24px; backdrop-filter: blur(2px);
+    }
+    .cl-modal-backdrop.open { display: flex; }
+    .cl-modal {
+      background: #fff; border-radius: 14px; width: 100%; max-width: 560px;
+      max-height: 85vh; overflow-y: auto; padding: 26px 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    .cl-modal-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; gap: 12px; }
+    .cl-modal-title { font-size: 17px; font-weight: 900; color: var(--text); }
+    .cl-modal-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+    .cl-modal-close { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--text-dim); line-height: 1; padding: 2px; }
+    .cl-modal-close:hover { color: var(--text); }
+    .cl-phase { margin-bottom: 16px; }
+    .cl-phase:last-child { margin-bottom: 0; }
+    .cl-phase-title {
+      font-size: 10.5px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 7px;
+    }
+    .cl-phase.situational .cl-phase-title { color: #b98900; }
+    .cl-item {
+      display: flex; align-items: flex-start; gap: 9px;
+      padding: 5px 0; font-size: 13.5px; color: var(--text);
+      cursor: pointer; line-height: 1.4;
+    }
+    .cl-item input { margin-top: 2px; cursor: pointer; flex-shrink: 0; }
+    .cl-item.checked { color: #16a34a; }
+    .cl-item.checked span { text-decoration: line-through; text-decoration-color: #86d9a4; }
+    .cl-token-row {
+      display: flex; gap: 8px; align-items: center; margin-bottom: 16px;
+      background: #f7f9fc; border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 12px;
+    }
+    .cl-token-row input {
+      flex: 1; border: 1px solid var(--card-border); border-radius: 6px;
+      padding: 6px 10px; font-size: 12px; font-family: monospace; outline: none;
+    }
+    .cl-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+    .cl-btn { border: none; border-radius: 6px; padding: 9px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .cl-btn-ghost { background: none; border: 1.5px solid var(--card-border); color: var(--text-muted); }
+    .cl-btn-save { background: #16a34a; color: #fff; }
+    .cl-btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+    .cl-status { font-size: 12px; margin-top: 10px; min-height: 16px; }
+    .cl-status.err { color: #dc2626; }
+    .cl-status.ok  { color: #16a34a; }
+
     /* Stats-bar pills (header) still use the plain .badge-less stat-pill/stat-dot
        classes defined above — the per-card status indicator is .status-ribbon. */
 
@@ -363,6 +431,29 @@
 
   <footer>Magma Group &copy; 2026</footer>
 
+  <div class="cl-modal-backdrop" id="cl-backdrop">
+    <div class="cl-modal">
+      <div class="cl-modal-head">
+        <div>
+          <div class="cl-modal-title" id="cl-title"></div>
+          <div class="cl-modal-sub" id="cl-sub"></div>
+        </div>
+        <button class="cl-modal-close" id="cl-close" type="button">&times;</button>
+      </div>
+      <div class="cl-token-row" id="cl-token-row" style="display:none;">
+        <span style="font-size:12px;color:#8899aa;white-space:nowrap;">GitHub Token</span>
+        <input type="password" id="cl-token-input" placeholder="ghp_..." autocomplete="off" spellcheck="false" />
+      </div>
+      <div id="cl-groups"></div>
+      <div class="cl-footer">
+        <button class="cl-btn cl-btn-ghost" id="cl-cancel" type="button">Close</button>
+        <button class="cl-btn cl-btn-save" id="cl-save" type="button">Save</button>
+      </div>
+      <div class="cl-status" id="cl-status"></div>
+    </div>
+  </div>
+
+  <script src="../assets/dts-checklist-data.js"></script>
   <script>
     // Customer list is no longer hardcoded — it's read from account-map.json,
     // which the DTS sync keeps up to date automatically (new customers get
@@ -422,6 +513,26 @@
       return str.length > len ? str.slice(0, len) + '…' : str;
     }
 
+    // slug -> { customer, data } — kept live so the checklist modal can read
+    // and update without a full page reload, and so a save can refresh just
+    // that one card's progress bar in place.
+    const stateBySlug = {};
+
+    function checklistProgressHtml(slug, depIdx, checklist) {
+      const required = window.DTS_CHECKLIST_REQUIRED || [];
+      const total = required.length;
+      const done = required.filter((it) => checklist && checklist[it.id]).length;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      return `
+        <div class="checklist-bar-wrap" data-slug="${slug}" data-depidx="${depIdx}" onclick="openChecklistModal(event, '${slug}', ${depIdx})">
+          <div class="checklist-bar-label">
+            <span>Checklist</span>
+            <span class="checklist-bar-frac">${done}/${total}</span>
+          </div>
+          <div class="checklist-bar-track"><div class="checklist-bar-fill" style="width:${pct}%"></div></div>
+        </div>`;
+    }
+
     function renderCard(customer, data, idx) {
       const deployments = data?.deployments || [];
       const count = deployments.length;
@@ -431,20 +542,21 @@
       const active = deployments.find(
         (d) => (d.status || '').toLowerCase() === 'open' || (d.status || '').toLowerCase() === 'scheduled'
       );
+      const activeIdx = active ? deployments.indexOf(active) : -1;
 
-      const cardOpen = `<a class="card" href="../${customer.slug}/" target="_blank" style="--accent:${customer.color};animation-delay:${idx * 50}ms">
+      const cardOpen = `<div class="card" style="--accent:${customer.color};animation-delay:${idx * 50}ms">
         ${active ? statusRibbon(active.status) : ''}
         <div class="card-accent"></div>
         <div class="card-body">
           <div class="card-header">
-            <span class="card-name">${customer.name}</span>
+            <a class="card-name" href="../${customer.slug}/" target="_blank">${customer.name}</a>
             <span class="card-count">${count} DTS</span>
           </div>`;
 
       if (!active) {
         return cardOpen + `
           <div class="empty-state">${emptyIcon}<span class="empty-text">No deployments yet</span></div>
-        </div></a>`;
+        </div>`;
       }
 
       const ticketCount = active.ticketCount || (active.tickets ? active.tickets.length : 0);
@@ -469,8 +581,9 @@
               <span>Tickets</span>
               <strong>${ticketCount}</strong>
             </div>
+            ${checklistProgressHtml(customer.slug, activeIdx, active.checklist)}
           </div>
-        </div></a>`;
+        </div>`;
     }
 
     async function loadCustomer(customer, idx) {
@@ -478,6 +591,7 @@
         const res = await fetch(`../${customer.slug}/data.json?_=${Date.now()}`);
         if (!res.ok) throw new Error();
         const data = await res.json();
+        stateBySlug[customer.slug] = { customer, data };
         return { html: renderCard(customer, data, idx), data };
       } catch {
         return { html: renderCard(customer, null, idx), data: null };
@@ -512,6 +626,173 @@
     }
 
     init();
+
+    // ── Checklist modal ──
+    // Reuses the same GitHub token localStorage key as the Content Editor
+    // (magma-d8vn3k/editor.html) — same origin, so if a token's already been
+    // entered there it just works here too, no separate setup.
+    const TOKEN_KEY = 'dts_editor_pat';
+    const REPO = 'MagmaGroup/MES-DTS-Deployments';
+
+    let clCurrent = null;          // { slug, depIdx }
+    let clWorkingChecklist = {};   // in-progress edits before Save
+
+    function isValidLookingToken(pat) {
+      return !!pat && (pat.startsWith('ghp_') || pat.startsWith('github_pat_') || pat.length >= 30);
+    }
+
+    function renderClGroups(checklist) {
+      clWorkingChecklist = { ...checklist };
+      const groupsHtml = window.DTS_CHECKLIST_PHASE_ORDER.map((phase) => {
+        const items = window.DTS_CHECKLIST_ITEMS.filter((it) => it.phase === phase);
+        const rows = items.map((it) => `
+          <label class="cl-item${clWorkingChecklist[it.id] ? ' checked' : ''}" data-item="${it.id}">
+            <input type="checkbox" ${clWorkingChecklist[it.id] ? 'checked' : ''} onchange="clToggleItem('${it.id}', this.checked)" />
+            <span>${it.label}</span>
+          </label>`).join('');
+        return `<div class="cl-phase${phase === 'situational' ? ' situational' : ''}">
+          <div class="cl-phase-title">${window.DTS_CHECKLIST_PHASE_LABELS[phase]}</div>
+          ${rows}
+        </div>`;
+      }).join('');
+      document.getElementById('cl-groups').innerHTML = groupsHtml;
+    }
+
+    function clToggleItem(id, checked) {
+      clWorkingChecklist[id] = checked;
+      const row = document.querySelector(`#cl-groups .cl-item[data-item="${id}"]`);
+      if (row) row.classList.toggle('checked', checked);
+    }
+
+    function openChecklistModal(event, slug, depIdx) {
+      event.stopPropagation();
+      const entry = stateBySlug[slug];
+      if (!entry) return;
+      const dep = entry.data.deployments[depIdx];
+      if (!dep) return;
+      clCurrent = { slug, depIdx };
+
+      document.getElementById('cl-title').textContent = `${dep.ticketNumber} — ${entry.customer.name}`;
+      document.getElementById('cl-sub').textContent = dep.title || '';
+
+      const savedPat = localStorage.getItem(TOKEN_KEY) || '';
+      const tokenRow = document.getElementById('cl-token-row');
+      const tokenInput = document.getElementById('cl-token-input');
+      if (isValidLookingToken(savedPat)) {
+        tokenRow.style.display = 'none';
+      } else {
+        tokenRow.style.display = 'flex';
+        tokenInput.value = savedPat;
+      }
+
+      renderClGroups(dep.checklist || {});
+
+      const statusEl = document.getElementById('cl-status');
+      statusEl.textContent = '';
+      statusEl.className = 'cl-status';
+      document.getElementById('cl-backdrop').classList.add('open');
+    }
+
+    function closeChecklistModal() {
+      document.getElementById('cl-backdrop').classList.remove('open');
+      clCurrent = null;
+    }
+
+    document.getElementById('cl-close').addEventListener('click', closeChecklistModal);
+    document.getElementById('cl-cancel').addEventListener('click', closeChecklistModal);
+    document.getElementById('cl-backdrop').addEventListener('click', (e) => {
+      if (e.target.id === 'cl-backdrop') closeChecklistModal();
+    });
+
+    // Minimal GitHub write client — mirrors editor.html's, kept separate so
+    // that file is never touched by this dashboard feature.
+    async function ghFetch(path, opts = {}) {
+      const pat = localStorage.getItem(TOKEN_KEY) || '';
+      const res = await fetch(`https://api.github.com/repos/${REPO}/${path}`, {
+        ...opts,
+        headers: {
+          Authorization: `token ${pat}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json',
+          ...(opts.headers || {}),
+        },
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || `GitHub API error ${res.status}`);
+      return body;
+    }
+    async function ghFetchJson(filePath) {
+      const resp = await ghFetch(`contents/${filePath}`);
+      const binaryStr = atob(resp.content.replace(/\s/g, ''));
+      const bytes = Uint8Array.from(binaryStr, (c) => c.charCodeAt(0));
+      const json = new TextDecoder().decode(bytes);
+      return { data: JSON.parse(json), sha: resp.sha };
+    }
+    function toBase64(str) {
+      const bytes = new TextEncoder().encode(str);
+      let binary = '';
+      bytes.forEach((b) => binary += String.fromCharCode(b));
+      return btoa(binary);
+    }
+    async function ghCommitFile(filePath, content, message, sha) {
+      const body = { message, content: toBase64(content) };
+      if (sha) body.sha = sha;
+      return ghFetch(`contents/${filePath}`, { method: 'PUT', body: JSON.stringify(body) });
+    }
+
+    document.getElementById('cl-save').addEventListener('click', async () => {
+      if (!clCurrent) return;
+      const statusEl = document.getElementById('cl-status');
+      const saveBtn = document.getElementById('cl-save');
+      const tokenRow = document.getElementById('cl-token-row');
+      const tokenInput = document.getElementById('cl-token-input');
+
+      if (tokenRow.style.display !== 'none') {
+        const pat = tokenInput.value.trim();
+        if (!isValidLookingToken(pat)) {
+          statusEl.textContent = 'Enter a valid GitHub token first.';
+          statusEl.className = 'cl-status err';
+          return;
+        }
+        localStorage.setItem(TOKEN_KEY, pat);
+      }
+
+      saveBtn.disabled = true;
+      statusEl.textContent = 'Saving…';
+      statusEl.className = 'cl-status';
+
+      try {
+        const { slug, depIdx } = clCurrent;
+        const dataPath = `${slug}/data.json`;
+        const { data: freshData, sha } = await ghFetchJson(dataPath);
+        freshData.deployments[depIdx].checklist = { ...clWorkingChecklist };
+        await ghCommitFile(
+          dataPath,
+          JSON.stringify(freshData, null, 2),
+          `Update DTS checklist: #${freshData.deployments[depIdx].ticketNumber}`,
+          sha
+        );
+
+        stateBySlug[slug].data = freshData;
+
+        const bar = document.querySelector(`.checklist-bar-wrap[data-slug="${slug}"][data-depidx="${depIdx}"]`);
+        if (bar) {
+          const required = window.DTS_CHECKLIST_REQUIRED;
+          const done = required.filter((it) => clWorkingChecklist[it.id]).length;
+          const pct = Math.round((done / required.length) * 100);
+          bar.querySelector('.checklist-bar-frac').textContent = `${done}/${required.length}`;
+          bar.querySelector('.checklist-bar-fill').style.width = `${pct}%`;
+        }
+
+        statusEl.textContent = '✓ Saved.';
+        statusEl.className = 'cl-status ok';
+        setTimeout(closeChecklistModal, 700);
+      } catch (err) {
+        statusEl.textContent = `Save failed: ${err.message}`;
+        statusEl.className = 'cl-status err';
+      }
+      saveBtn.disabled = false;
+    });
 
     // ── Star field ──
     (function() {

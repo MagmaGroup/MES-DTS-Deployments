@@ -127,19 +127,24 @@ input), or clicking the lock icon manually in the Content Editor.
 
 ### `checklist` — Pre-Deploy Checklist
 
-`checklist` lives on each deployment, keyed by item id (see `CHECKLIST_ITEMS` in
-`magma-d8vn3k/editor.html`) → `true`/`false`. Derived from the org's actual DTS procedure
-(Zoho ticket #2664's custom fields). Grouped into 5 phases: `prep`, `schedule`, `deploy`,
-`after`, and `situational` (optional context-dependent checks, never counted toward progress).
+`checklist` lives on each deployment, keyed by item id (see `assets/dts-checklist-data.js`,
+the single source of truth for the item list) → `true`/`false`. Derived from the org's actual
+DTS procedure (Zoho ticket #2664's custom fields). Grouped into 5 phases: `prep`, `schedule`,
+`deploy`, `after`, and `situational` (optional context-dependent checks, never counted toward
+progress).
 
-New deployments are created with `checklist: {}` (all items implicitly unchecked) by both
-the automated sync and the manual Claude flow. Missing keys default to unchecked — the
-Content Editor never requires backfilling old deployments.
+New deployments are created with `checklist: {}` (all items implicitly unchecked) by the
+automated sync. Missing keys default to unchecked — no backfilling required for old
+deployments.
 
-This is a **soft tracker, not a hard gate**: the Content Editor shows a warning banner if you
-change Status to `Scheduled` or `Closed` while required-phase items are still unchecked, but
-it never blocks the save. `Scheduled` requires `prep` + `schedule` phases; `Closed` requires
-`prep` + `schedule` + `deploy` + `after`.
+This is tracked from the **DTS Dashboard** (`magma-d8vn3k/index.html`), not the Content
+Editor. Each active-DTS card shows a compact progress bar (`done/total` required items,
+`situational` excluded from the count); clicking it opens a checklist modal right on the
+dashboard where a manager can tick items and save. Saving writes directly to that
+customer's `data.json` via the GitHub Contents API, reusing the same GitHub token
+(`dts_editor_pat` in `localStorage`) already used by the Content Editor — no separate
+token setup. It's a **visual tracker, not a hard gate**: nothing blocks Status changes or
+saves based on checklist completeness.
 
 ---
 
