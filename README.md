@@ -125,13 +125,20 @@ input), or clicking the lock icon manually in the Content Editor.
 ## Workflow
 
 ```
-DTS Sync (Claude, task intake Option 4)
-  → Scans Zoho for "Waiting DTS" tickets across all customers
+DTS Sync — automated (GitHub Actions, runs hourly, no developer machine needed)
+  → .github/workflows/dts-sync.yml, cron '0 * * * *' + manual "Run workflow" button
+  → .github/scripts/dts-sync.mjs scans Zoho for "Waiting DTS" tickets across all customers
   → New ticket, customer has an Open/Scheduled deployment → added to it
   → New ticket, no Open/Scheduled deployment exists       → new DTS_##### created
   → Ticket already present anywhere (any status)          → left untouched
-  → Writes data.json per affected customer, plus a new report shell for any new DTS_#####
-  → Git commits + pushes
+  → Writes data.json per affected customer, plus a new report shell for any new DTS_#####,
+    plus a backfilled index.html for any known customer that never had one yet
+  → Commits + pushes automatically, then explicitly triggers the Pages deploy workflow
+    (a bot-token push does not fire GitHub's own push-triggered workflows — see note below)
+
+DTS Sync — manual (Claude, task intake Option 4)
+  → Same logic, run on demand from a chat session instead of waiting for the hourly cron
+  → Useful for testing, or syncing immediately after a status change instead of waiting
 
 Content Editor (browser, magma-d8vn3k/editor.html)
   → Reads data.json via the GitHub API
@@ -143,6 +150,36 @@ Content Editor (browser, magma-d8vn3k/editor.html)
 
 There is no "generate report" or "update index" step anywhere in this workflow — both were
 retired once the pages moved to rendering live from `data.json`.
+
+---
+
+## Automated Sync (GitHub Actions)
+
+`.github/workflows/dts-sync.yml` runs the sync unattended, every hour, on GitHub's own
+infrastructure — it does not depend on any developer's computer being on.
+
+**One-time setup required:** add 3 repository secrets under
+`Settings → Secrets and variables → Actions`:
+
+| Secret | Value |
+|---|---|
+| `ZOHO_CLIENT_ID` | Same value used by the `ZOHO-DTS-MCP` server's local `.env` |
+| `ZOHO_CLIENT_SECRET` | Same value used by the `ZOHO-DTS-MCP` server's local `.env` |
+| `ZOHO_REFRESH_TOKEN` | Same value used by the `ZOHO-DTS-MCP` server's local `.env` |
+
+**Manual trigger:** Actions tab → **DTS Sync** → **Run workflow** — runs immediately instead
+of waiting for the next hourly tick.
+
+**Why it explicitly triggers the Pages deploy:** GitHub does not let a push made with the
+default `GITHUB_TOKEN` fire other workflows' `on: push` triggers (anti-loop protection). Since
+the sync commit uses that token, `deploy.yml` would never see it — so the last step of
+`dts-sync.yml` runs `gh workflow run deploy.yml --ref master` directly whenever a sync actually
+changed something. A normal `git push` from a developer's machine doesn't have this problem
+and deploys automatically as usual.
+
+**Script location:** `.github/scripts/dts-sync.mjs` — zero npm dependencies (uses Node's
+built-in `fetch`), implements the same sync rule documented in the org template's
+`MagmaMES_Skill_DTSSync.md`.
 
 ---
 
