@@ -23,7 +23,7 @@
         }
       ],
       "checklist": {
-        "spot_check_items": false,
+        "spot_check_items": true,
         "check_udi_events": false,
         "check_opc_items": false,
         "check_audit_log": false,
