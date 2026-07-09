@@ -8,7 +8,7 @@
       "createDate": "08.07.2026",
       "deployDate": "01.09.2026",
       "closeDate": null,
-      "ticketCount": 2,
+      "ticketCount": 4,
       "url": "DTS_00002.html",
       "tickets": [
         {
@@ -32,6 +32,26 @@
           "testSteps": [
             "להריץ את הדוח לאחר התיקון"
           ]
+        },
+        {
+          "number": "2717",
+          "subject": "מסך של דגימות עיקור  בדיקות הוכפלו ",
+          "assignee": "Tamar Baranes",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "בוקרטוב , עדכנתי אתמול את המסך להוצאת דגימות לעיקור , והששורות הוכפלו חוץ ממה שהכנסתי חדש ,פעם אחרונה עכדנתי הסתדר, צריך בבקשה למוק שורות כפולות ,מצורף תמונת מסך במסך של הבטחת איכות ללוט",
+          "testSteps": []
+        },
+        {
+          "number": "2658",
+          "subject": "משתנים - שנעלמים מהמפרט בדיקות ",
+          "assignee": "Tamar Baranes",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "היי , כל המשתנים\nוהתכונות שהתבקש  לקשור לCOA יצרה בעיה רצינית !התבקשתי לעדכן\nשני מפרטים של המזרקים על יד המהנדסת , והשדות שיש במפרט ריקים כל מה שקשור משויך\nלCOA נעלם , וMES לא נותן כמובן לסגור את העדכון בווריאנטיםאיך מתקדמים\nמפה ?",
+          "testSteps": []
         }
       ]
     }
