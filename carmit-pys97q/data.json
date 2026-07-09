@@ -1,4 +1,27 @@
 {
   "customer": "Carmit",
-  "deployments": []
+  "deployments": [
+    {
+      "ticketNumber": "DTS_00004",
+      "title": "DTS_00004 # Carmit # 09.07.2026",
+      "status": "Open",
+      "createDate": "09.07.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 1,
+      "url": "DTS_00004.html",
+      "tickets": [
+        {
+          "number": "2468",
+          "subject": "דוח ישיבת בוקר למנהלי רצפת הייצור",
+          "assignee": "שלומי ציון",
+          "status": "Waiting DTS",
+          "isCR": true,
+          "contentLocked": false,
+          "description": "דוח ישיבת בוקר למנהלי רצפת הייצור  אנא אשרו את תצורת האקסל הערכת שעות לביצוע כ-15 שעות כולל בדיקות. אנא אשרו ושלחו הזמנה בהתאם. תודה",
+          "testSteps": []
+        }
+      ]
+    }
+  ]
 }
