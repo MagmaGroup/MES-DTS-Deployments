@@ -27,9 +27,11 @@
           "assignee": "Eldan Menahem",
           "status": "Waiting DTS",
           "isCR": true,
-          "contentLocked": false,
+          "contentLocked": true,
           "description": "הי יש לחלק את עלות המוצרים בהצגה בקונסרן וNC ב-1,000. יש לבצע את השינוי גם ב-DB על כל הדוחות",
-          "testSteps": []
+          "testSteps": [
+            "להריץ את הדוח לאחר התיקון"
+          ]
         }
       ]
     }
