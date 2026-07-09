@@ -335,7 +335,7 @@
     }
     .cl-modal-backdrop.open { display: flex; }
     .cl-modal {
-      background: #fff; border-radius: 14px; width: 100%; max-width: 560px;
+      background: #fff; border-radius: 14px; width: 100%; max-width: 640px;
       max-height: 85vh; overflow-y: auto; padding: 26px 28px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.35);
     }
@@ -356,13 +356,28 @@
       height: 100%; border-radius: 4px; background: linear-gradient(90deg, #4ade80, #16a34a);
       transition: width 0.25s;
     }
-    .cl-phase { margin-bottom: 16px; }
-    .cl-phase:last-child { margin-bottom: 0; }
+    .cl-phase {
+      margin-bottom: 14px; border-bottom: 1px solid var(--card-border); padding-bottom: 12px;
+    }
+    .cl-phase:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
     .cl-phase-title {
+      display: flex; align-items: center; gap: 7px; cursor: pointer; user-select: none;
       font-size: 10.5px; font-weight: 800; text-transform: uppercase;
-      letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 7px;
+      letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 8px;
+    }
+    .cl-phase-chevron { font-size: 9px; color: var(--text-dim); transition: transform 0.15s; flex-shrink: 0; }
+    .cl-phase.collapsed .cl-phase-chevron { transform: rotate(-90deg); }
+    .cl-phase-name { flex: 1; }
+    .cl-phase-check { color: #16a34a; font-weight: 900; font-size: 12px; }
+    .cl-phase-count { color: var(--text-muted); font-weight: 800; text-transform: none; letter-spacing: 0; font-size: 11px; }
+    .cl-phase-toggle-all {
+      background: none; border: none; color: #2563eb; font-size: 10.5px; font-weight: 700;
+      text-transform: none; letter-spacing: 0; cursor: pointer; padding: 0; text-decoration: underline;
+      flex-shrink: 0;
     }
     .cl-phase.situational .cl-phase-title { color: #b98900; }
+    .cl-phase-items { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+    .cl-phase.collapsed .cl-phase-items { display: none; }
     .cl-item {
       display: flex; align-items: flex-start; gap: 9px;
       padding: 5px 0; font-size: 13.5px; color: var(--text);
@@ -657,6 +672,7 @@
 
     let clCurrent = null;          // { slug, depIdx }
     let clWorkingChecklist = {};   // in-progress edits before Save
+    let clDirty = false;           // true once anything's been toggled since open/save
 
     function isValidLookingToken(pat) {
       return !!pat && (pat.startsWith('ghp_') || pat.startsWith('github_pat_') || pat.length >= 30);
@@ -664,26 +680,36 @@
 
     function renderClGroups(checklist) {
       clWorkingChecklist = { ...checklist };
+      clDirty = false;
       const groupsHtml = window.DTS_CHECKLIST_PHASE_ORDER.map((phase) => {
         const items = window.DTS_CHECKLIST_ITEMS.filter((it) => it.phase === phase);
+        const done = items.filter((it) => clWorkingChecklist[it.id]).length;
+        const total = items.length;
+        const allDone = done === total;
         const rows = items.map((it) => `
           <label class="cl-item${clWorkingChecklist[it.id] ? ' checked' : ''}" data-item="${it.id}">
             <input type="checkbox" ${clWorkingChecklist[it.id] ? 'checked' : ''} onchange="clToggleItem('${it.id}', this.checked)" />
             <span>${it.label}</span>
           </label>`).join('');
-        return `<div class="cl-phase${phase === 'situational' ? ' situational' : ''}">
-          <div class="cl-phase-title">${window.DTS_CHECKLIST_PHASE_LABELS[phase]}</div>
-          ${rows}
+        return `<div class="cl-phase${phase === 'situational' ? ' situational' : ''}${allDone ? ' collapsed' : ''}" data-phase="${phase}">
+          <div class="cl-phase-title" onclick="clTogglePhaseCollapse('${phase}')">
+            <span class="cl-phase-chevron">▾</span>
+            <span class="cl-phase-name">${window.DTS_CHECKLIST_PHASE_LABELS[phase]}</span>
+            <span class="cl-phase-check" style="display:${allDone ? '' : 'none'}">✓</span>
+            <span class="cl-phase-count">${done}/${total}</span>
+            <button type="button" class="cl-phase-toggle-all" onclick="event.stopPropagation(); clToggleAllInPhase('${phase}')">${allDone ? 'Uncheck all' : 'Check all'}</button>
+          </div>
+          <div class="cl-phase-items">
+            ${rows}
+          </div>
         </div>`;
       }).join('');
       document.getElementById('cl-groups').innerHTML = groupsHtml;
       updateClProgress();
     }
 
-    // Live "X/17 required complete" readout at the top of the modal — updates
-    // instantly on every checkbox toggle, before Save is even clicked. Only
-    // counts required-phase items; situational ones never factor in here,
-    // same rule as the card's own progress bar.
+    // Live "X/22 complete" readout at the top of the modal — updates
+    // instantly on every checkbox toggle, before Save is even clicked.
     function updateClProgress() {
       const required = window.DTS_CHECKLIST_REQUIRED || [];
       const total = required.length;
@@ -693,10 +719,62 @@
       document.getElementById('cl-progress-fill').style.width = `${pct}%`;
     }
 
+    // Recomputes one phase's own count/checkmark/toggle-all label and patches
+    // just that phase's header in place (cheaper than a full re-render, and
+    // avoids fighting any other phase's manually-expanded/collapsed state).
+    function updateClPhaseHeader(phase) {
+      const items = window.DTS_CHECKLIST_ITEMS.filter((it) => it.phase === phase);
+      const done = items.filter((it) => clWorkingChecklist[it.id]).length;
+      const total = items.length;
+      const phaseEl = document.querySelector(`.cl-phase[data-phase="${phase}"]`);
+      if (phaseEl) {
+        phaseEl.querySelector('.cl-phase-count').textContent = `${done}/${total}`;
+        phaseEl.querySelector('.cl-phase-check').style.display = done === total ? '' : 'none';
+        phaseEl.querySelector('.cl-phase-toggle-all').textContent = done === total ? 'Uncheck all' : 'Check all';
+      }
+      return { done, total, phaseEl };
+    }
+
+    // Manual expand/collapse — always available regardless of completeness,
+    // and never overridden by the auto-collapse-on-complete behavior below
+    // (that only fires from an actual checkbox toggle, not from this).
+    function clTogglePhaseCollapse(phase) {
+      const phaseEl = document.querySelector(`.cl-phase[data-phase="${phase}"]`);
+      if (phaseEl) phaseEl.classList.toggle('collapsed');
+    }
+
     function clToggleItem(id, checked) {
       clWorkingChecklist[id] = checked;
+      clDirty = true;
       const row = document.querySelector(`#cl-groups .cl-item[data-item="${id}"]`);
       if (row) row.classList.toggle('checked', checked);
+      const item = window.DTS_CHECKLIST_ITEMS.find((it) => it.id === id);
+      if (item) {
+        const { done, total, phaseEl } = updateClPhaseHeader(item.phase);
+        // The moment a phase becomes fully checked, collapse it out of the
+        // way; the moment it's no longer complete, expand it back so the
+        // unchecked item is visible.
+        if (phaseEl) phaseEl.classList.toggle('collapsed', done === total);
+      }
+      updateClProgress();
+    }
+
+    function clToggleAllInPhase(phase) {
+      const items = window.DTS_CHECKLIST_ITEMS.filter((it) => it.phase === phase);
+      const allCurrentlyDone = items.every((it) => clWorkingChecklist[it.id]);
+      const newState = !allCurrentlyDone;
+      items.forEach((it) => {
+        clWorkingChecklist[it.id] = newState;
+        const row = document.querySelector(`#cl-groups .cl-item[data-item="${it.id}"]`);
+        if (row) {
+          row.classList.toggle('checked', newState);
+          const cb = row.querySelector('input[type="checkbox"]');
+          if (cb) cb.checked = newState;
+        }
+      });
+      clDirty = true;
+      const { phaseEl } = updateClPhaseHeader(phase);
+      if (phaseEl) phaseEl.classList.toggle('collapsed', newState);
       updateClProgress();
     }
 
@@ -729,15 +807,22 @@
       document.getElementById('cl-backdrop').classList.add('open');
     }
 
-    function closeChecklistModal() {
+    // force=true skips the unsaved-changes prompt (used right after a
+    // successful Save, where there's nothing left to lose).
+    function closeChecklistModal(force) {
+      if (!force && clDirty) {
+        const ok = confirm('You have unsaved checklist changes. Close without saving?');
+        if (!ok) return;
+      }
       document.getElementById('cl-backdrop').classList.remove('open');
       clCurrent = null;
+      clDirty = false;
     }
 
-    document.getElementById('cl-close').addEventListener('click', closeChecklistModal);
-    document.getElementById('cl-cancel').addEventListener('click', closeChecklistModal);
+    document.getElementById('cl-close').addEventListener('click', () => closeChecklistModal(false));
+    document.getElementById('cl-cancel').addEventListener('click', () => closeChecklistModal(false));
     document.getElementById('cl-backdrop').addEventListener('click', (e) => {
-      if (e.target.id === 'cl-backdrop') closeChecklistModal();
+      if (e.target.id === 'cl-backdrop') closeChecklistModal(false);
     });
 
     // Minimal GitHub write client — mirrors editor.html's, kept separate so
@@ -822,7 +907,8 @@
 
         statusEl.textContent = '✓ Saved.';
         statusEl.className = 'cl-status ok';
-        setTimeout(closeChecklistModal, 700);
+        clDirty = false;
+        setTimeout(() => closeChecklistModal(true), 700);
       } catch (err) {
         statusEl.textContent = `Save failed: ${err.message}`;
         statusEl.className = 'cl-status err';
