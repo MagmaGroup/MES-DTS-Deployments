@@ -373,6 +373,7 @@ async function main() {
           ticketCount: 0,
           url: `${usedDtsId}.html`,
           tickets: [],
+          checklist: {}, // pre-deploy checklist, tracked/edited in the Content Editor
         };
         data.deployments.push(target);
         createdNewDeployment = true;

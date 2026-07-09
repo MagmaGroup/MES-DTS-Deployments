@@ -73,6 +73,11 @@ the customer history page, and every report page read it directly — nothing el
       "closeDate": null,
       "ticketCount": 2,
       "url": "DTS_00003.html",
+      "checklist": {
+        "familiarize_scope": true,
+        "team_meeting": false,
+        "schedule_date_customer": false
+      },
       "tickets": [
         {
           "number": "2554",
@@ -119,6 +124,22 @@ ticket number. `title` follows the fixed format `{DTS_ID} # {CustomerName} # {cr
 input), or clicking the lock icon manually in the Content Editor.
 
 **What sets `contentLocked: false`:** clicking the lock icon to unlock in the Content Editor.
+
+### `checklist` — Pre-Deploy Checklist
+
+`checklist` lives on each deployment, keyed by item id (see `CHECKLIST_ITEMS` in
+`magma-d8vn3k/editor.html`) → `true`/`false`. Derived from the org's actual DTS procedure
+(Zoho ticket #2664's custom fields). Grouped into 5 phases: `prep`, `schedule`, `deploy`,
+`after`, and `situational` (optional context-dependent checks, never counted toward progress).
+
+New deployments are created with `checklist: {}` (all items implicitly unchecked) by both
+the automated sync and the manual Claude flow. Missing keys default to unchecked — the
+Content Editor never requires backfilling old deployments.
+
+This is a **soft tracker, not a hard gate**: the Content Editor shows a warning banner if you
+change Status to `Scheduled` or `Closed` while required-phase items are still unchecked, but
+it never blocks the save. `Scheduled` requires `prep` + `schedule` phases; `Closed` requires
+`prep` + `schedule` + `deploy` + `after`.
 
 ---
 
