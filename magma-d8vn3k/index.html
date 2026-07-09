@@ -344,6 +344,18 @@
     .cl-modal-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
     .cl-modal-close { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--text-dim); line-height: 1; padding: 2px; }
     .cl-modal-close:hover { color: var(--text); }
+    .cl-progress { margin-bottom: 18px; }
+    .cl-progress-label {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 6px;
+    }
+    .cl-progress-frac { color: #16a34a; font-weight: 800; text-transform: none; letter-spacing: 0; font-size: 13px; }
+    .cl-progress-track { height: 7px; border-radius: 4px; background: var(--card-border); overflow: hidden; }
+    .cl-progress-fill {
+      height: 100%; border-radius: 4px; background: linear-gradient(90deg, #4ade80, #16a34a);
+      transition: width 0.25s;
+    }
     .cl-phase { margin-bottom: 16px; }
     .cl-phase:last-child { margin-bottom: 0; }
     .cl-phase-title {
@@ -439,6 +451,13 @@
           <div class="cl-modal-sub" id="cl-sub"></div>
         </div>
         <button class="cl-modal-close" id="cl-close" type="button">&times;</button>
+      </div>
+      <div class="cl-progress" id="cl-progress">
+        <div class="cl-progress-label">
+          <span>Required items</span>
+          <span class="cl-progress-frac" id="cl-progress-frac">0/0</span>
+        </div>
+        <div class="cl-progress-track"><div class="cl-progress-fill" id="cl-progress-fill" style="width:0%"></div></div>
       </div>
       <div class="cl-token-row" id="cl-token-row" style="display:none;">
         <span style="font-size:12px;color:#8899aa;white-space:nowrap;">GitHub Token</span>
@@ -658,12 +677,27 @@
         </div>`;
       }).join('');
       document.getElementById('cl-groups').innerHTML = groupsHtml;
+      updateClProgress();
+    }
+
+    // Live "X/17 required complete" readout at the top of the modal — updates
+    // instantly on every checkbox toggle, before Save is even clicked. Only
+    // counts required-phase items; situational ones never factor in here,
+    // same rule as the card's own progress bar.
+    function updateClProgress() {
+      const required = window.DTS_CHECKLIST_REQUIRED || [];
+      const total = required.length;
+      const done = required.filter((it) => clWorkingChecklist[it.id]).length;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      document.getElementById('cl-progress-frac').textContent = `${done}/${total}`;
+      document.getElementById('cl-progress-fill').style.width = `${pct}%`;
     }
 
     function clToggleItem(id, checked) {
       clWorkingChecklist[id] = checked;
       const row = document.querySelector(`#cl-groups .cl-item[data-item="${id}"]`);
       if (row) row.classList.toggle('checked', checked);
+      updateClProgress();
     }
 
     function openChecklistModal(event, slug, depIdx) {
