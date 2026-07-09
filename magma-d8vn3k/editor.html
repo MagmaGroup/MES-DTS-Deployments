@@ -271,25 +271,6 @@
     }
     .link-btn:hover { text-decoration: underline; }
 
-    /* ── Deployment Checklist ── */
-    .checklist-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-    .checklist-progress { font-size: 12px; font-weight: 700; color: #8899aa; white-space: nowrap; }
-    .checklist-phase { margin-bottom: 18px; }
-    .checklist-phase:last-child { margin-bottom: 0; }
-    .checklist-phase-title {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.6px; color: #8899aa; margin-bottom: 8px;
-    }
-    .checklist-phase.situational .checklist-phase-title { color: #b98900; }
-    .checklist-item {
-      display: flex; align-items: flex-start; gap: 9px;
-      padding: 5px 0; font-size: 13px; color: #1a2340;
-      cursor: pointer; line-height: 1.4;
-    }
-    .checklist-item input { margin-top: 2px; cursor: pointer; flex-shrink: 0; }
-    .checklist-item.checked { color: #16a34a; }
-    .checklist-item.checked span { text-decoration: line-through; text-decoration-color: #86d9a4; }
-
     footer { text-align: center; padding: 20px; font-size: 11px; color: #bbb; letter-spacing: 0.5px; }
   </style>
 </head>
@@ -359,16 +340,6 @@
     </div>
   </div>
 
-  <!-- Deployment checklist -->
-  <div class="panel" id="checklist-panel" style="display:none;">
-    <div class="checklist-head">
-      <label class="field-label" style="margin-bottom:0;">Deployment Checklist</label>
-      <span class="checklist-progress" id="checklist-progress"></span>
-    </div>
-    <div class="locked-notice" id="checklist-warning" style="display:none;"></div>
-    <div id="checklist-groups"></div>
-  </div>
-
   <div class="locked-notice" id="locked-notice" style="display:none;">
     &#128274; Some tickets in this DTS have locked content — Claude will preserve their descriptions and test steps on future runs.
   </div>
@@ -412,46 +383,8 @@ const customers = [
 ];
 
 // ── State ──
-let state = { pat: '', customerSlug: '', deploymentIdx: -1, data: null, sha: null, locks: {}, checklist: {} };
+let state = { pat: '', customerSlug: '', deploymentIdx: -1, data: null, sha: null, locks: {} };
 // locks: { [ticketIndex]: true/false } — tracks per-ticket lock state in the editor
-// checklist: { [itemId]: true/false } — tracks the pre-deploy checklist for the loaded deployment
-
-// ── Deployment checklist definition ──
-// Derived from the DTS pre-deploy procedure (Zoho ticket #2664 custom fields).
-// "situational" items are optional context-dependent checks — never counted
-// toward the progress total and never block/warn on status changes.
-const CHECKLIST_ITEMS = [
-  { id: 'familiarize_scope',      phase: 'prep',        label: 'Get familiar with ticket scope / הכרת התכולה' },
-  { id: 'team_meeting',           phase: 'prep',        label: 'Meeting scheduled with everyone who has tickets / זימון פגישה עם כל הצוות' },
-  { id: 'check_prs',              phase: 'prep',        label: 'No unapproved/unmerged PRs / בדוק שאין PR\'s שלא אושרו ומוזגו' },
-  { id: 'check_git_branches',     phase: 'prep',        label: 'No unmerged Git branches / וודא שאין ענפים שלא מוזגו ב-GIT' },
-  { id: 'prepare_sql',            phase: 'prep',        label: 'SQL script prepared / הכנת סקריפט לשינויי SQL' },
-  { id: 'schedule_date_customer', phase: 'schedule',    label: 'DTS date scheduled with customer / זימון מועד DTS מול הלקוח' },
-  { id: 'status_pending_approval',phase: 'schedule',    label: 'Tickets set to Pending DTS Approval / שנה סטטוס ל-Pending DTS Approval' },
-  { id: 'notify_team_on_date',    phase: 'schedule',    label: 'Team notified ON the date — not the day before / עדכון הצוות במועד' },
-  { id: 'block_calendar',         phase: 'schedule',    label: '~2 hours blocked on calendar, team aware / סגירת זמן ביומן' },
-  { id: 'deploy_build_test',      phase: 'deploy',      label: 'Deploy build and DTS to Test' },
-  { id: 'restart_udi',            phase: 'deploy',      label: 'Restart UDI Services' },
-  { id: 'restart_opc',            phase: 'deploy',      label: 'Restart OPC Services' },
-  { id: 'recycle_iis',            phase: 'deploy',      label: 'Recycle IIS Pool' },
-  { id: 'review_scope_again',     phase: 'deploy',      label: 'Review scope again to shorten handling time / הכרת התכולה' },
-  { id: 'close_tickets',          phase: 'after',       label: 'Close tickets included in this DTS / סגור את הקריאות' },
-  { id: 'update_customer_phone',  phase: 'after',       label: 'Update customer by phone on completion / עדכן לקוח טלפונית' },
-  { id: 'notify_customer_test',   phase: 'after',       label: 'Tell customer to test the changes / עדכון לקוח שיש לבדוק' },
-  { id: 'spot_check_items',       phase: 'situational', label: 'Spot-check items raised during DTS testing' },
-  { id: 'check_udi_events',       phase: 'situational', label: 'UDI events run without errors' },
-  { id: 'check_opc_items',        phase: 'situational', label: 'OPC items for updated changes/values' },
-  { id: 'check_audit_log',        phase: 'situational', label: 'Audit Log has no errors' },
-  { id: 'check_machine_screen',   phase: 'situational', label: 'Machine screen validity check' },
-];
-const PHASE_ORDER  = ['prep', 'schedule', 'deploy', 'after', 'situational'];
-const PHASE_LABELS = {
-  prep:        'Prep — Before Scheduling',
-  schedule:    'Scheduling & Customer Coordination',
-  deploy:      'Day of Deployment',
-  after:       'After Deployment',
-  situational: 'Situational Checks (optional — not counted)',
-};
 
 // ── DOM refs ──
 const inpToken     = document.getElementById('inp-token');
@@ -531,7 +464,6 @@ selCustomer.addEventListener('change', async () => {
   saveBar.style.display        = 'none';
   dtsDetailsPanel.style.display = 'none';
   lockedNotice.style.display   = 'none';
-  document.getElementById('checklist-panel').style.display = 'none';
   clearStatus();
   updateLoadBtn();
 
@@ -588,7 +520,6 @@ btnLoad.addEventListener('click', async () => {
     const anyLocked = Object.values(state.locks).some(Boolean);
     lockedNotice.style.display = anyLocked ? 'block' : 'none';
     populateDtsDetails(dep);
-    renderChecklist(dep);
     renderEditor(dep);
     saveBar.style.display = 'flex';
   } catch (err) {
@@ -684,7 +615,6 @@ detStatus.addEventListener('change', () => {
   // Auto-fill close date when marking Closed
   if (detStatus.value === 'Closed' && !detClose.value) detClose.value = todayIso();
   if (detStatus.value === 'Open')                       detClose.value = '';
-  updateChecklistWarning();
 });
 
 function collectDtsDetails() {
@@ -693,65 +623,6 @@ function collectDtsDetails() {
     deployDate: isoToDdmmyyyy(detDeploy.value),
     closeDate:  isoToDdmmyyyy(detClose.value),
   };
-}
-
-// ── Deployment checklist ──
-function renderChecklist(dep) {
-  state.checklist = {};
-  CHECKLIST_ITEMS.forEach((it) => { state.checklist[it.id] = !!(dep.checklist && dep.checklist[it.id]); });
-
-  const groupsHtml = PHASE_ORDER.map((phase) => {
-    const items = CHECKLIST_ITEMS.filter((it) => it.phase === phase);
-    const rows = items.map((it) => `
-      <label class="checklist-item${state.checklist[it.id] ? ' checked' : ''}" data-item="${it.id}">
-        <input type="checkbox" ${state.checklist[it.id] ? 'checked' : ''} onchange="toggleChecklistItem('${it.id}', this.checked)" />
-        <span>${esc(it.label)}</span>
-      </label>`).join('');
-    return `<div class="checklist-phase${phase === 'situational' ? ' situational' : ''}">
-      <div class="checklist-phase-title">${esc(PHASE_LABELS[phase])}</div>
-      ${rows}
-    </div>`;
-  }).join('');
-
-  document.getElementById('checklist-groups').innerHTML = groupsHtml;
-  document.getElementById('checklist-panel').style.display = 'block';
-  updateChecklistProgress();
-  updateChecklistWarning();
-}
-
-function toggleChecklistItem(id, checked) {
-  state.checklist[id] = checked;
-  const row = document.querySelector(`.checklist-item[data-item="${id}"]`);
-  if (row) row.classList.toggle('checked', checked);
-  updateChecklistProgress();
-  updateChecklistWarning();
-}
-
-function updateChecklistProgress() {
-  const required = CHECKLIST_ITEMS.filter((it) => it.phase !== 'situational');
-  const done = required.filter((it) => state.checklist[it.id]).length;
-  const el = document.getElementById('checklist-progress');
-  if (el) el.textContent = `${done} / ${required.length} required steps done`;
-}
-
-function requiredPhasesForStatus(status) {
-  if (status === 'Scheduled') return ['prep', 'schedule'];
-  if (status === 'Closed')    return ['prep', 'schedule', 'deploy', 'after'];
-  return [];
-}
-
-function updateChecklistWarning() {
-  const el = document.getElementById('checklist-warning');
-  if (!el) return;
-  const required = requiredPhasesForStatus(detStatus.value);
-  const missing = CHECKLIST_ITEMS.filter((it) => required.includes(it.phase) && !state.checklist[it.id]);
-  if (missing.length === 0) { el.style.display = 'none'; return; }
-  el.style.display = 'block';
-  el.textContent = `⚠ ${missing.length} step(s) not yet checked for "${detStatus.value}" status: ${missing.map((m) => m.label.split(' / ')[0]).join(', ')}`;
-}
-
-function collectChecklist() {
-  return { ...state.checklist };
 }
 
 // ── Editor rendering ──
@@ -1187,7 +1058,6 @@ btnCancel.addEventListener('click', () => {
   state.locks = {};
   (dep.tickets || []).forEach((t, i) => { state.locks[i] = !!t.contentLocked; });
   populateDtsDetails(dep);
-  renderChecklist(dep);
   renderEditor(dep);
 });
 
@@ -1205,17 +1075,21 @@ btnSave.addEventListener('click', async () => {
     const dataPath  = `${slug}/data.json`;
 
     setStatus('loading', 'Fetching current file version…');
-    const { sha: dataSha } = await fetchJson(dataPath);
+    // Use the freshly-fetched data (not the possibly-stale state.data loaded
+    // when this page opened) as the base for the save. Otherwise any field
+    // written by another flow in the meantime — e.g. the dashboard's
+    // pre-deploy checklist — gets silently wiped out even though this save
+    // succeeds and the sha matches.
+    const { data: freshData, sha: dataSha } = await fetchJson(dataPath);
 
     // Build updated data.json — contentLocked is now per-ticket only
-    const updated = JSON.parse(JSON.stringify(state.data));
+    const updated = freshData;
     const meta    = collectDtsDetails();
     updated.deployments[state.deploymentIdx].tickets     = editedTickets;
     updated.deployments[state.deploymentIdx].ticketCount = editedTickets.length;
     updated.deployments[state.deploymentIdx].status      = meta.status;
     updated.deployments[state.deploymentIdx].deployDate  = meta.deployDate;
     updated.deployments[state.deploymentIdx].closeDate   = meta.closeDate;
-    updated.deployments[state.deploymentIdx].checklist   = collectChecklist();
     // Remove stale deployment-level contentLocked if it exists from old format
     delete updated.deployments[state.deploymentIdx].contentLocked;
 
