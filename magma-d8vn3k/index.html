@@ -556,7 +556,8 @@
       if (!active) {
         return cardOpen + `
           <div class="empty-state">${emptyIcon}<span class="empty-text">No deployments yet</span></div>
-        </div>`;
+        </div>
+      </div>`;
       }
 
       const ticketCount = active.ticketCount || (active.tickets ? active.tickets.length : 0);
@@ -583,7 +584,8 @@
             </div>
             ${checklistProgressHtml(customer.slug, activeIdx, active.checklist)}
           </div>
-        </div>`;
+        </div>
+      </div>`;
     }
 
     async function loadCustomer(customer, idx) {
