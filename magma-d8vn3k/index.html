@@ -220,19 +220,6 @@
       50%      { box-shadow: 0 0 9px rgba(255,255,255,1), 0 0 16px rgba(255,255,255,0.6); }
     }
 
-    .countdown-chip {
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-      color: var(--accent);
-      background: color-mix(in srgb, var(--accent) 12%, transparent);
-      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-      border-radius: 20px;
-      padding: 1px 7px;
-      margin-top: 3px;
-      display: inline-block;
-    }
-
     .card-body {
       padding: 18px 20px 20px;
       display: flex;
@@ -430,18 +417,6 @@
       return `<span class="status-ribbon ${cls}">${dot}${label}</span>`;
     }
 
-    // Parses "DD.MM.YYYY" and returns a "T-{n}d" countdown chip if the date is
-    // in the future, otherwise "" — a small nod to the launch theme.
-    function countdownChip(deployDate) {
-      if (!deployDate) return '';
-      const parts = deployDate.split('.');
-      if (parts.length !== 3) return '';
-      const target = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
-      const days = Math.ceil((target - new Date()) / 86400000);
-      if (isNaN(days) || days < 0) return '';
-      return `<span class="countdown-chip">T-${days}d</span>`;
-    }
-
     function truncate(str, len) {
       if (!str) return '';
       return str.length > len ? str.slice(0, len) + '…' : str;
@@ -488,7 +463,6 @@
               <div>
                 <div class="meta-label">Deploy</div>
                 <div class="meta-value ${active.deployDate ? '' : 'na'}">${active.deployDate || '—'}</div>
-                ${countdownChip(active.deployDate)}
               </div>
             </div>
             <div class="stub-footer">
