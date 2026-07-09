@@ -147,12 +147,13 @@
 
     /* ── Card ── */
     .card {
+      position: relative;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 12px;
       text-decoration: none;
       color: var(--text);
-      overflow: hidden;
+      overflow: visible;
       display: flex;
       flex-direction: column;
       opacity: 0;
@@ -167,7 +168,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
     .card:hover {
-      transform: translateY(-7px);
+      transform: translateY(-7px) scale(1.015);
       border-color: var(--accent);
       box-shadow:
         0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
@@ -176,12 +177,61 @@
     }
 
     .card-accent {
-      height: 3px;
-      background: var(--accent);
+      height: 4px;
+      background: linear-gradient(90deg,
+        color-mix(in srgb, var(--accent) 60%, white),
+        var(--accent) 45%,
+        color-mix(in srgb, var(--accent) 70%, black));
       flex-shrink: 0;
+      border-radius: 12px 12px 0 0;
       transition: height 0.22s;
     }
-    .card:hover .card-accent { height: 5px; }
+    .card:hover .card-accent { height: 6px; }
+
+    /* ── Status ribbon — corner stamp, decoupled from the cramped stub row so it
+       can never collide with the DTS id regardless of how long the status word is ── */
+    .status-ribbon {
+      position: absolute;
+      top: -9px;
+      right: 14px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      color: #fff;
+      white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.22), 0 0 0 3px var(--card-bg);
+      transform: rotate(2deg);
+      transition: transform 0.22s;
+    }
+    .card:hover .status-ribbon { transform: rotate(2deg) translateY(-2px); }
+    .status-ribbon.open       { background: linear-gradient(135deg, #46c85e, #2ea043); }
+    .status-ribbon.scheduled  { background: linear-gradient(135deg, #e0a930, #b8791a); }
+    .status-ribbon.closed     { background: linear-gradient(135deg, #7d8590, #565d68); }
+    .ribbon-dot { width: 5px; height: 5px; border-radius: 50%; background: #fff; flex-shrink: 0; }
+    .status-ribbon.open .ribbon-dot { animation: pulse-white 1.8s infinite; }
+    @keyframes pulse-white {
+      0%, 100% { box-shadow: 0 0 3px rgba(255,255,255,0.7); }
+      50%      { box-shadow: 0 0 9px rgba(255,255,255,1), 0 0 16px rgba(255,255,255,0.6); }
+    }
+
+    .countdown-chip {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      border-radius: 20px;
+      padding: 1px 7px;
+      margin-top: 3px;
+      display: inline-block;
+    }
 
     .card-body {
       padding: 18px 20px 20px;
@@ -227,15 +277,14 @@
     .stub-head {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 8px;
       margin-bottom: 12px;
     }
     .stub-id {
-      font-size: 16px;
-      font-weight: 800;
+      font-size: 17px;
+      font-weight: 900;
       letter-spacing: -0.3px;
       color: var(--text);
+      text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 45%, transparent);
     }
     .stub-divider {
       border-top: 1.5px dashed var(--card-border);
@@ -272,32 +321,8 @@
     }
     .stub-footer strong { color: var(--text); font-weight: 700; }
 
-    /* Status badges */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 20px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .badge-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-
-    .badge.open      { background: rgba(63,185,80,0.12);  color: #3fb950; border: 1px solid rgba(63,185,80,0.25); }
-    .badge.open .badge-dot { background: #3fb950; animation: pulse-green 2s infinite; }
-    .badge.scheduled { background: rgba(210,153,34,0.12); color: #d29922; border: 1px solid rgba(210,153,34,0.25); }
-    .badge.scheduled .badge-dot { background: #d29922; }
-    .badge.closed    { background: rgba(110,118,129,0.1); color: #8b949e; border: 1px solid rgba(110,118,129,0.2); }
-    .badge.closed .badge-dot { background: #6e7681; }
-    .badge.none      { background: rgba(110,118,129,0.08); color: var(--text-dim); border: 1px solid rgba(110,118,129,0.12); }
-
-    @keyframes pulse-green {
-      0%, 100% { box-shadow: 0 0 4px #3fb95088; }
-      50%       { box-shadow: 0 0 10px #3fb950cc, 0 0 20px #3fb95044; }
-    }
+    /* Stats-bar pills (header) still use the plain .badge-less stat-pill/stat-dot
+       classes defined above — the per-card status indicator is .status-ribbon. */
 
     /* Empty */
     .empty-state {
@@ -396,13 +421,25 @@
       <path d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"/>
     </svg>`;
 
-    function statusBadge(status) {
-      if (!status) return `<span class="badge none">—</span>`;
+    function statusRibbon(status) {
+      if (!status) return '';
       const s = status.toLowerCase();
-      if (s === 'open')      return `<span class="badge open"><span class="badge-dot"></span>Open</span>`;
-      if (s === 'scheduled') return `<span class="badge scheduled"><span class="badge-dot"></span>Scheduled</span>`;
-      if (s === 'closed')    return `<span class="badge closed"><span class="badge-dot"></span>Closed</span>`;
-      return `<span class="badge none">${status}</span>`;
+      const label = s === 'open' ? 'Open' : s === 'scheduled' ? 'Scheduled' : s === 'closed' ? 'Closed' : status;
+      const dot = s === 'open' ? '<span class="ribbon-dot"></span>' : '';
+      const cls = s === 'open' ? 'open' : s === 'scheduled' ? 'scheduled' : s === 'closed' ? 'closed' : '';
+      return `<span class="status-ribbon ${cls}">${dot}${label}</span>`;
+    }
+
+    // Parses "DD.MM.YYYY" and returns a "T-{n}d" countdown chip if the date is
+    // in the future, otherwise "" — a small nod to the launch theme.
+    function countdownChip(deployDate) {
+      if (!deployDate) return '';
+      const parts = deployDate.split('.');
+      if (parts.length !== 3) return '';
+      const target = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+      const days = Math.ceil((target - new Date()) / 86400000);
+      if (isNaN(days) || days < 0) return '';
+      return `<span class="countdown-chip">T-${days}d</span>`;
     }
 
     function truncate(str, len) {
@@ -421,6 +458,7 @@
       );
 
       const cardOpen = `<a class="card" href="../${customer.slug}/" target="_blank" style="--accent:${customer.color};animation-delay:${idx * 50}ms">
+        ${active ? statusRibbon(active.status) : ''}
         <div class="card-accent"></div>
         <div class="card-body">
           <div class="card-header">
@@ -440,7 +478,6 @@
           <div class="ticket-stub">
             <div class="stub-head">
               <span class="stub-id">${active.ticketNumber}</span>
-              ${statusBadge(active.status)}
             </div>
             <div class="stub-divider"></div>
             <div class="stub-meta">
@@ -451,6 +488,7 @@
               <div>
                 <div class="meta-label">Deploy</div>
                 <div class="meta-value ${active.deployDate ? '' : 'na'}">${active.deployDate || '—'}</div>
+                ${countdownChip(active.deployDate)}
               </div>
             </div>
             <div class="stub-footer">
