@@ -24,7 +24,8 @@
       ],
       "checklist": {
         "spot_check_items": true,
-        "check_udi_events": true
+        "check_udi_events": true,
+        "check_opc_items": true
       }
     }
   ]
