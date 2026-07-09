@@ -129,18 +129,18 @@ input), or clicking the lock icon manually in the Content Editor.
 
 `checklist` lives on each deployment, keyed by item id (see `assets/dts-checklist-data.js`,
 the single source of truth for the item list) → `true`/`false`. Derived from the org's actual
-DTS procedure (Zoho ticket #2664's custom fields). Grouped into 5 phases: `prep`, `schedule`,
-`deploy`, `after`, and `situational` (optional context-dependent checks, never counted toward
-progress).
+DTS procedure (Zoho ticket #2664's custom fields). Grouped into 5 phases for display —
+`prep`, `schedule`, `deploy`, `after`, and `situational` — but **all 22 items count toward
+the progress total**; the grouping is purely organizational, not a filter.
 
 New deployments are created with `checklist: {}` (all items implicitly unchecked) by the
 automated sync. Missing keys default to unchecked — no backfilling required for old
 deployments.
 
 This is tracked from the **DTS Dashboard** (`magma-d8vn3k/index.html`), not the Content
-Editor. Each active-DTS card shows a compact progress bar (`done/total` required items,
-`situational` excluded from the count); clicking it opens a checklist modal right on the
-dashboard where a manager can tick items and save. Saving writes directly to that
+Editor. Each active-DTS card shows a compact progress bar (`done/22`); clicking it opens
+a checklist modal right on the dashboard where a manager can tick items and save. Saving
+writes directly to that
 customer's `data.json` via the GitHub Contents API, reusing the same GitHub token
 (`dts_editor_pat` in `localStorage`) already used by the Content Editor — no separate
 token setup. It's a **visual tracker, not a hard gate**: nothing blocks Status changes or

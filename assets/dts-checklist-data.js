@@ -2,8 +2,9 @@
 // DTS Dashboard (magma-d8vn3k/index.html). Derived from the org's actual DTS
 // procedure (Zoho ticket #2664's custom fields).
 //
-// "situational" items are optional, context-dependent checks — never counted
-// toward the progress total shown on the dashboard.
+// All 22 items count toward the progress total shown on the dashboard.
+// "situational" is just a grouping label (checks that are more relevant on
+// some DTS deployments than others) — it does not exclude items from the count.
 window.DTS_CHECKLIST_ITEMS = [
   { id: 'familiarize_scope',       phase: 'prep',        label: 'Get familiar with ticket scope / הכרת התכולה' },
   { id: 'team_meeting',            phase: 'prep',        label: 'Meeting scheduled with everyone who has tickets / זימון פגישה עם כל הצוות' },
@@ -36,7 +37,10 @@ window.DTS_CHECKLIST_PHASE_LABELS = {
   schedule:    'Scheduling & Customer Coordination',
   deploy:      'Day of Deployment',
   after:       'After Deployment',
-  situational: 'Situational Checks (optional — not counted)',
+  situational: 'Situational Checks',
 };
 
-window.DTS_CHECKLIST_REQUIRED = window.DTS_CHECKLIST_ITEMS.filter((it) => it.phase !== 'situational');
+// All 22 items count — kept as a separate export (rather than referencing
+// DTS_CHECKLIST_ITEMS directly everywhere) so callers don't need to change
+// if the definition of "counted" ever changes again.
+window.DTS_CHECKLIST_REQUIRED = window.DTS_CHECKLIST_ITEMS;
