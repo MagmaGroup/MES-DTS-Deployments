@@ -1,0 +1,53 @@
+name: DTS Sync
+
+# Unattended version of MagmaMES_Skill_DTSSync.md. Runs on GitHub's infrastructure,
+# not on any developer's machine, so it keeps running even when nobody is at their desk.
+#
+# Requires 3 repository secrets (Settings -> Secrets and variables -> Actions):
+#   ZOHO_CLIENT_ID
+#   ZOHO_CLIENT_SECRET
+#   ZOHO_REFRESH_TOKEN
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # every hour, on the hour (UTC)
+  workflow_dispatch: {}    # manual "Run workflow" button for on-demand syncs
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dts-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run DTS Sync
+        env:
+          ZOHO_CLIENT_ID: ${{ secrets.ZOHO_CLIENT_ID }}
+          ZOHO_CLIENT_SECRET: ${{ secrets.ZOHO_CLIENT_SECRET }}
+          ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
+        run: node .github/scripts/dts-sync.mjs
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "dts-sync-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          TOUCHED=$(git diff --cached --name-only | cut -d/ -f1 | sort -u | tr '\n' ' ')
+          git commit -m "sync: DTS content from Zoho (automated) — touched: ${TOUCHED}"
+          git push origin HEAD:master
