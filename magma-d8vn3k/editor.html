@@ -237,14 +237,16 @@
     .detail-field { display: flex; flex-direction: column; gap: 6px; }
     .detail-field .field-label { margin-bottom: 0; }
     .detail-field select,
-    .detail-field input[type="text"] {
+    .detail-field input[type="text"],
+    .detail-field input[type="date"] {
       border: 1.5px solid #e0e6ef; border-radius: 6px;
       padding: 8px 12px; font-size: 14px; font-family: inherit;
       color: #1a2340; background: #fff;
       outline: none; transition: border-color 0.15s;
     }
     .detail-field select:focus,
-    .detail-field input[type="text"]:focus { border-color: #3b82f6; }
+    .detail-field input[type="text"]:focus,
+    .detail-field input[type="date"]:focus { border-color: #3b82f6; }
     .detail-field input[readonly] {
       background: #f4f7fb; color: #aab; cursor: default;
     }
@@ -263,6 +265,12 @@
     }
     .btn-ghost:hover { border-color: #aab; color: #5a6a7a; }
 
+    .link-btn {
+      background: none; border: none; color: #3b82f6;
+      font-size: 12px; font-weight: 600; cursor: pointer; padding: 0;
+    }
+    .link-btn:hover { text-decoration: underline; }
+
     footer { text-align: center; padding: 20px; font-size: 11px; color: #bbb; letter-spacing: 0.5px; }
   </style>
 </head>
@@ -280,10 +288,14 @@
 <div class="wrap">
 
   <div class="panel">
-    <div class="config-bar">
+    <div class="config-bar" id="token-expanded">
       <span class="config-label">GitHub Token</span>
       <input type="password" id="inp-token" placeholder="ghp_..." autocomplete="off" spellcheck="false" />
       <span class="token-status none" id="token-status">Not set</span>
+    </div>
+    <div class="config-bar" id="token-collapsed" style="display:none;">
+      <span class="token-status ok">● Token ready</span>
+      <button type="button" class="link-btn" id="btn-change-token">Change token</button>
     </div>
   </div>
 
@@ -316,18 +328,16 @@
       </div>
       <div class="detail-field">
         <label class="field-label">Deploy Date</label>
-        <input type="text" id="det-deploy" placeholder="DD.MM.YYYY" maxlength="10" />
+        <input type="date" id="det-deploy" />
       </div>
       <div class="detail-field">
         <label class="field-label">Close Date</label>
-        <input type="text" id="det-close" placeholder="DD.MM.YYYY" maxlength="10" />
+        <input type="date" id="det-close" />
       </div>
     </div>
-    <div style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-      <button class="btn btn-dark" id="btn-save-details">Save Details</button>
-      <span style="font-size:12px;color:#aab;">Updates status and dates only — ticket content unchanged.</span>
+    <div style="margin-top:14px;">
+      <span style="font-size:12px;color:#aab;">Status and dates above are saved together with ticket content below — click <strong>Save &amp; Publish</strong> at the bottom when you're done with all your edits.</span>
     </div>
-    <div class="status-msg hidden" id="details-msg" style="margin-top:10px;margin-bottom:0;"></div>
   </div>
 
   <div class="locked-notice" id="locked-notice" style="display:none;">
@@ -386,13 +396,11 @@ const editorArea   = document.getElementById('editor-area');
 const saveBar      = document.getElementById('save-bar');
 const btnSave         = document.getElementById('btn-save');
 const btnCancel       = document.getElementById('btn-cancel');
-const btnSaveDetails  = document.getElementById('btn-save-details');
 const dtsDetailsPanel = document.getElementById('dts-details-panel');
 const detStatus       = document.getElementById('det-status');
 const detCreate       = document.getElementById('det-create');
 const detDeploy       = document.getElementById('det-deploy');
 const detClose        = document.getElementById('det-close');
-const detailsMsg      = document.getElementById('details-msg');
 const statusMsg    = document.getElementById('status-msg');
 const lockedNotice = document.getElementById('locked-notice');
 
@@ -404,8 +412,12 @@ customers.forEach(c => {
   selCustomer.appendChild(opt);
 });
 
+const tokenExpanded  = document.getElementById('token-expanded');
+const tokenCollapsed = document.getElementById('token-collapsed');
+const btnChangeToken = document.getElementById('btn-change-token');
+
 const savedPat = localStorage.getItem(TOKEN_KEY) || '';
-if (savedPat) { inpToken.value = savedPat; state.pat = savedPat; updateTokenStatus(); }
+if (savedPat) { inpToken.value = savedPat; state.pat = savedPat; updateTokenStatus(); collapseTokenPanelIfValid(); }
 
 // ── Token ──
 inpToken.addEventListener('input', () => {
@@ -413,11 +425,27 @@ inpToken.addEventListener('input', () => {
   localStorage.setItem(TOKEN_KEY, state.pat);
   updateTokenStatus();
 });
+inpToken.addEventListener('blur', collapseTokenPanelIfValid);
+btnChangeToken.addEventListener('click', () => {
+  tokenCollapsed.style.display = 'none';
+  tokenExpanded.style.display  = 'flex';
+  inpToken.focus();
+});
+
+function isValidLookingToken(pat) {
+  return !!pat && (pat.startsWith('ghp_') || pat.startsWith('github_pat_') || pat.length >= 30);
+}
+
+function collapseTokenPanelIfValid() {
+  if (!isValidLookingToken(state.pat)) return;
+  tokenExpanded.style.display  = 'none';
+  tokenCollapsed.style.display = 'flex';
+}
 
 function updateTokenStatus() {
   if (!state.pat) {
     tokenStatus.textContent = 'Not set'; tokenStatus.className = 'token-status none';
-  } else if (state.pat.startsWith('ghp_') || state.pat.startsWith('github_pat_') || state.pat.length >= 30) {
+  } else if (isValidLookingToken(state.pat)) {
     tokenStatus.textContent = '● Ready'; tokenStatus.className = 'token-status ok';
   } else {
     tokenStatus.textContent = '⚠ Check token'; tokenStatus.className = 'token-status err';
@@ -549,11 +577,26 @@ async function commitFile(filePath, content, message, sha) {
 }
 
 // ── DTS Details panel ──
+// Deploy/Close Date are native <input type="date"> fields (ISO yyyy-mm-dd) in
+// the UI, but stored as "DD.MM.YYYY" strings in data.json — convert at the boundary.
+function ddmmyyyyToIso(s) {
+  const m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec((s || '').trim());
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : '';
+}
+function isoToDdmmyyyy(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((s || '').trim());
+  return m ? `${m[3]}.${m[2]}.${m[1]}` : null;
+}
+function todayIso() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 function populateDtsDetails(dep) {
   detStatus.value    = dep.status || 'Open';
   detCreate.value    = dep.createDate || '—';
-  detDeploy.value    = dep.deployDate || '';
-  detClose.value     = dep.closeDate  || '';
+  detDeploy.value    = ddmmyyyyToIso(dep.deployDate);
+  detClose.value     = ddmmyyyyToIso(dep.closeDate);
   applyStatusStyle();
   dtsDetailsPanel.style.display = 'block';
 }
@@ -570,78 +613,17 @@ function applyStatusStyle() {
 detStatus.addEventListener('change', () => {
   applyStatusStyle();
   // Auto-fill close date when marking Closed
-  const today = new Date().toLocaleDateString('he-IL', { day:'2-digit', month:'2-digit', year:'numeric' });
-  if (detStatus.value === 'Closed' && !detClose.value)  detClose.value  = today;
-  if (detStatus.value === 'Open')                        detClose.value  = '';
+  if (detStatus.value === 'Closed' && !detClose.value) detClose.value = todayIso();
+  if (detStatus.value === 'Open')                       detClose.value = '';
 });
-
-const DATE_RE = /^\d{2}\.\d{2}\.\d{4}$/;
-
-function validateDate(val, label) {
-  if (!val) return null; // empty = allowed (null in data)
-  if (!DATE_RE.test(val)) return `${label}: invalid format — use DD.MM.YYYY`;
-  return null;
-}
 
 function collectDtsDetails() {
   return {
     status:     detStatus.value,
-    deployDate: detDeploy.value.trim() || null,
-    closeDate:  detClose.value.trim()  || null,
+    deployDate: isoToDdmmyyyy(detDeploy.value),
+    closeDate:  isoToDdmmyyyy(detClose.value),
   };
 }
-
-function validateDtsDetails() {
-  const d = detDeploy.value.trim();
-  const c = detClose.value.trim();
-  return validateDate(d, 'Deploy Date') || validateDate(c, 'Close Date');
-}
-
-function setDetailsMsg(type, msg) {
-  detailsMsg.className = `status-msg ${type}`;
-  detailsMsg.textContent = msg;
-}
-function clearDetailsMsg() {
-  detailsMsg.className = 'status-msg hidden';
-  detailsMsg.textContent = '';
-}
-
-// ── Save Details only ──
-btnSaveDetails.addEventListener('click', async () => {
-  clearDetailsMsg();
-  const err = validateDtsDetails();
-  if (err) { setDetailsMsg('err', err); return; }
-
-  btnSaveDetails.disabled = true;
-  setDetailsMsg('loading', 'Saving…');
-
-  try {
-    const meta    = collectDtsDetails();
-    const slug    = state.customerSlug;
-    const dep     = state.data.deployments[state.deploymentIdx];
-    const dataPath  = `${slug}/data.json`;
-
-    const { sha: dataSha } = await fetchJson(dataPath);
-
-    const updated = JSON.parse(JSON.stringify(state.data));
-    updated.deployments[state.deploymentIdx].status     = meta.status;
-    updated.deployments[state.deploymentIdx].deployDate = meta.deployDate;
-    updated.deployments[state.deploymentIdx].closeDate  = meta.closeDate;
-    delete updated.deployments[state.deploymentIdx].contentLocked;
-
-    const dtsNum = dep.ticketNumber;
-
-    await commitFile(dataPath, JSON.stringify(updated, null, 2),
-      `Update DTS metadata: #${dtsNum}`, dataSha);
-
-    state.data = updated;
-    setDetailsMsg('ok', `✓ Details saved — DTS #${dtsNum} updated. Pages render live from data.json.`);
-  } catch (err) {
-    setDetailsMsg('err', `Save failed: ${err.message}`);
-  }
-
-  btnSaveDetails.disabled = false;
-});
 
 // ── Editor rendering ──
 function renderEditor(dep) {
