@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Magma — Checklist Editor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #eef2f8;
+      --card-bg:      #ffffff;
+      --card-border:  #e2e8f2;
+      --text:         #1a2340;
+      --text-muted:   #64748b;
+      --text-dim:     #a0aec0;
+    }
+
+    body {
+      font-family: 'Heebo', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .page-header {
+      background: linear-gradient(180deg, #060d1f 0%, #0a1628 100%);
+      border-bottom: 1px solid #1a2744;
+      padding: 28px 40px 24px;
+    }
+    .brand { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; }
+    .page-header h1 { font-size: 30px; font-weight: 900; color: #fff; letter-spacing: -0.8px; margin-bottom: 8px; }
+    .subtitle { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 6px; max-width: 640px; line-height: 1.5; }
+    .back-link {
+      display: inline-block; margin-top: 10px; font-size: 12px; font-weight: 700;
+      color: #58a6ff; text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    .wrap { max-width: 880px; margin: 0 auto; padding: 32px 24px 100px; }
+
+    /* ── Token panel ── */
+    .config-bar {
+      display: flex; align-items: center; gap: 10px; background: #fff;
+      border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+    .config-label { font-size: 12px; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+    .config-bar input {
+      flex: 1; border: 1px solid var(--card-border); border-radius: 6px;
+      padding: 7px 10px; font-size: 12px; font-family: monospace; outline: none;
+    }
+    .token-status { font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .token-status.ok { color: #16a34a; }
+    .token-status.none { color: var(--text-dim); }
+    .link-btn {
+      background: none; border: none; color: #2563eb; font-size: 12px; font-weight: 700;
+      cursor: pointer; text-decoration: underline; padding: 0;
+    }
+
+    /* ── Phase blocks ── */
+    .phase-block {
+      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px;
+      padding: 16px 18px; margin-bottom: 16px;
+    }
+    .phase-head {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--card-border);
+    }
+    .phase-label-input {
+      font-size: 14px; font-weight: 800; color: var(--text); border: none; background: none;
+      outline: none; flex: 1; min-width: 160px; padding: 3px 4px; border-radius: 4px;
+    }
+    .phase-label-input:hover, .phase-label-input:focus { background: var(--bg); }
+    .phase-key {
+      font-size: 10px; font-family: monospace; color: var(--text-dim); background: var(--bg);
+      padding: 2px 7px; border-radius: 10px; white-space: nowrap;
+    }
+    .phase-item-count { font-size: 11px; color: var(--text-muted); font-weight: 700; white-space: nowrap; }
+    .spacer { flex: 1 1 0; min-width: 0; }
+    .btn-mini {
+      border: 1px solid var(--card-border); background: #fff; border-radius: 6px;
+      padding: 5px 11px; font-size: 11.5px; font-weight: 700; color: var(--text-muted); cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-mini:hover { background: var(--bg); }
+    .btn-mini.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
+    .btn-mini.primary:hover { background: #1d4ed8; }
+    .icon-btn {
+      border: none; background: none; cursor: pointer; font-size: 14px; padding: 4px 6px;
+      border-radius: 6px; color: var(--text-dim); line-height: 1;
+    }
+    .icon-btn:hover { background: var(--bg); }
+    .icon-btn.danger:hover { color: #dc2626; }
+
+    .add-item-form {
+      display: flex; gap: 8px; align-items: center; margin-bottom: 12px;
+      background: var(--bg); border-radius: 8px; padding: 10px 12px;
+    }
+    .add-item-form .id-input { width: 180px; flex-shrink: 0; }
+    .add-item-form input {
+      border: 1px solid var(--card-border); border-radius: 6px; padding: 7px 10px;
+      font-size: 12.5px; outline: none; background: #fff;
+    }
+    .add-item-form .label-input { flex: 1; }
+
+    .item-row {
+      display: flex; align-items: center; gap: 8px; padding: 6px 0;
+      border-bottom: 1px solid #f2f5fa;
+    }
+    .item-row:last-of-type { border-bottom: none; }
+    .item-row .label-input {
+      flex: 1; border: 1px solid transparent; border-radius: 6px; padding: 6px 8px;
+      font-size: 13px; color: var(--text); outline: none; background: none;
+    }
+    .item-row .label-input:hover, .item-row .label-input:focus { border-color: var(--card-border); background: var(--bg); }
+    .item-id {
+      font-size: 10px; font-family: monospace; color: var(--text-dim); white-space: nowrap;
+      max-width: 150px; overflow: hidden; text-overflow: ellipsis;
+    }
+    .phase-select {
+      border: 1px solid var(--card-border); border-radius: 6px; padding: 5px 6px;
+      font-size: 11.5px; color: var(--text-muted); background: #fff; max-width: 170px;
+    }
+    .empty-phase { font-size: 12px; color: var(--text-dim); padding: 8px 0; font-style: italic; }
+
+    .add-phase-form {
+      display: flex; gap: 8px; align-items: center; background: var(--card-bg);
+      border: 1.5px dashed var(--card-border); border-radius: 12px; padding: 14px 16px;
+    }
+    .add-phase-form input {
+      border: 1px solid var(--card-border); border-radius: 6px; padding: 8px 10px;
+      font-size: 13px; outline: none;
+    }
+    .add-phase-form #add-phase-key { width: 180px; flex-shrink: 0; font-family: monospace; }
+    .add-phase-form #add-phase-label { flex: 1; }
+
+    .save-bar {
+      position: sticky; bottom: 0; margin-top: 20px; background: var(--card-bg);
+      border: 1px solid var(--card-border); border-radius: 12px; padding: 14px 18px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.06);
+    }
+    .status-msg { font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
+    .status-msg.dirty { color: #b8791a; }
+    .status-msg.ok { color: #16a34a; }
+    .status-msg.err { color: #dc2626; }
+    .btn-save {
+      background: #16a34a; color: #fff; border: none; border-radius: 8px;
+      padding: 11px 24px; font-size: 13.5px; font-weight: 800; cursor: pointer; white-space: nowrap;
+    }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .caution {
+      font-size: 12px; color: var(--text-muted); background: #fff8e6; border: 1px solid #f3d98a;
+      border-radius: 10px; padding: 10px 14px; margin-bottom: 20px; line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="brand">Magma MES &mdash; Internal Use Only</div>
+    <h1>Checklist Editor</h1>
+    <div class="subtitle">Manage the pre-deploy checklist's items and phases. Changes apply to every DTS ticket immediately — including ones already in progress — since there's no per-ticket versioning. Git history is the rollback if you need to undo something.</div>
+    <a href="index.html" class="back-link">&larr; Back to Dashboard</a>
+  </div>
+
+  <div class="wrap">
+    <div class="config-bar" id="token-expanded">
+      <span class="config-label">GitHub Token</span>
+      <input type="password" id="inp-token" placeholder="ghp_..." autocomplete="off" spellcheck="false" />
+      <span class="token-status none" id="token-status">Not set</span>
+    </div>
+    <div class="config-bar" id="token-collapsed" style="display:none;">
+      <span class="token-status ok">&#9679; Token ready</span>
+      <button type="button" class="link-btn" id="btn-change-token">Change token</button>
+    </div>
+
+    <div class="caution">
+      Item <strong>labels</strong> can be edited freely and safely at any time (Hebrew or English — type directly into any label field). An item's <strong>ID</strong> is fixed once created — deleting/recreating with a different ID loses that item's checked history, so IDs aren't editable here.
+    </div>
+
+    <div id="phases-wrap"></div>
+
+    <div class="add-phase-form">
+      <input type="text" id="add-phase-key" placeholder="phase key (e.g. testing)" />
+      <input type="text" id="add-phase-label" dir="auto" placeholder="Phase label (Hebrew/English OK)" />
+      <button type="button" class="btn-mini primary" onclick="addPhase()">+ Add phase</button>
+    </div>
+
+    <div class="save-bar">
+      <span class="status-msg" id="status-msg">No changes yet</span>
+      <button type="button" class="btn-save" id="btn-save">Save Checklist</button>
+    </div>
+  </div>
+
+  <script>
+    const TOKEN_KEY = 'dts_editor_pat';
+    const REPO = 'MagmaGroup/MES-DTS-Deployments';
+    const DATA_PATH = 'assets/dts-checklist-data.json';
+
+    let state = { phaseOrder: [], phaseLabels: {}, items: [] };
+    let isDirty = false;
+
+    function isValidLookingToken(pat) {
+      return !!pat && (pat.startsWith('ghp_') || pat.startsWith('github_pat_') || pat.length >= 30);
+    }
+
+    // ── Token panel (same pattern/wording as editor.html) ──
+    const inpToken       = document.getElementById('inp-token');
+    const tokenStatus     = document.getElementById('token-status');
+    const tokenExpanded   = document.getElementById('token-expanded');
+    const tokenCollapsed  = document.getElementById('token-collapsed');
+    const btnChangeToken  = document.getElementById('btn-change-token');
+
+    function updateTokenStatus() {
+      const pat = inpToken.value.trim();
+      if (isValidLookingToken(pat)) {
+        tokenStatus.textContent = 'Ready';
+        tokenStatus.className = 'token-status ok';
+      } else {
+        tokenStatus.textContent = 'Not set';
+        tokenStatus.className = 'token-status none';
+      }
+    }
+    function collapseTokenPanelIfValid() {
+      if (!isValidLookingToken(inpToken.value.trim())) return;
+      tokenExpanded.style.display  = 'none';
+      tokenCollapsed.style.display = 'flex';
+    }
+    inpToken.addEventListener('input', () => {
+      localStorage.setItem(TOKEN_KEY, inpToken.value.trim());
+      updateTokenStatus();
+    });
+    inpToken.addEventListener('blur', collapseTokenPanelIfValid);
+    btnChangeToken.addEventListener('click', () => {
+      tokenCollapsed.style.display = 'none';
+      tokenExpanded.style.display  = 'flex';
+    });
+    const savedPat = localStorage.getItem(TOKEN_KEY) || '';
+    if (savedPat) { inpToken.value = savedPat; updateTokenStatus(); collapseTokenPanelIfValid(); }
+
+    // ── Minimal GitHub write client — same pattern as index.html/editor.html,
+    // kept as its own copy so this page never depends on the others. ──
+    async function ghFetch(path, opts = {}) {
+      const pat = localStorage.getItem(TOKEN_KEY) || '';
+      const headers = {
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+        ...(opts.headers || {}),
+      };
+      if (pat) headers.Authorization = `token ${pat}`;
+      const res = await fetch(`https://api.github.com/repos/${REPO}/${path}`, { ...opts, headers });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || `GitHub API error ${res.status}`);
+      return body;
+    }
+    async function ghFetchJson(filePath) {
+      const resp = await ghFetch(`contents/${filePath}`);
+      const binaryStr = atob(resp.content.replace(/\s/g, ''));
+      const bytes = Uint8Array.from(binaryStr, (c) => c.charCodeAt(0));
+      const json = new TextDecoder().decode(bytes);
+      return { data: JSON.parse(json), sha: resp.sha };
+    }
+    function toBase64(str) {
+      const bytes = new TextEncoder().encode(str);
+      let binary = '';
+      bytes.forEach((b) => binary += String.fromCharCode(b));
+      return btoa(binary);
+    }
+    async function ghCommitFile(filePath, content, message, sha) {
+      const body = { message, content: toBase64(content) };
+      if (sha) body.sha = sha;
+      return ghFetch(`contents/${filePath}`, { method: 'PUT', body: JSON.stringify(body) });
+    }
+
+    // ── Load (plain public fetch — no token needed just to browse) ──
+    async function loadDefinition() {
+      try {
+        const res = await fetch(`../assets/dts-checklist-data.json?_=${Date.now()}`);
+        if (!res.ok) throw new Error();
+        state = await res.json();
+      } catch {
+        state = { phaseOrder: [], phaseLabels: {}, items: [] };
+      }
+      render();
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function escapeAttr(s) {
+      return escapeHtml(s).replace(/"/g, '&quot;');
+    }
+
+    function phaseOptionsHtml(currentPhase) {
+      return state.phaseOrder.map((p) =>
+        `<option value="${p}" ${p === currentPhase ? 'selected' : ''}>${escapeHtml(state.phaseLabels[p] || p)}</option>`
+      ).join('');
+    }
+
+    function render() {
+      const wrap = document.getElementById('phases-wrap');
+      wrap.innerHTML = state.phaseOrder.map((phase) => {
+        const items = state.items.filter((it) => it.phase === phase);
+        const rows = items.map((it) => `
+          <div class="item-row" data-id="${it.id}">
+            <input type="text" class="label-input" dir="auto" value="${escapeAttr(it.label)}" oninput="updateLabel('${it.id}', this.value)" />
+            <span class="item-id">${it.id}</span>
+            <select class="phase-select" onchange="moveItem('${it.id}', this.value)">${phaseOptionsHtml(phase)}</select>
+            <button type="button" class="icon-btn danger" onclick="deleteItem('${it.id}')" title="Delete item">&#128465;</button>
+          </div>`).join('');
+        return `<div class="phase-block" data-phase="${phase}">
+          <div class="phase-head">
+            <input type="text" class="phase-label-input" dir="auto" value="${escapeAttr(state.phaseLabels[phase] || phase)}" oninput="renamePhaseLabel('${phase}', this.value)" />
+            <span class="phase-key">${phase}</span>
+            <span class="phase-item-count">${items.length} item${items.length === 1 ? '' : 's'}</span>
+            <span class="spacer"></span>
+            <button type="button" class="btn-mini" onclick="toggleAddItemForm('${phase}')">+ Add item</button>
+            <button type="button" class="icon-btn danger" onclick="deletePhase('${phase}')" title="Delete phase (must be empty)">&#128465;</button>
+          </div>
+          <div class="add-item-form" id="add-item-${phase}" style="display:none;">
+            <input type="text" class="id-input" id="add-id-${phase}" placeholder="id (e.g. new_check)" />
+            <input type="text" class="label-input" dir="auto" id="add-label-${phase}" placeholder="Label (Hebrew/English OK)" />
+            <button type="button" class="btn-mini primary" onclick="addItem('${phase}')">Add</button>
+          </div>
+          ${rows || '<div class="empty-phase">No items in this phase.</div>'}
+        </div>`;
+      }).join('');
+    }
+
+    function markDirty() {
+      isDirty = true;
+      const el = document.getElementById('status-msg');
+      el.textContent = 'Unsaved changes';
+      el.className = 'status-msg dirty';
+    }
+
+    function updateLabel(id, value) {
+      const item = state.items.find((it) => it.id === id);
+      if (item) item.label = value;
+      markDirty();
+    }
+
+    // Label-only rename, no full re-render (would steal focus mid-keystroke).
+    // Other phase-select dropdowns' option text catches up on the next render.
+    function renamePhaseLabel(phase, value) {
+      state.phaseLabels[phase] = value;
+      markDirty();
+    }
+
+    function moveItem(id, newPhase) {
+      const item = state.items.find((it) => it.id === id);
+      if (item) item.phase = newPhase;
+      markDirty();
+      render();
+    }
+
+    function deleteItem(id) {
+      const item = state.items.find((it) => it.id === id);
+      if (!item) return;
+      const ok = confirm(
+        `Delete "${item.label}"?\n\nIf it's currently checked on any open DTS ticket, that checkmark just quietly disappears next time that ticket's checklist is opened — nothing breaks, nothing errors.`
+      );
+      if (!ok) return;
+      state.items = state.items.filter((it) => it.id !== id);
+      markDirty();
+      render();
+    }
+
+    function toggleAddItemForm(phase) {
+      const el = document.getElementById(`add-item-${phase}`);
+      if (el) el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    function addItem(phase) {
+      const idInput = document.getElementById(`add-id-${phase}`);
+      const labelInput = document.getElementById(`add-label-${phase}`);
+      const id = idInput.value.trim();
+      const label = labelInput.value.trim();
+      if (!id || !label) { alert('Both an id and a label are required.'); return; }
+      if (!/^[a-z][a-z0-9_]*$/.test(id)) {
+        alert('ID must be lowercase letters/numbers/underscores, starting with a letter (e.g. new_check_2).');
+        return;
+      }
+      if (state.items.some((it) => it.id === id)) {
+        alert(`ID "${id}" is already used by another item.`);
+        return;
+      }
+      state.items.push({ id, phase, label });
+      markDirty();
+      render();
+    }
+
+    function deletePhase(phase) {
+      const count = state.items.filter((it) => it.phase === phase).length;
+      if (count > 0) {
+        alert(`This phase still has ${count} item(s). Move or delete them first.`);
+        return;
+      }
+      if (!confirm(`Delete phase "${state.phaseLabels[phase] || phase}"?`)) return;
+      state.phaseOrder = state.phaseOrder.filter((p) => p !== phase);
+      delete state.phaseLabels[phase];
+      markDirty();
+      render();
+    }
+
+    function addPhase() {
+      const keyInput = document.getElementById('add-phase-key');
+      const labelInput = document.getElementById('add-phase-label');
+      const key = keyInput.value.trim();
+      const label = labelInput.value.trim();
+      if (!key || !label) { alert('Both a key and a label are required.'); return; }
+      if (!/^[a-z][a-z0-9_]*$/.test(key)) {
+        alert('Phase key must be lowercase letters/numbers/underscores, starting with a letter.');
+        return;
+      }
+      if (state.phaseOrder.includes(key)) { alert(`Phase key "${key}" already exists.`); return; }
+      state.phaseOrder.push(key);
+      state.phaseLabels[key] = label;
+      keyInput.value = '';
+      labelInput.value = '';
+      markDirty();
+      render();
+    }
+
+    document.getElementById('btn-save').addEventListener('click', async () => {
+      const statusEl = document.getElementById('status-msg');
+      const saveBtn = document.getElementById('btn-save');
+      const pat = localStorage.getItem(TOKEN_KEY) || '';
+      if (!isValidLookingToken(pat)) {
+        statusEl.textContent = 'Enter a valid GitHub token first (above).';
+        statusEl.className = 'status-msg err';
+        return;
+      }
+      saveBtn.disabled = true;
+      statusEl.textContent = 'Saving…';
+      statusEl.className = 'status-msg';
+      try {
+        const { sha } = await ghFetchJson(DATA_PATH);
+        await ghCommitFile(DATA_PATH, JSON.stringify(state, null, 2), 'Update checklist definition', sha);
+        isDirty = false;
+        statusEl.textContent = '✓ Saved — live on the dashboard immediately.';
+        statusEl.className = 'status-msg ok';
+      } catch (err) {
+        statusEl.textContent = `Save failed: ${err.message}`;
+        statusEl.className = 'status-msg err';
+      }
+      saveBtn.disabled = false;
+    });
+
+    loadDefinition();
+  </script>
+</body>
+</html>

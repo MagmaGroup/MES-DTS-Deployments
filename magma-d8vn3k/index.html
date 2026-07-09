@@ -452,6 +452,13 @@
           </svg>
           Edit DTS Content
         </a>
+        <a href="checklist-editor.html" class="edit-btn" target="_blank" style="margin-left:8px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 11l3 3L22 4"/>
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+          </svg>
+          Manage Checklist
+        </a>
       </div>
       <div class="header-rocket">🚀</div>
     </div>
@@ -492,8 +499,28 @@
     </div>
   </div>
 
-  <script src="../assets/dts-checklist-data.js"></script>
   <script>
+    // The pre-deploy checklist definition (items/phases) used to be a hardcoded
+    // script tag; it's now assets/dts-checklist-data.json, fetched here so the
+    // Checklist Editor (checklist-editor.html) can manage it live via the
+    // GitHub Contents API without anyone editing JS by hand.
+    async function loadChecklistDefinition() {
+      try {
+        const res = await fetch(`../assets/dts-checklist-data.json?_=${Date.now()}`);
+        if (!res.ok) throw new Error();
+        const def = await res.json();
+        window.DTS_CHECKLIST_ITEMS = def.items || [];
+        window.DTS_CHECKLIST_PHASE_ORDER = def.phaseOrder || [];
+        window.DTS_CHECKLIST_PHASE_LABELS = def.phaseLabels || {};
+        window.DTS_CHECKLIST_REQUIRED = window.DTS_CHECKLIST_ITEMS;
+      } catch {
+        window.DTS_CHECKLIST_ITEMS = [];
+        window.DTS_CHECKLIST_PHASE_ORDER = [];
+        window.DTS_CHECKLIST_PHASE_LABELS = {};
+        window.DTS_CHECKLIST_REQUIRED = [];
+      }
+    }
+
     // Customer list is no longer hardcoded — it's read from account-map.json,
     // which the DTS sync keeps up to date automatically (new customers get
     // appended there the first time they have a Waiting-DTS ticket). Colors
@@ -640,7 +667,7 @@
     }
 
     async function init() {
-      const customers = await loadCustomerList();
+      const [customers] = await Promise.all([loadCustomerList(), loadChecklistDefinition()]);
       if (!customers.length) {
         document.getElementById('grid').innerHTML =
           '<p style="color:#8b949e;font-size:13px;">Could not load account-map.json — no customers to show.</p>';
