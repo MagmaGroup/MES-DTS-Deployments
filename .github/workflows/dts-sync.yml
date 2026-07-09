@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # needed to trigger the Pages deploy workflow below
 
 concurrency:
   group: dts-sync
@@ -40,14 +41,26 @@ jobs:
         run: node .github/scripts/dts-sync.mjs
 
       - name: Commit and push if changed
+        id: commit
         run: |
           git config user.name "dts-sync-bot"
           git config user.email "actions@users.noreply.github.com"
           git add -A
           if git diff --cached --quiet; then
             echo "No changes to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           TOUCHED=$(git diff --cached --name-only | cut -d/ -f1 | sort -u | tr '\n' ' ')
           git commit -m "sync: DTS content from Zoho (automated) — touched: ${TOUCHED}"
           git push origin HEAD:master
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # A push made with the default GITHUB_TOKEN does NOT trigger other
+      # workflows' `on: push` (GitHub's anti-loop rule) — so deploy.yml would
+      # otherwise never see this commit. Trigger it explicitly instead.
+      - name: Trigger Pages deploy
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref master

@@ -236,15 +236,21 @@ async function writeReportShell(slug, dtsId) {
   await writeFile(path.join(REPO_ROOT, slug, `${dtsId}.html`), REPORT_SHELL, "utf8");
 }
 
-async function createCustomerFolder(slug, name, color) {
-  const dir = path.join(REPO_ROOT, slug);
-  await mkdir(dir, { recursive: true });
-  await writeJson(path.join(dir, "data.json"), { customer: name, deployments: [] });
+async function ensureIndexHtml(slug, name, color) {
+  const indexPath = path.join(REPO_ROOT, slug, "index.html");
+  if (existsSync(indexPath)) return;
 
   const templatePath = path.join(REPO_ROOT, "elcam-bs3h7e", "index.html");
   let template = await readFile(templatePath, "utf8");
   template = template.replaceAll("Elcam", name).replaceAll("#38bdf8", color);
-  await writeFile(path.join(dir, "index.html"), template, "utf8");
+  await writeFile(indexPath, template, "utf8");
+}
+
+async function createCustomerFolder(slug, name, color) {
+  const dir = path.join(REPO_ROOT, slug);
+  await mkdir(dir, { recursive: true });
+  await writeJson(path.join(dir, "data.json"), { customer: name, deployments: [] });
+  await ensureIndexHtml(slug, name, color);
 }
 
 // ---------------------------------------------------------------------------
@@ -330,6 +336,11 @@ async function main() {
 
     const dataPath = path.join(REPO_ROOT, entry.slug, "data.json");
     const data = existsSync(dataPath) ? await readJson(dataPath) : { customer: entry.name, deployments: [] };
+
+    // Known customer (already in account-map.json) but this is the first time
+    // it's ever had a deployment — folder/index.html may not exist yet.
+    await mkdir(path.join(REPO_ROOT, entry.slug), { recursive: true });
+    await ensureIndexHtml(entry.slug, entry.name, entry.color);
 
     const existingNumbers = new Set();
     for (const dep of data.deployments) {
