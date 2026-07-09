@@ -1,0 +1,27 @@
+{
+  "customer": "Ytong",
+  "deployments": [
+    {
+      "ticketNumber": "DTS_00003",
+      "title": "DTS_00003 # Ytong # 09.07.2026",
+      "status": "Open",
+      "createDate": "09.07.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 1,
+      "url": "DTS_00003.html",
+      "tickets": [
+        {
+          "number": "2683",
+          "subject": "עדכון עץ מוצר",
+          "assignee": "שלומי ציון",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "שלום מעדכנת כי ביצעו עדכון בעץ מוצר של מקט 360101 לאחר העדכון הרמנו את הדגל של הםריט TOLOUD , אולם הרצפ המעודכן לא הגיע למכונה - מה עוד נדרש לעשות ?",
+          "testSteps": []
+        }
+      ]
+    }
+  ]
+}
