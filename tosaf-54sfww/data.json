@@ -1,4 +1,28 @@
 {
   "customer": "Tosaf",
-  "deployments": []
+  "deployments": [
+    {
+      "ticketNumber": "DTS_00005",
+      "title": "DTS_00005 # Tosaf # 13.07.2026",
+      "status": "Open",
+      "createDate": "13.07.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 1,
+      "url": "DTS_00005.html",
+      "tickets": [
+        {
+          "number": "2746",
+          "subject": "צריך להוסיף תרגום לכאן",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "חיפשתי את זה בכל התרגומים,לא מצאתי את זהלמעלה-סיבות לאיפוס סילולמטה לתרגם את השורות לעברית",
+          "testSteps": []
+        }
+      ],
+      "checklist": {}
+    }
+  ]
 }
