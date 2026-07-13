@@ -8,7 +8,7 @@
       "createDate": "08.07.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 1,
+      "ticketCount": 2,
       "url": "DTS_00001.html",
       "tickets": [
         {
@@ -19,6 +19,16 @@
           "isCR": false,
           "contentLocked": false,
           "description": "שלום, כאשר אנחנו מבצעים COPY MBOM האופריישן מועתק והסאב אופריישן לא מועתק לעץ החדש וגם כל השייכות שעשינו בעץ הישן נעלם :(",
+          "testSteps": []
+        },
+        {
+          "number": "2696",
+          "subject": "SUB OPARATION ",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "שלום,כאשר אנחנו נכנסים לEDIT בבום אנחנו בוחרים אופריישן וסאב אופריישן לא קיים לנו.סאב אופריישן יהיה קיים רק אם מפלטרים לפני במסך MBOM בפילטור ROUTING OPARATION.תודה",
           "testSteps": []
         }
       ]
