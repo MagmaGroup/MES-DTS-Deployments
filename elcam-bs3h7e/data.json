@@ -8,7 +8,7 @@
       "createDate": "08.07.2026",
       "deployDate": "01.09.2026",
       "closeDate": null,
-      "ticketCount": 4,
+      "ticketCount": 5,
       "url": "DTS_00002.html",
       "tickets": [
         {
@@ -51,6 +51,16 @@
           "isCR": false,
           "contentLocked": false,
           "description": "היי , כל המשתנים\nוהתכונות שהתבקש  לקשור לCOA יצרה בעיה רצינית !התבקשתי לעדכן\nשני מפרטים של המזרקים על יד המהנדסת , והשדות שיש במפרט ריקים כל מה שקשור משויך\nלCOA נעלם , וMES לא נותן כמובן לסגור את העדכון בווריאנטיםאיך מתקדמים\nמפה ?",
+          "testSteps": []
+        },
+        {
+          "number": "2185",
+          "subject": "הוספת שדות לשאילתות",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": true,
+          "contentLocked": false,
+          "description": "_MG_MeasurmentsData:הוספת שדה :שם השדה : COAattribute group / variable groupרק קבוצות שהקוד קבוצה = COA_MG_NCConcernהוספת שדה :שם השדה : Defect Groupattribute group / variable groupרק קבוצות שהקוד קבוצה = DefectGroupבשתי הטבלאות במידה ויש יותר מנתון אחד יש לכתוב multiple values",
           "testSteps": []
         }
       ]
