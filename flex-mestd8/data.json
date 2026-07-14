@@ -8,7 +8,7 @@
       "createDate": "08.07.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 2,
+      "ticketCount": 3,
       "url": "DTS_00001.html",
       "tickets": [
         {
@@ -29,6 +29,16 @@
           "isCR": false,
           "contentLocked": false,
           "description": "שלום,כאשר אנחנו נכנסים לEDIT בבום אנחנו בוחרים אופריישן וסאב אופריישן לא קיים לנו.סאב אופריישן יהיה קיים רק אם מפלטרים לפני במסך MBOM בפילטור ROUTING OPARATION.תודה",
+          "testSteps": []
+        },
+        {
+          "number": "2742",
+          "subject": "קריאת המשך 2715",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "היי,קורה לנו שוב בדומה לקריאה שצירפתי מנסים לדווח פקע פקטיבית בקו INRAתחנה SLOT 2 סיריאלי 8888מקבלים שגיאהאשמח לדעת גם מה הבעיה שנוכל לטפל אצלנו אם אפשר עזרתכםתודה",
           "testSteps": []
         }
       ]
