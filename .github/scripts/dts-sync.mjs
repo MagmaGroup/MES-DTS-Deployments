@@ -85,11 +85,15 @@ async function zohoGet(pathSuffix, params = {}, attempt = 1) {
     throw new Error(`Zoho GET ${pathSuffix} failed (${res.status}): ${bodyText}`);
   }
 
-  // Zoho occasionally returns 200 with an empty body (transient) instead of
-  // a real payload. Retry a couple of times with backoff before giving up.
+  // Zoho occasionally returns a 2xx (200 or 204) with an empty body instead
+  // of a real payload — confirmed transient: the identical request retried
+  // moments later returns 200 with real data. Zoho's actual "no results"
+  // response is 200 + {"data":[]}, never an empty body, so an empty body
+  // here is always an anomaly worth retrying, not a legitimate empty result.
+  // This is a low-urgency hourly job, so retry generously before giving up.
   if (!bodyText) {
-    if (attempt < 3) {
-      await new Promise((r) => setTimeout(r, 1000 * attempt));
+    if (attempt < 5) {
+      await new Promise((r) => setTimeout(r, 2000 * attempt)); // 2s, 4s, 6s, 8s
       return zohoGet(pathSuffix, params, attempt + 1);
     }
     throw new Error(`Zoho GET ${pathSuffix} returned an empty body after ${attempt} attempts (status ${res.status})`);
