@@ -9,21 +9,17 @@
 // regenerates report HTML except the one-time generic shell for a brand-new
 // deployment ID (report pages render live from data.json via assets/dts-report.js).
 //
-// Zero npm dependencies — uses Node's built-in https module (not `fetch`).
+// Zero npm dependencies — uses Node's built-in fetch (Node 18+).
 //
-// NOTE on why `https.request` instead of `fetch`: Node's global `fetch` is
-// backed by `undici`'s connection-pooling dispatcher, which has a known race
-// condition (nodejs/undici #5450, #3141, #3492) where a pooled connection
-// nearing its keep-alive timeout gets reused just as the remote server is
-// closing it, producing a truncated/empty response. This was reproduced
-// consistently on GitHub Actions runners and never from a normal desktop
-// client. A "Connection: close" header does NOT work around it — "Connection"
-// is a forbidden header name per the Fetch spec and is silently dropped.
-// `undici`'s `Agent`/dispatcher classes would fix it, but they require
-// installing the `undici` npm package (Node does not expose it as
-// `node:undici`), which we're avoiding here. Node's classic `https.request`
-// does not keep connections alive by default (no custom Agent = a fresh
-// connection per request), which sidesteps the whole bug class for free.
+// History note: this briefly went through fetch -> https.request -> curl
+// while chasing an intermittent empty-body/204 failure that only reproduced
+// on GitHub Actions runners. That turned out to be caused by the /tickets
+// call below paging through the entire department's ticket history (every
+// status, thousands of tickets) with no server-side filter, 40+ sequential
+// calls every hourly run. Adding the `status` filter fixed it outright, so
+// the transport-layer changes were reverted — plain fetch was never the
+// problem. The retry-on-empty-body logic is kept as cheap defensive
+// hardening for genuine transient hiccups, not as the primary fix.
 //
 // Required environment variables (set as GitHub Actions secrets on this repo):
 //   ZOHO_CLIENT_ID
@@ -34,7 +30,6 @@ import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import https from "node:https";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..", "..");
@@ -43,24 +38,6 @@ const ZOHO_BASE_URL = "https://desk.zoho.com/api/v1";
 const ZOHO_TOKEN_URL = "https://accounts.zoho.com/oauth/v2/token";
 const MES_DEPARTMENT_ID = "1041021000000819029";
 const STATUSES = ["waiting dts"]; // lower-cased match against ticket.status
-
-// ---------------------------------------------------------------------------
-// Minimal https.request wrapper — deliberately not `fetch` (see note above).
-// ---------------------------------------------------------------------------
-
-function httpsRequest(urlObj, { method = "GET", headers = {}, body = null } = {}) {
-  return new Promise((resolve, reject) => {
-    const req = https.request(urlObj, { method, headers }, (res) => {
-      let data = "";
-      res.setEncoding("utf8");
-      res.on("data", (chunk) => { data += chunk; });
-      res.on("end", () => resolve({ status: res.statusCode, body: data }));
-    });
-    req.on("error", reject);
-    if (body) req.write(body);
-    req.end();
-  });
-}
 
 const PALETTE = [
   "#818cf8", "#38bdf8", "#34d399", "#fbbf24", "#f87171",
@@ -82,23 +59,13 @@ async function refreshAccessToken() {
     client_secret: process.env.ZOHO_CLIENT_SECRET,
     grant_type: "refresh_token",
   });
-  const bodyStr = params.toString();
 
-  const { status, body } = await httpsRequest(new URL(ZOHO_TOKEN_URL), {
+  const res = await fetch(ZOHO_TOKEN_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Content-Length": Buffer.byteLength(bodyStr),
-    },
-    body: bodyStr,
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params.toString(),
   });
-
-  let data;
-  try {
-    data = JSON.parse(body);
-  } catch {
-    throw new Error(`Zoho token refresh returned invalid JSON (status ${status}): ${body.slice(0, 500)}`);
-  }
+  const data = await res.json();
   if (!data.access_token) {
     throw new Error(`Zoho token refresh failed: ${JSON.stringify(data)}`);
   }
@@ -119,33 +86,32 @@ async function zohoGet(pathSuffix, params = {}, attempt = 1) {
   for (const [k, v] of Object.entries(params)) {
     url.searchParams.set(k, v);
   }
-
-  const { status, body: bodyText } = await httpsRequest(url, {
+  const res = await fetch(url, {
     headers: { Authorization: `Zoho-oauthtoken ${token}` },
   });
+  const bodyText = await res.text();
 
-  if (status < 200 || status >= 300) {
-    throw new Error(`Zoho GET ${pathSuffix} failed (${status}): ${bodyText}`);
+  if (!res.ok) {
+    throw new Error(`Zoho GET ${pathSuffix} failed (${res.status}): ${bodyText}`);
   }
 
   // Zoho occasionally returns a 2xx (200 or 204) with an empty body instead
-  // of a real payload — confirmed transient: the identical request retried
-  // moments later returns 200 with real data. Zoho's actual "no results"
-  // response is 200 + {"data":[]}, never an empty body, so an empty body
-  // here is always an anomaly worth retrying, not a legitimate empty result.
-  // This is a low-urgency hourly job, so retry generously before giving up.
+  // of a real payload. Zoho's actual "no results" response is 200 +
+  // {"data":[]}, never an empty body, so an empty body here is always an
+  // anomaly worth retrying, not a legitimate empty result. This is a
+  // low-urgency hourly job, so retry generously before giving up.
   if (!bodyText) {
     if (attempt < 5) {
       await new Promise((r) => setTimeout(r, 2000 * attempt)); // 2s, 4s, 6s, 8s
       return zohoGet(pathSuffix, params, attempt + 1);
     }
-    throw new Error(`Zoho GET ${pathSuffix} returned an empty body after ${attempt} attempts (status ${status})`);
+    throw new Error(`Zoho GET ${pathSuffix} returned an empty body after ${attempt} attempts (status ${res.status})`);
   }
 
   try {
     return JSON.parse(bodyText);
   } catch {
-    throw new Error(`Zoho GET ${pathSuffix} returned invalid JSON (status ${status}): ${bodyText.slice(0, 500)}`);
+    throw new Error(`Zoho GET ${pathSuffix} returned invalid JSON (status ${res.status}): ${bodyText.slice(0, 500)}`);
   }
 }
 
@@ -158,9 +124,17 @@ async function listMesTickets() {
   let from = 1;
   let hasMore = true;
 
+  // Server-side status filter — without this, the API pages through every
+  // ticket ever created in the department (thousands, across all statuses),
+  // when we only ever care about a handful currently in "Waiting DTS". That
+  // was costing 40+ sequential API calls every single hourly run for no
+  // reason, and turned out to be the actual cause of the intermittent
+  // empty-body failures. The client-side filter below is kept as a safety
+  // net in case this param behaves unexpectedly.
   while (hasMore) {
     const result = await zohoGet("/tickets", {
       departmentId: MES_DEPARTMENT_ID,
+      status: "Waiting DTS",
       from,
       limit: 50,
       include: "assignee",
