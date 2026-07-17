@@ -178,9 +178,16 @@ async function listMesTickets() {
   let from = 1;
   let hasMore = true;
 
+  // Server-side status filter — without this, the API pages through every
+  // ticket ever created in the department (thousands, across all statuses),
+  // when we only ever care about a handful currently in "Waiting DTS". That
+  // was costing 40+ sequential API calls every single hourly run for no
+  // reason. The client-side filter below is kept as a safety net in case
+  // this param behaves unexpectedly, so nothing breaks if it's ignored.
   while (hasMore) {
     const result = await zohoGet("/tickets", {
       departmentId: MES_DEPARTMENT_ID,
+      status: "Waiting DTS",
       from,
       limit: 50,
       include: "assignee",
