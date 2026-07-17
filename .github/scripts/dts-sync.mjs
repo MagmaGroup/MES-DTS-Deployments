@@ -9,7 +9,21 @@
 // regenerates report HTML except the one-time generic shell for a brand-new
 // deployment ID (report pages render live from data.json via assets/dts-report.js).
 //
-// Zero npm dependencies — uses Node's built-in fetch (Node 18+).
+// Zero npm dependencies — uses Node's built-in https module (not `fetch`).
+//
+// NOTE on why `https.request` instead of `fetch`: Node's global `fetch` is
+// backed by `undici`'s connection-pooling dispatcher, which has a known race
+// condition (nodejs/undici #5450, #3141, #3492) where a pooled connection
+// nearing its keep-alive timeout gets reused just as the remote server is
+// closing it, producing a truncated/empty response. This was reproduced
+// consistently on GitHub Actions runners and never from a normal desktop
+// client. A "Connection: close" header does NOT work around it — "Connection"
+// is a forbidden header name per the Fetch spec and is silently dropped.
+// `undici`'s `Agent`/dispatcher classes would fix it, but they require
+// installing the `undici` npm package (Node does not expose it as
+// `node:undici`), which we're avoiding here. Node's classic `https.request`
+// does not keep connections alive by default (no custom Agent = a fresh
+// connection per request), which sidesteps the whole bug class for free.
 //
 // Required environment variables (set as GitHub Actions secrets on this repo):
 //   ZOHO_CLIENT_ID
@@ -20,6 +34,7 @@ import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import https from "node:https";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..", "..");
@@ -28,6 +43,24 @@ const ZOHO_BASE_URL = "https://desk.zoho.com/api/v1";
 const ZOHO_TOKEN_URL = "https://accounts.zoho.com/oauth/v2/token";
 const MES_DEPARTMENT_ID = "1041021000000819029";
 const STATUSES = ["waiting dts"]; // lower-cased match against ticket.status
+
+// ---------------------------------------------------------------------------
+// Minimal https.request wrapper — deliberately not `fetch` (see note above).
+// ---------------------------------------------------------------------------
+
+function httpsRequest(urlObj, { method = "GET", headers = {}, body = null } = {}) {
+  return new Promise((resolve, reject) => {
+    const req = https.request(urlObj, { method, headers }, (res) => {
+      let data = "";
+      res.setEncoding("utf8");
+      res.on("data", (chunk) => { data += chunk; });
+      res.on("end", () => resolve({ status: res.statusCode, body: data }));
+    });
+    req.on("error", reject);
+    if (body) req.write(body);
+    req.end();
+  });
+}
 
 const PALETTE = [
   "#818cf8", "#38bdf8", "#34d399", "#fbbf24", "#f87171",
@@ -49,13 +82,23 @@ async function refreshAccessToken() {
     client_secret: process.env.ZOHO_CLIENT_SECRET,
     grant_type: "refresh_token",
   });
+  const bodyStr = params.toString();
 
-  const res = await fetch(ZOHO_TOKEN_URL, {
+  const { status, body } = await httpsRequest(new URL(ZOHO_TOKEN_URL), {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded", Connection: "close" },
-    body: params.toString(),
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Length": Buffer.byteLength(bodyStr),
+    },
+    body: bodyStr,
   });
-  const data = await res.json();
+
+  let data;
+  try {
+    data = JSON.parse(body);
+  } catch {
+    throw new Error(`Zoho token refresh returned invalid JSON (status ${status}): ${body.slice(0, 500)}`);
+  }
   if (!data.access_token) {
     throw new Error(`Zoho token refresh failed: ${JSON.stringify(data)}`);
   }
@@ -76,19 +119,13 @@ async function zohoGet(pathSuffix, params = {}, attempt = 1) {
   for (const [k, v] of Object.entries(params)) {
     url.searchParams.set(k, v);
   }
-  // "Connection: close" forces a fresh TCP connection per request instead of
-  // reusing undici's keep-alive pool. This works around a known Node 20/undici
-  // race condition (nodejs/undici#5450, #3141) where a pooled connection near
-  // its keep-alive timeout gets reused just as the server is closing it,
-  // producing a truncated/empty response — most visible in short-lived CI
-  // environments like GitHub Actions runners.
-  const res = await fetch(url, {
-    headers: { Authorization: `Zoho-oauthtoken ${token}`, Connection: "close" },
-  });
-  const bodyText = await res.text();
 
-  if (!res.ok) {
-    throw new Error(`Zoho GET ${pathSuffix} failed (${res.status}): ${bodyText}`);
+  const { status, body: bodyText } = await httpsRequest(url, {
+    headers: { Authorization: `Zoho-oauthtoken ${token}` },
+  });
+
+  if (status < 200 || status >= 300) {
+    throw new Error(`Zoho GET ${pathSuffix} failed (${status}): ${bodyText}`);
   }
 
   // Zoho occasionally returns a 2xx (200 or 204) with an empty body instead
@@ -102,13 +139,13 @@ async function zohoGet(pathSuffix, params = {}, attempt = 1) {
       await new Promise((r) => setTimeout(r, 2000 * attempt)); // 2s, 4s, 6s, 8s
       return zohoGet(pathSuffix, params, attempt + 1);
     }
-    throw new Error(`Zoho GET ${pathSuffix} returned an empty body after ${attempt} attempts (status ${res.status})`);
+    throw new Error(`Zoho GET ${pathSuffix} returned an empty body after ${attempt} attempts (status ${status})`);
   }
 
   try {
     return JSON.parse(bodyText);
   } catch {
-    throw new Error(`Zoho GET ${pathSuffix} returned invalid JSON (status ${res.status}): ${bodyText.slice(0, 500)}`);
+    throw new Error(`Zoho GET ${pathSuffix} returned invalid JSON (status ${status}): ${bodyText.slice(0, 500)}`);
   }
 }
 
