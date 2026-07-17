@@ -52,7 +52,7 @@ async function refreshAccessToken() {
 
   const res = await fetch(ZOHO_TOKEN_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    headers: { "Content-Type": "application/x-www-form-urlencoded", Connection: "close" },
     body: params.toString(),
   });
   const data = await res.json();
@@ -76,8 +76,14 @@ async function zohoGet(pathSuffix, params = {}, attempt = 1) {
   for (const [k, v] of Object.entries(params)) {
     url.searchParams.set(k, v);
   }
+  // "Connection: close" forces a fresh TCP connection per request instead of
+  // reusing undici's keep-alive pool. This works around a known Node 20/undici
+  // race condition (nodejs/undici#5450, #3141) where a pooled connection near
+  // its keep-alive timeout gets reused just as the server is closing it,
+  // producing a truncated/empty response — most visible in short-lived CI
+  // environments like GitHub Actions runners.
   const res = await fetch(url, {
-    headers: { Authorization: `Zoho-oauthtoken ${token}` },
+    headers: { Authorization: `Zoho-oauthtoken ${token}`, Connection: "close" },
   });
   const bodyText = await res.text();
 
