@@ -9,25 +9,17 @@
 // regenerates report HTML except the one-time generic shell for a brand-new
 // deployment ID (report pages render live from data.json via assets/dts-report.js).
 //
-// Zero npm dependencies — shells out to `curl` for Zoho API calls (not
-// `fetch`, not `https.request`).
+// Zero npm dependencies — uses Node's built-in fetch (Node 18+).
 //
-// NOTE on why curl instead of any Node HTTP API: this call reliably failed
-// with a truncated/empty response only when run from GitHub Actions runners,
-// never from a normal desktop client (PowerShell) or from the separate
-// zoho-dts integration used to cross-check this ticket data. We first
-// suspected `fetch`'s `undici` connection-pooling (a known keep-alive race,
-// nodejs/undici #5450/#3141/#3492) and rewrote this to use Node's
-// `https.request` instead — same failure, unchanged. Since both `fetch` and
-// `https.request` sit on the exact same Node/OpenSSL TLS stack, that ruled
-// out the HTTP API choice and pointed one layer lower: something in front of
-// Zoho (a WAF/CDN bot-management layer, commonly implemented via TLS
-// handshake fingerprinting) appears to treat Node's TLS client fingerprint
-// differently from a real browser's or curl's, silently soft-blocking it
-// (empty body / 204) instead of returning an explicit error. Shelling out to
-// `curl` (preinstalled on GitHub-hosted runners) gives every request a
-// completely different TLS implementation and fingerprint than anything
-// Node ships, which is the cheapest way to sidestep that layer entirely.
+// History note: this briefly went through fetch -> https.request -> curl
+// while chasing an intermittent empty-body/204 failure that only reproduced
+// on GitHub Actions runners. That turned out to be caused by the /tickets
+// call below paging through the entire department's ticket history (every
+// status, thousands of tickets) with no server-side filter, 40+ sequential
+// calls every hourly run. Adding the `status` filter fixed it outright, so
+// the transport-layer changes were reverted — plain fetch was never the
+// problem. The retry-on-empty-body logic is kept as cheap defensive
+// hardening for genuine transient hiccups, not as the primary fix.
 //
 // Required environment variables (set as GitHub Actions secrets on this repo):
 //   ZOHO_CLIENT_ID
@@ -38,10 +30,6 @@ import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
-
-const execFileAsync = promisify(execFile);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..", "..");
@@ -50,36 +38,6 @@ const ZOHO_BASE_URL = "https://desk.zoho.com/api/v1";
 const ZOHO_TOKEN_URL = "https://accounts.zoho.com/oauth/v2/token";
 const MES_DEPARTMENT_ID = "1041021000000819029";
 const STATUSES = ["waiting dts"]; // lower-cased match against ticket.status
-
-// ---------------------------------------------------------------------------
-// curl-based request helper — deliberately not `fetch`/`https.request` (see
-// note above). Body and status are separated with a marker appended by
-// curl's `-w` format string, rather than a temp file, so there's nothing to
-// clean up and no risk of concurrent calls (this script runs many in
-// parallel via Promise.all) colliding on a shared filename.
-// ---------------------------------------------------------------------------
-
-const STATUS_MARKER = "###ZOHO_HTTP_STATUS###";
-
-async function curlRequest(url, { method = "GET", headers = {}, body = null } = {}) {
-  const args = ["-s", "-S", "--max-time", "30", "-X", method, "-w", STATUS_MARKER + "%{http_code}"];
-  for (const [key, value] of Object.entries(headers)) {
-    args.push("-H", key + ": " + value);
-  }
-  if (body !== null) {
-    args.push("--data-raw", body);
-  }
-  args.push(url.toString());
-
-  const { stdout } = await execFileAsync("curl", args, { maxBuffer: 20 * 1024 * 1024 });
-  const markerIndex = stdout.lastIndexOf(STATUS_MARKER);
-  if (markerIndex === -1) {
-    throw new Error("curl request to " + url + " did not return a status marker - raw output: " + stdout.slice(0, 500));
-  }
-  const responseBody = stdout.slice(0, markerIndex);
-  const status = parseInt(stdout.slice(markerIndex + STATUS_MARKER.length).trim(), 10);
-  return { status: status, body: responseBody };
-}
 
 const PALETTE = [
   "#818cf8", "#38bdf8", "#34d399", "#fbbf24", "#f87171",
@@ -101,24 +59,15 @@ async function refreshAccessToken() {
     client_secret: process.env.ZOHO_CLIENT_SECRET,
     grant_type: "refresh_token",
   });
-  const bodyStr = params.toString();
 
-  const result = await curlRequest(new URL(ZOHO_TOKEN_URL), {
+  const res = await fetch(ZOHO_TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: bodyStr,
+    body: params.toString(),
   });
-  const status = result.status;
-  const body = result.body;
-
-  let data;
-  try {
-    data = JSON.parse(body);
-  } catch {
-    throw new Error("Zoho token refresh returned invalid JSON (status " + status + "): " + body.slice(0, 500));
-  }
+  const data = await res.json();
   if (!data.access_token) {
-    throw new Error("Zoho token refresh failed: " + JSON.stringify(data));
+    throw new Error(`Zoho token refresh failed: ${JSON.stringify(data)}`);
   }
   accessToken = data.access_token;
   tokenExpiresAt = Date.now() + (data.expires_in - 60) * 1000;
@@ -137,35 +86,32 @@ async function zohoGet(pathSuffix, params = {}, attempt = 1) {
   for (const [k, v] of Object.entries(params)) {
     url.searchParams.set(k, v);
   }
-
-  const result = await curlRequest(url, {
-    headers: { Authorization: "Zoho-oauthtoken " + token },
+  const res = await fetch(url, {
+    headers: { Authorization: `Zoho-oauthtoken ${token}` },
   });
-  const status = result.status;
-  const bodyText = result.body;
+  const bodyText = await res.text();
 
-  if (status < 200 || status >= 300) {
-    throw new Error("Zoho GET " + pathSuffix + " failed (" + status + "): " + bodyText);
+  if (!res.ok) {
+    throw new Error(`Zoho GET ${pathSuffix} failed (${res.status}): ${bodyText}`);
   }
 
   // Zoho occasionally returns a 2xx (200 or 204) with an empty body instead
-  // of a real payload — confirmed transient: the identical request retried
-  // moments later returns 200 with real data. Zoho's actual "no results"
-  // response is 200 + {"data":[]}, never an empty body, so an empty body
-  // here is always an anomaly worth retrying, not a legitimate empty result.
-  // This is a low-urgency hourly job, so retry generously before giving up.
+  // of a real payload. Zoho's actual "no results" response is 200 +
+  // {"data":[]}, never an empty body, so an empty body here is always an
+  // anomaly worth retrying, not a legitimate empty result. This is a
+  // low-urgency hourly job, so retry generously before giving up.
   if (!bodyText) {
     if (attempt < 5) {
       await new Promise((r) => setTimeout(r, 2000 * attempt)); // 2s, 4s, 6s, 8s
       return zohoGet(pathSuffix, params, attempt + 1);
     }
-    throw new Error("Zoho GET " + pathSuffix + " returned an empty body after " + attempt + " attempts (status " + status + ")");
+    throw new Error(`Zoho GET ${pathSuffix} returned an empty body after ${attempt} attempts (status ${res.status})`);
   }
 
   try {
     return JSON.parse(bodyText);
   } catch {
-    throw new Error("Zoho GET " + pathSuffix + " returned invalid JSON (status " + status + "): " + bodyText.slice(0, 500));
+    throw new Error(`Zoho GET ${pathSuffix} returned invalid JSON (status ${res.status}): ${bodyText.slice(0, 500)}`);
   }
 }
 
@@ -182,8 +128,9 @@ async function listMesTickets() {
   // ticket ever created in the department (thousands, across all statuses),
   // when we only ever care about a handful currently in "Waiting DTS". That
   // was costing 40+ sequential API calls every single hourly run for no
-  // reason. The client-side filter below is kept as a safety net in case
-  // this param behaves unexpectedly, so nothing breaks if it's ignored.
+  // reason, and turned out to be the actual cause of the intermittent
+  // empty-body failures. The client-side filter below is kept as a safety
+  // net in case this param behaves unexpectedly.
   while (hasMore) {
     const result = await zohoGet("/tickets", {
       departmentId: MES_DEPARTMENT_ID,
