@@ -70,7 +70,7 @@ async function getAccessToken() {
   return accessToken;
 }
 
-async function zohoGet(pathSuffix, params = {}) {
+async function zohoGet(pathSuffix, params = {}, attempt = 1) {
   const token = await getAccessToken();
   const url = new URL(`${ZOHO_BASE_URL}${pathSuffix}`);
   for (const [k, v] of Object.entries(params)) {
@@ -79,11 +79,27 @@ async function zohoGet(pathSuffix, params = {}) {
   const res = await fetch(url, {
     headers: { Authorization: `Zoho-oauthtoken ${token}` },
   });
+  const bodyText = await res.text();
+
   if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Zoho GET ${pathSuffix} failed (${res.status}): ${body}`);
+    throw new Error(`Zoho GET ${pathSuffix} failed (${res.status}): ${bodyText}`);
   }
-  return res.json();
+
+  // Zoho occasionally returns 200 with an empty body (transient) instead of
+  // a real payload. Retry a couple of times with backoff before giving up.
+  if (!bodyText) {
+    if (attempt < 3) {
+      await new Promise((r) => setTimeout(r, 1000 * attempt));
+      return zohoGet(pathSuffix, params, attempt + 1);
+    }
+    throw new Error(`Zoho GET ${pathSuffix} returned an empty body after ${attempt} attempts (status ${res.status})`);
+  }
+
+  try {
+    return JSON.parse(bodyText);
+  } catch {
+    throw new Error(`Zoho GET ${pathSuffix} returned invalid JSON (status ${res.status}): ${bodyText.slice(0, 500)}`);
+  }
 }
 
 // ---------------------------------------------------------------------------
