@@ -1,0 +1,28 @@
+{
+  "customer": "Motorad",
+  "deployments": [
+    {
+      "ticketNumber": "DTS_00006",
+      "title": "DTS_00006 # Motorad # 19.07.2026",
+      "status": "Open",
+      "createDate": "19.07.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 1,
+      "url": "DTS_00006.html",
+      "tickets": [
+        {
+          "number": "2752",
+          "subject": "סיווג עצירה ",
+          "assignee": "שלומי ציון",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "שלום,מנסה לסווג עצירה ומקבלת הודעת שגיאה:",
+          "testSteps": []
+        }
+      ],
+      "checklist": {}
+    }
+  ]
+}
