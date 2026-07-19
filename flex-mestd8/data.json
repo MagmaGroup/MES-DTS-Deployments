@@ -8,7 +8,7 @@
       "createDate": "08.07.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 5,
+      "ticketCount": 6,
       "url": "DTS_00001.html",
       "tickets": [
         {
@@ -59,6 +59,16 @@
           "isCR": false,
           "contentLocked": false,
           "description": "כמה בעיות סביב עמודה תאריך אספקה ללקוח בפיתחת מכונה חדשה1. הערך שנרשםבעמודה לא תקין- כל המכונות נרשמות עם תאריך 2050-12-31 02:00:002. 3 מכונות שסיימו דיווח קיבלו תאריך סיום 2050-12-31 02:00:00   מספרים לבדיקה:InventoryPackNoID500000000000483350000000000048425000000000004843InventoryPackNo483532607060532607061",
+          "testSteps": []
+        },
+        {
+          "number": "2783",
+          "subject": "מסך לבן בהרכבה ראשית - הרכבות",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "היי,בקו ORPXתחנה WIRINIG #1 מקבלים מסך לבן ויש שם מכונה תקועה שהיא אפשר לשחרר בדקתי הגדרות הכל נראה תקין..עזרתכםתודה",
           "testSteps": []
         }
       ]
