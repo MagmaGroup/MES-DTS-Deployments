@@ -8,7 +8,7 @@
       "createDate": "08.07.2026",
       "deployDate": "01.09.2026",
       "closeDate": null,
-      "ticketCount": 5,
+      "ticketCount": 6,
       "url": "DTS_00002.html",
       "tickets": [
         {
@@ -61,6 +61,16 @@
           "isCR": true,
           "contentLocked": false,
           "description": "_MG_MeasurmentsData:הוספת שדה :שם השדה : COAattribute group / variable groupרק קבוצות שהקוד קבוצה = COA_MG_NCConcernהוספת שדה :שם השדה : Defect Groupattribute group / variable groupרק קבוצות שהקוד קבוצה = DefectGroupבשתי הטבלאות במידה ויש יותר מנתון אחד יש לכתוב multiple values",
+          "testSteps": []
+        },
+        {
+          "number": "2764",
+          "subject": "נקיון מכונות לא מתועד כאשר אין פקע על המכונה",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "ביצעתי ניקיון על מכונה 3 הזרקה ברעםנכנסתי לפרמטרים בפועל - לא מופיע",
           "testSteps": []
         }
       ]
