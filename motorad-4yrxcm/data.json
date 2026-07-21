@@ -24,7 +24,15 @@
       ],
       "checklist": {
         "familiarize_scope": true,
-        "team_meeting": true
+        "team_meeting": true,
+        "check_prs": true,
+        "check_git_branches": true,
+        "prepare_sql": true,
+        "schedule_date_customer": true,
+        "notify_team_on_date": true,
+        "block_calendar": true,
+        "deploy_build_test": true,
+        "review_scope_again": true
       }
     }
   ]
