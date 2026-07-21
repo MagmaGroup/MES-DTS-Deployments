@@ -36,7 +36,17 @@
         "notify_team_on_date": true,
         "block_calendar": true,
         "deploy_build_test": true,
-        "review_scope_again": true
+        "review_scope_again": true,
+        "restart_udi": true,
+        "restart_opc": true,
+        "recycle_iis": true,
+        "update_customer_phone": true,
+        "notify_customer_test": true,
+        "check_udi_events": true,
+        "check_opc_items": true,
+        "spot_check_items": true,
+        "check_audit_log": true,
+        "status_pending_approval": true
       }
     }
   ]
