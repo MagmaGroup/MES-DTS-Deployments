@@ -8,7 +8,7 @@
       "createDate": "08.07.2026",
       "deployDate": "01.09.2026",
       "closeDate": null,
-      "ticketCount": 6,
+      "ticketCount": 7,
       "url": "DTS_00002.html",
       "tickets": [
         {
@@ -71,6 +71,16 @@
           "isCR": false,
           "contentLocked": false,
           "description": "ביצעתי ניקיון על מכונה 3 הזרקה ברעםנכנסתי לפרמטרים בפועל - לא מופיע",
+          "testSteps": []
+        },
+        {
+          "number": "2671",
+          "subject": "ביקורת למשקל דבק - לא נותן במחזוריות",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "היי , לפני כמה ימים נתקלתי בבעיה הזו,ביקורת לשקילת דבק לא עולה כל שעתיים במחזורי , פעם אחרונה אלדן פתר אתזה ,אשמח אם תוכלו לתת עדיפות כי זה בייצור ואם אפשר לדעת מה הבעיה , כי עובד במפרט אחר וכן המשימה עולה אוטומטית",
           "testSteps": []
         }
       ]
