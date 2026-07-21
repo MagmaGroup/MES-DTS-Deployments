@@ -22,7 +22,10 @@
           "testSteps": []
         }
       ],
-      "checklist": {}
+      "checklist": {
+        "familiarize_scope": true,
+        "team_meeting": true
+      }
     }
   ]
 }
