@@ -46,7 +46,8 @@
         "check_opc_items": true,
         "spot_check_items": true,
         "check_audit_log": true,
-        "status_pending_approval": true
+        "status_pending_approval": true,
+        "check_machine_screen": true
       }
     }
   ]
