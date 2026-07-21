@@ -1,4 +1,28 @@
 {
   "customer": "Rav-Bariach",
-  "deployments": []
+  "deployments": [
+    {
+      "ticketNumber": "DTS_00007",
+      "title": "DTS_00007 # Rav-Bariach # 21.07.2026",
+      "status": "Open",
+      "createDate": "21.07.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 1,
+      "url": "DTS_00007.html",
+      "tickets": [
+        {
+          "number": "2780",
+          "subject": "תקלה חוזרת - דלתות לא תואמות למשטח",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "משטח PLT_000001150642יש שתי דלתות מהזמנות שונותKAP4191600_001 מהזמנה SO26046428KAP4182476_001 מהזמנה SO26048014שתיהן שוייכו לאותו משטחבמצב כזה, גם אם הSFOL זיהה את הדלתות בצורה תקינה ובכל זאת הרובוט הניח את הדלת, כאשר שולחים את הממשק ליוטרון צריך היה להישלח משורשרת למשטח המילה ERROR כדי לאתר את המשטחים האלה.​",
+          "testSteps": []
+        }
+      ],
+      "checklist": {}
+    }
+  ]
 }
