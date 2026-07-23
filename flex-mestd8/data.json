@@ -71,7 +71,11 @@
           "description": "היי,בקו ORPXתחנה WIRINIG #1 מקבלים מסך לבן ויש שם מכונה תקועה שהיא אפשר לשחרר בדקתי הגדרות הכל נראה תקין..עזרתכםתודה",
           "testSteps": []
         }
-      ]
+      ],
+      "checklist": {
+        "familiarize_scope": true,
+        "prepare_sql": true
+      }
     }
   ]
 }
