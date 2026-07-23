@@ -17,9 +17,11 @@
           "assignee": "Eldan Menahem",
           "status": "Waiting DTS",
           "isCR": false,
-          "contentLocked": false,
+          "contentLocked": true,
           "description": "שלום, כאשר אנחנו מבצעים COPY MBOM האופריישן מועתק והסאב אופריישן לא מועתק לעץ החדש וגם כל השייכות שעשינו בעץ הישן נעלם :(",
-          "testSteps": []
+          "testSteps": [
+            "יש לוודא הזנה של פריט חדש"
+          ]
         },
         {
           "number": "2696",
