@@ -8,7 +8,7 @@
       "createDate": "09.07.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 1,
+      "ticketCount": 2,
       "url": "DTS_00003.html",
       "tickets": [
         {
@@ -19,6 +19,16 @@
           "isCR": false,
           "contentLocked": false,
           "description": "שלום מעדכנת כי ביצעו עדכון בעץ מוצר של מקט 360101 לאחר העדכון הרמנו את הדגל של הםריט TOLOUD , אולם הרצפ המעודכן לא הגיע למכונה - מה עוד נדרש לעשות ?",
+          "testSteps": []
+        },
+        {
+          "number": "2822",
+          "subject": "ממשק פקעות ",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "description": "נראה כי יש חלא מעט נכשלים , ראו לדוגמה פקע WO2602850 , אשמח אם תבדקו , לא הגיוני כמות הנכשלים בנוסף יש פקעות שהועברו ממרכז עבודה יציקה 4 לממתינות , אני מצפה שלא יופיעו על המכונה , עדין מופיעות לדוגמה 2627, 2570",
           "testSteps": []
         }
       ],
