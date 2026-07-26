@@ -86,6 +86,7 @@ the customer history page, and every report page read it directly — nothing el
           "status": "Waiting DTS",
           "isCR": false,
           "contentLocked": true,
+          "originalDescription": "The customer's raw description, exactly as submitted — never touched by AI or sync.",
           "description": "Manually edited description — preserved on next sync.",
           "testSteps": [
             "Step one",
@@ -99,8 +100,12 @@ the customer history page, and every report page read it directly — nothing el
           "status": "Waiting DTS",
           "isCR": true,
           "contentLocked": false,
-          "description": "Fetched from Zoho — sync may update this.",
-          "testSteps": []
+          "originalDescription": "The customer's raw description, exactly as submitted.",
+          "description": "AI-drafted summary (or the same raw text if ANTHROPIC_API_KEY isn't set / the call failed).",
+          "testSteps": [
+            "AI-drafted step one",
+            "AI-drafted step two"
+          ]
         }
       ]
     }
@@ -124,6 +129,27 @@ ticket number. `title` follows the fixed format `{DTS_ID} # {CustomerName} # {cr
 input), or clicking the lock icon manually in the Content Editor.
 
 **What sets `contentLocked: false`:** clicking the lock icon to unlock in the Content Editor.
+
+### `originalDescription` vs `description` — raw vs AI-drafted
+
+`originalDescription` is the customer's ticket description exactly as submitted to Zoho
+(HTML-stripped only) — captured once, at ticket creation, and never touched again by sync,
+AI, or the Content Editor. It's the permanent factual record of what was actually reported,
+shown read-only on both the report page and the Content Editor.
+
+`description` is the field that's actually curated: when `ANTHROPIC_API_KEY` is configured
+(see below), new tickets get an AI-drafted customer-facing summary here, built from
+`originalDescription` plus the ticket's public reply thread (customer ↔ agent conversation).
+`testSteps` is generated the same way, and may additionally draw on internal (non-public)
+agent comments and the ticket's Resolution field for specificity — those internal sources
+never leak into the customer-facing `description` itself.
+
+Like everything else in the sync, this only runs once, at ticket creation. If the key isn't
+set, or any single Zoho/Anthropic call fails, that ticket falls back to the pre-AI behavior:
+`description` equals `originalDescription`, `testSteps` is `[]`. A flaky call never blocks
+the rest of the sync run. Once generated (or left as a fallback), the normal `contentLocked`
+rules apply — editing `description`/`testSteps` in the Content Editor locks them exactly as
+before.
 
 ### `checklist` — Pre-Deploy Checklist
 
@@ -192,6 +218,7 @@ infrastructure — it does not depend on any developer's computer being on.
 | `ZOHO_CLIENT_ID` | Same value used by the `ZOHO-DTS-MCP` server's local `.env` |
 | `ZOHO_CLIENT_SECRET` | Same value used by the `ZOHO-DTS-MCP` server's local `.env` |
 | `ZOHO_REFRESH_TOKEN` | Same value used by the `ZOHO-DTS-MCP` server's local `.env` |
+| `ANTHROPIC_API_KEY` | *Optional.* An Anthropic API key. Enables AI-drafted `description`/`testSteps` for new tickets (see `originalDescription` vs `description` section above). Without it, sync behaves exactly as it did before — raw stripped description, empty test steps. |
 
 **Manual trigger:** Actions tab → **DTS Sync** → **Run workflow** — runs immediately instead
 of waiting for the next hourly tick.

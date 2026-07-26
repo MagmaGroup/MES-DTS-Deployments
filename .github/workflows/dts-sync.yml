@@ -7,6 +7,11 @@ name: DTS Sync
 #   ZOHO_CLIENT_ID
 #   ZOHO_CLIENT_SECRET
 #   ZOHO_REFRESH_TOKEN
+#
+# Optional secret — enables AI-drafted description + test steps for new
+# tickets (see dts-sync.mjs header for details). Without it, new tickets
+# just get the raw stripped description and empty test steps, same as before.
+#   ANTHROPIC_API_KEY
 
 on:
   schedule:
@@ -38,6 +43,7 @@ jobs:
           ZOHO_CLIENT_ID: ${{ secrets.ZOHO_CLIENT_ID }}
           ZOHO_CLIENT_SECRET: ${{ secrets.ZOHO_CLIENT_SECRET }}
           ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node .github/scripts/dts-sync.mjs
 
       - name: Commit and push if changed

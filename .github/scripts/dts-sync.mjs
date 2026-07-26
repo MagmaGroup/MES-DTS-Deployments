@@ -25,6 +25,21 @@
 //   ZOHO_CLIENT_ID
 //   ZOHO_CLIENT_SECRET
 //   ZOHO_REFRESH_TOKEN
+//
+// Optional:
+//   ANTHROPIC_API_KEY — when set, brand-new tickets get an AI-drafted,
+//   customer-facing summary (data.json `description`) and a concrete
+//   testSteps checklist, generated from the raw description + the full
+//   public reply thread (+ internal comments, for testSteps only — never
+//   surfaced to the customer-facing description). The raw as-submitted
+//   description is preserved untouched in a separate `originalDescription`
+//   field regardless of whether AI generation runs.
+//
+//   Generated once, at ticket creation, same as everything else in this
+//   script — never revisited on later syncs. If the key is unset, or any
+//   single ticket's Zoho/Anthropic calls fail for any reason, that ticket
+//   silently falls back to the old behavior (raw stripped description,
+//   empty testSteps) — a flaky call never breaks the whole sync run.
 
 import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
@@ -169,6 +184,7 @@ async function listMesTickets() {
           accountId: t.accountId,
           ticketType: detail.cf?.cf_ticket_type || null,
           description: detail.description || "",
+          resolution: detail.resolution || null,
           assignee: detail.assignee || t.assignee || null,
         };
       } catch {
@@ -180,6 +196,7 @@ async function listMesTickets() {
           accountId: t.accountId,
           ticketType: null,
           description: "",
+          resolution: null,
           assignee: t.assignee || null,
         };
       }
@@ -203,6 +220,156 @@ async function listAccounts() {
   }
 
   return all.map((a) => ({ id: a.id, accountName: a.accountName }));
+}
+
+// ---------------------------------------------------------------------------
+// Step 2 — thread + comment fetch, for AI context only (new tickets only,
+// called lazily from the main loop below — never for already-tracked tickets)
+// ---------------------------------------------------------------------------
+
+async function fetchTicketThreads(ticketId) {
+  try {
+    const result = await zohoGet(`/tickets/${ticketId}/threads`);
+    return result?.data || [];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchThreadContent(ticketId, threadId) {
+  try {
+    const detail = await zohoGet(`/tickets/${ticketId}/threads/${threadId}`);
+    return stripHtml(detail?.content) || null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchTicketComments(ticketId) {
+  try {
+    const result = await zohoGet(`/tickets/${ticketId}/comments`);
+    return result?.data || [];
+  } catch {
+    return [];
+  }
+}
+
+// Builds a chronological, labeled transcript of the public back-and-forth
+// (customer <-> agent) for a ticket, excluding the description thread (the
+// caller already has that verbatim as originalDescription — no need to
+// duplicate it in the AI's context).
+async function buildThreadTranscript(ticketId) {
+  const threads = await fetchTicketThreads(ticketId);
+  const relevant = threads
+    .filter((t) => !t.isDescriptionThread)
+    .sort((a, b) => new Date(a.createdTime) - new Date(b.createdTime));
+
+  const lines = [];
+  for (const t of relevant) {
+    const who = t.author?.type === "AGENT" ? `Agent (${t.author.name})` : `Customer (${t.author?.name || "unknown"})`;
+    const content = (await fetchThreadContent(ticketId, t.id)) || stripHtml(t.summary);
+    if (content) lines.push(`${who}: ${content}`);
+  }
+  return lines.join("\n");
+}
+
+// Internal-only agent comments — useful signal for drafting test steps
+// (implementation notes, fix details) but never surfaced to the
+// customer-facing description field.
+async function buildCommentsTranscript(ticketId) {
+  const comments = await fetchTicketComments(ticketId);
+  return comments
+    .filter((c) => c.content)
+    .map((c) => `Internal note (${c.commenter?.name || "agent"}): ${stripHtml(c.content)}`)
+    .join("\n");
+}
+
+// ---------------------------------------------------------------------------
+// AI content drafting (optional — requires ANTHROPIC_API_KEY)
+// ---------------------------------------------------------------------------
+
+const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
+const ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"; // fast + cheap, plenty for short-form drafting at this volume
+
+// Drafts a customer-facing summary + a concrete test-step checklist for a
+// brand-new ticket. Returns null on any failure so the caller falls back to
+// the old behavior (raw stripped description, empty testSteps) — a flaky
+// call here must never block the sync.
+async function generateTicketContent({ subject, originalDescription, threadTranscript, commentsTranscript, isCR, resolution }) {
+  if (!process.env.ANTHROPIC_API_KEY) return null;
+
+  const prompt = `You are drafting content for a Magma MES DTS (deployment) ticket that will appear in a customer-facing deployment report. The ticket, its conversation, and your output are all in Hebrew — the customer base is Israeli. Write your output in Hebrew, matching the language of the source material. Do not translate to English.
+
+Ticket subject: ${subject || "(no subject)"}
+Ticket type: ${isCR ? "Change Request" : "Bug/Task"}
+${resolution ? `Resolution field (internal): ${resolution}\n` : ""}
+Original customer-submitted description:
+"""
+${originalDescription || "(no description provided)"}
+"""
+
+Public conversation thread (customer <-> agent, chronological):
+"""
+${threadTranscript || "(no additional public conversation)"}
+"""
+
+Internal agent notes (never quote these directly in the customer-facing description; use only to inform test steps):
+"""
+${commentsTranscript || "(no internal notes)"}
+"""
+
+Produce two things:
+1. "description": a concise, well-written 1-3 sentence Hebrew summary of what this ticket covers and how it was resolved, suitable for a customer-facing deployment report. Use the original description and the public conversation. Do not include internal-only notes or internal phrasing.
+2. "testSteps": an array of 2-5 short, concrete Hebrew steps a tester would follow to verify this change once deployed. Be specific to this ticket (use ticket/batch numbers, screen names, etc. mentioned in the source material), not generic filler. You may use the internal notes and resolution field to make these more precise.
+
+Respond with ONLY a JSON object, no markdown fences, no commentary: {"description": "...", "testSteps": ["...", "..."]}`;
+
+  try {
+    const res = await fetch(ANTHROPIC_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: ANTHROPIC_MODEL,
+        max_tokens: 700,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+
+    if (!res.ok) {
+      console.warn(`Anthropic API call failed (${res.status}) for "${subject}" — falling back to raw description.`);
+      return null;
+    }
+
+    const data = await res.json();
+    const text = data?.content?.[0]?.text || "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.warn(`Anthropic response for "${subject}" had no parseable JSON — falling back.`);
+      return null;
+    }
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (typeof parsed.description !== "string" || !Array.isArray(parsed.testSteps)) {
+      console.warn(`Anthropic response for "${subject}" had an unexpected shape — falling back.`);
+      return null;
+    }
+
+    const testSteps = parsed.testSteps.filter((s) => typeof s === "string" && s.trim()).slice(0, 5);
+    const description = parsed.description.trim();
+    if (!description || testSteps.length === 0) {
+      console.warn(`Anthropic response for "${subject}" was empty/incomplete — falling back.`);
+      return null;
+    }
+
+    return { description, testSteps };
+  } catch (err) {
+    console.warn(`Anthropic API call errored for "${subject}": ${err.message} — falling back.`);
+    return null;
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -416,15 +583,40 @@ async function main() {
         createdNewDeployment = true;
       }
 
+      const isCR = (t.ticketType || "").toLowerCase() === "change request";
+      const originalDescription = stripHtml(t.description);
+
+      // AI-drafted summary + test steps — only for brand-new tickets, only
+      // when ANTHROPIC_API_KEY is configured, and always with a safe
+      // fallback to the raw description / empty steps on any failure.
+      let generated = null;
+      try {
+        const [threadTranscript, commentsTranscript] = await Promise.all([
+          buildThreadTranscript(t.id),
+          buildCommentsTranscript(t.id),
+        ]);
+        generated = await generateTicketContent({
+          subject: t.subject,
+          originalDescription,
+          threadTranscript,
+          commentsTranscript,
+          isCR,
+          resolution: t.resolution,
+        });
+      } catch (err) {
+        console.warn(`AI content generation errored for ticket ${t.ticketNumber}: ${err.message} — falling back.`);
+      }
+
       target.tickets.push({
         number: t.ticketNumber,
         subject: t.subject || "",
         assignee: t.assignee ? `${t.assignee.firstName || ""} ${t.assignee.lastName || ""}`.trim() : null,
         status: t.status,
-        isCR: (t.ticketType || "").toLowerCase() === "change request",
+        isCR,
         contentLocked: false,
-        description: stripHtml(t.description),
-        testSteps: [],
+        originalDescription,
+        description: generated ? generated.description : originalDescription,
+        testSteps: generated ? generated.testSteps : [],
       });
       target.ticketCount = target.tickets.length;
     }
