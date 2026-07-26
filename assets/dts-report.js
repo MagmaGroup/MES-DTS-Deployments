@@ -48,6 +48,8 @@
       </div>
       <div class="ticket-subject">${escapeHtml(t.subject)}</div>
       <div class="ticket-assignee">${t.assignee ? 'Assigned to ' + escapeHtml(t.assignee) : ''}</div>
+      ${t.originalDescription ? `<div class="ticket-section-label">Original Description</div>
+      <div class="ticket-original-description">${escapeHtml(t.originalDescription)}</div>` : ''}
       <div class="ticket-section-label">Description</div>
       <div class="ticket-description">${t.description ? escapeHtml(t.description) : '<span class="na-block">No description</span>'}</div>
       <div class="ticket-section-label">Test Steps</div>

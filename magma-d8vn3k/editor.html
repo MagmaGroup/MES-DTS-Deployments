@@ -185,6 +185,13 @@
       color: #1a2340; direction: rtl; text-align: right;
       outline: none; transition: border-color 0.15s;
     }
+
+    .original-desc-block {
+      width: 100%; border: 1.5px dashed #e0e6ef; border-radius: 6px;
+      padding: 10px 12px; font-size: 13px; line-height: 1.65;
+      color: #64748b; font-style: italic; direction: rtl; text-align: right;
+      white-space: pre-wrap; background: #f9fafb;
+    }
     textarea.desc:focus { border-color: #3b82f6; }
 
     .steps-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
@@ -657,6 +664,10 @@ function renderEditor(dep) {
         <span class="chevron">&#9660;</span>
       </div>
       <div class="ticket-body">
+        ${t.originalDescription ? `<div class="field-group">
+          <label class="field-label">Original Description (as submitted) / התיאור המקורי</label>
+          <div class="original-desc-block">${esc(t.originalDescription)}</div>
+        </div>` : ''}
         <div class="field-group">
           <label class="field-label">Description / תיאור הבעיה</label>
           <textarea class="desc" data-field="description" rows="5" placeholder="Enter a description…" oninput="autoLock(${i})">${esc(t.description || '')}</textarea>

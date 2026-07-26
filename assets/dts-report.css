@@ -99,6 +99,7 @@ main {
 .ticket-assignee { font-size: 0.78rem; color: #94a3b8; margin-bottom: 14px; }
 .ticket-section-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; margin: 14px 0 6px; }
 .ticket-description { font-size: 0.88rem; line-height: 1.6; color: #334155; white-space: pre-wrap; }
+.ticket-original-description { font-size: 0.85rem; line-height: 1.6; color: #64748b; white-space: pre-wrap; font-style: italic; padding-inline-start: 10px; border-inline-start: 2px solid #e2e8f0; }
 .test-steps { font-size: 0.88rem; line-height: 1.7; color: #334155; padding-inline-start: 20px; }
 .test-steps li { margin-bottom: 4px; }
 .na-block { font-size: 0.85rem; color: #cbd5e1; }
