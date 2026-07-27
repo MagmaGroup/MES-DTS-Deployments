@@ -17,11 +17,15 @@
     return new Date(yyyy, mm - 1, dd);
   }
 
+  function t(key, vars) {
+    return window.DtsI18n ? window.DtsI18n.t(key, vars) : key;
+  }
+
   function badgeHtml(status) {
     const s = (status || '').toLowerCase();
-    if (s === 'open')      return '<span class="badge badge-open"><span class="badge-dot"></span>Open</span>';
-    if (s === 'scheduled') return '<span class="badge badge-scheduled"><span class="badge-dot"></span>Scheduled</span>';
-    if (s === 'closed')    return '<span class="badge badge-closed"><span class="badge-dot"></span>Closed</span>';
+    if (s === 'open')      return `<span class="badge badge-open"><span class="badge-dot"></span>${t('statusOpen')}</span>`;
+    if (s === 'scheduled') return `<span class="badge badge-scheduled"><span class="badge-dot"></span>${t('statusScheduled')}</span>`;
+    if (s === 'closed')    return `<span class="badge badge-closed"><span class="badge-dot"></span>${t('statusClosed')}</span>`;
     return `<span class="badge">${status || '—'}</span>`;
   }
 
@@ -44,13 +48,13 @@
       </div>
       <div class="deploy-title">${escapeHtml(dep.title)}</div>
       <div class="deploy-meta">
-        <div><div class="meta-col-label">Created</div><div class="meta-col-value">${cell(escapeHtml(dep.createDate))}</div></div>
-        <div><div class="meta-col-label">Deploy Date</div><div class="meta-col-value ${dep.deployDate ? '' : 'na'}">${cell(escapeHtml(dep.deployDate))}</div></div>
-        <div><div class="meta-col-label">Close Date</div><div class="meta-col-value ${dep.closeDate ? '' : 'na'}">${cell(escapeHtml(dep.closeDate))}</div></div>
-        <div><div class="meta-col-label">Tickets</div><div class="meta-col-value">${count}</div></div>
+        <div><div class="meta-col-label">${t('metaCreated')}</div><div class="meta-col-value">${cell(escapeHtml(dep.createDate))}</div></div>
+        <div><div class="meta-col-label">${t('metaDeployDate')}</div><div class="meta-col-value ${dep.deployDate ? '' : 'na'}">${cell(escapeHtml(dep.deployDate))}</div></div>
+        <div><div class="meta-col-label">${t('metaCloseDate')}</div><div class="meta-col-value ${dep.closeDate ? '' : 'na'}">${cell(escapeHtml(dep.closeDate))}</div></div>
+        <div><div class="meta-col-label">${t('metaTickets')}</div><div class="meta-col-value">${count}</div></div>
       </div>
       <div class="deploy-footer">
-        <a class="view-link" href="${escapeHtml(dep.url)}" target="_blank">View report →</a>
+        <a class="view-link" href="${escapeHtml(dep.url)}" target="_blank">${t('viewReport')} →</a>
       </div>
     </div>`;
   }
@@ -65,9 +69,9 @@
       else counts.active++;
     });
     const filters = [
-      { key: 'active', label: 'Active' },
-      { key: 'all', label: 'All' },
-      { key: 'closed', label: 'Closed' },
+      { key: 'active', label: t('filterActive') },
+      { key: 'all', label: t('filterAll') },
+      { key: 'closed', label: t('filterClosed') },
     ];
     container.innerHTML = filters
       .map(
@@ -111,42 +115,56 @@
       return db - da;
     });
 
-    if (statsEl) {
+    function renderStats() {
+      if (!statsEl) return;
       if (deployments.length) {
         const openCount = deployments.filter((d) => (d.status || '').toLowerCase() !== 'closed').length;
-        statsEl.innerHTML = `<strong>${deployments.length}</strong> deployment${deployments.length === 1 ? '' : 's'}${
-          openCount ? ` &middot; <strong>${openCount}</strong> active` : ''
+        statsEl.innerHTML = `<strong>${deployments.length}</strong> ${t('deploymentsWord', { n: deployments.length })}${
+          openCount ? ` &middot; <strong>${openCount}</strong> ${t('activeWord')}` : ''
         }`;
       } else {
         statsEl.innerHTML = '';
       }
     }
 
+    let currentFilter = 'active';
+
     function render(filter) {
+      if (filter) currentFilter = filter;
       let filtered = deployments;
-      if (filter === 'active') {
+      if (currentFilter === 'active') {
         filtered = deployments.filter((d) => (d.status || '').toLowerCase() !== 'closed');
-      } else if (filter === 'closed') {
+      } else if (currentFilter === 'closed') {
         filtered = deployments.filter((d) => (d.status || '').toLowerCase() === 'closed');
       }
       if (!filtered.length) {
         list.innerHTML = `<div class="empty-block">🚀 ${
-          deployments.length ? 'No deployments match this filter' : 'No deployments yet'
+          deployments.length ? t('noDeploymentsFiltered') : t('noDeployments')
         }</div>`;
         return;
       }
       list.innerHTML = filtered.map(cardHtml).join('');
     }
 
-    if (filterBar) {
-      if (deployments.length) {
-        buildFilterBar(filterBar, deployments, render);
-      } else {
-        filterBar.innerHTML = '';
+    function renderAll() {
+      renderStats();
+      if (filterBar) {
+        if (deployments.length) {
+          buildFilterBar(filterBar, deployments, render);
+          const activeBtn = filterBar.querySelector(`.filter-pill[data-filter="${currentFilter}"]`);
+          if (activeBtn) {
+            filterBar.querySelectorAll('.filter-pill').forEach((b) => b.classList.remove('active'));
+            activeBtn.classList.add('active');
+          }
+        } else {
+          filterBar.innerHTML = '';
+        }
       }
+      render();
     }
 
-    render('active');
+    renderAll();
+    window.addEventListener('dts-lang-changed', renderAll);
   }
 
   if (document.readyState === 'loading') {

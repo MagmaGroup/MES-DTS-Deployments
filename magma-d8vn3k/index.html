@@ -111,6 +111,17 @@
     .stat-dot.scheduled { background: #d29922; }
     .stat-dot.closed    { background: #6e7681; }
 
+    /* Last-synced readout */
+    .sync-status {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12.5px; color: rgba(255,255,255,0.5);
+      margin-bottom: 24px; min-height: 16px;
+    }
+    .sync-status .sync-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+      background: #3fb950; box-shadow: 0 0 6px rgba(63,185,80,0.6);
+    }
+
     /* Edit button */
     .edit-btn {
       display: inline-flex;
@@ -127,6 +138,27 @@
       transition: background 0.15s, border-color 0.15s;
     }
     .edit-btn:hover {
+      background: rgba(255,255,255,0.11);
+      border-color: rgba(255,255,255,0.24);
+    }
+    .lang-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.06);
+      color: #d7deef;
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.14);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, border-color 0.15s;
+      margin-left: 8px;
+    }
+    .lang-toggle-btn:hover {
       background: rgba(255,255,255,0.11);
       border-color: rgba(255,255,255,0.24);
     }
@@ -399,24 +431,26 @@
     <canvas class="star-canvas" id="star-canvas"></canvas>
     <div class="header-inner">
       <div class="header-left">
-        <div class="brand">Magma MES &mdash; Internal Use Only</div>
-        <h1>DTS Dashboard</h1>
-        <div class="subtitle">Live deployment status across all customers &nbsp;&middot;&nbsp; <span id="ts"></span></div>
+        <div class="brand" data-i18n="brand">Magma MES &mdash; Internal Use Only</div>
+        <h1 data-i18n="dashboardTitle">DTS Dashboard</h1>
+        <div class="subtitle"><span data-i18n="dashboardSubtitle">Live deployment status across all customers</span> &nbsp;&middot;&nbsp; <span id="ts"></span></div>
         <div class="stats-bar" id="stats-bar"></div>
+        <div class="sync-status" id="sync-status"></div>
         <a href="editor.html" class="edit-btn" target="_blank">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
             <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
           </svg>
-          Edit DTS Content
+          <span data-i18n="editContent">Edit DTS Content</span>
         </a>
         <a href="checklist-editor.html" class="edit-btn" target="_blank" style="margin-left:8px;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 11l3 3L22 4"/>
             <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
           </svg>
-          Manage Checklist
+          <span data-i18n="manageChecklist">Manage Checklist</span>
         </a>
+        <button type="button" id="lang-toggle" class="lang-toggle-btn">עב</button>
       </div>
       <div class="header-rocket">🚀</div>
     </div>
@@ -457,6 +491,7 @@
     </div>
   </div>
 
+  <script src="../assets/dts-i18n.js"></script>
   <script>
     async function loadChecklistDefinition() {
       try {
@@ -492,14 +527,40 @@
         const res = await fetch(`../account-map.json?_=${Date.now()}`);
         if (!res.ok) throw new Error();
         const map = await res.json();
-        return (map.customers || []).map((c) => ({
+        const customers = (map.customers || []).map((c) => ({
           name: c.name,
           slug: c.slug,
           color: c.color || palette[hashSlug(c.slug) % palette.length],
         }));
+        return { customers, lastSyncedAt: map.lastSyncedAt || null };
       } catch {
-        return [];
+        return { customers: [], lastSyncedAt: null };
       }
+    }
+
+    // "Synced X ago" — reflects the last sync that actually changed
+    // something (see dts-sync.mjs), not every hourly tick. Re-renders every
+    // 30s so it keeps counting up without a page reload.
+    function renderSyncStatus(lastSyncedAt) {
+      const el = document.getElementById('sync-status');
+      if (!el) return;
+      if (!lastSyncedAt) { el.innerHTML = ''; return; }
+      const then = new Date(lastSyncedAt).getTime();
+      if (Number.isNaN(then)) { el.innerHTML = ''; return; }
+      const seconds = Math.max(0, Math.round((Date.now() - then) / 1000));
+      const T = window.DtsI18n ? window.DtsI18n.t : (k) => k;
+      let text;
+      if (seconds < 60) text = T('syncedJustNow');
+      else {
+        const minutes = Math.round(seconds / 60);
+        if (minutes < 60) text = T('syncedMinutesAgo', { n: minutes });
+        else {
+          const hours = Math.round(minutes / 60);
+          if (hours < 24) text = T('syncedHoursAgo', { n: hours });
+          else text = T('syncedDaysAgo', { n: Math.round(hours / 24) });
+        }
+      }
+      el.innerHTML = `<span class="sync-dot"></span>${text}`;
     }
 
     document.getElementById('ts').textContent = new Date().toLocaleDateString('he-IL', {
@@ -509,7 +570,8 @@
     function statusPill(status) {
       if (!status) return '';
       const s = status.toLowerCase();
-      const label = s === 'open' ? 'Open' : s === 'scheduled' ? 'Scheduled' : s === 'closed' ? 'Closed' : status;
+      const T = window.DtsI18n ? window.DtsI18n.t : (k) => k;
+      const label = s === 'open' ? T('statusOpen') : s === 'scheduled' ? T('statusScheduled') : s === 'closed' ? T('statusClosed') : status;
       const dot = s === 'open' ? '<span class="status-dot"></span>' : '';
       const cls = s === 'open' ? 'open' : s === 'scheduled' ? 'scheduled' : s === 'closed' ? 'closed' : '';
       return `<span class="status-pill ${cls}">${dot}${label}</span>`;
@@ -525,10 +587,11 @@
       const total = required.length;
       const done = required.filter((it) => checklist && checklist[it.id]).length;
       const pct = total ? Math.round((done / total) * 100) : 0;
+      const T = window.DtsI18n ? window.DtsI18n.t : (k) => k;
       return `
         <div class="checklist-bar-wrap" data-slug="${slug}" data-depidx="${depIdx}" onclick="openChecklistModal(event, '${slug}', ${depIdx})">
           <div class="checklist-bar-label">
-            <span>Checklist</span>
+            <span>${T('checklistLabel')}</span>
             <span class="checklist-bar-frac">${done}/${total}</span>
           </div>
           <div class="checklist-bar-track"><div class="checklist-bar-fill" style="width:${pct}%"></div></div>
@@ -536,6 +599,7 @@
     }
 
     function renderCard(customer, data, idx) {
+      const T = window.DtsI18n ? window.DtsI18n.t : (k) => k;
       const deployments = data?.deployments || [];
       const count = deployments.length;
       const active = deployments.find(
@@ -548,7 +612,7 @@
             <a class="card-name" href="../${customer.slug}/" target="_blank">${customer.name}</a>
             <div class="identity-meta">
               ${active ? statusPill(active.status) : ''}
-              <span class="card-count">${count} DTS</span>
+              <span class="card-count">${T('dtsCount', { n: count })}</span>
             </div>
           </div>`;
 
@@ -557,7 +621,7 @@
           <div class="card-accent"></div>
           <div class="card-body">
             ${identity}
-            <span class="empty-text">No deployments yet</span>
+            <span class="empty-text">${T('noDeployments')}</span>
           </div>
         </div>`;
       }
@@ -572,15 +636,15 @@
           <div class="ticket-row">
             <span class="stub-id">${active.ticketNumber}</span>
             <div class="stat-block">
-              <div class="meta-label">Created</div>
+              <div class="meta-label">${T('metaCreated')}</div>
               <div class="meta-value">${active.createDate || '—'}</div>
             </div>
             <div class="stat-block">
-              <div class="meta-label">Deploy</div>
+              <div class="meta-label">${T('metaDeploy')}</div>
               <div class="meta-value ${active.deployDate ? '' : 'na'}">${active.deployDate || '—'}</div>
             </div>
             <div class="stat-block">
-              <div class="meta-label">Tickets</div>
+              <div class="meta-label">${T('metaTickets')}</div>
               <div class="meta-value">${ticketCount}</div>
             </div>
             ${checklistProgressHtml(customer.slug, activeIdx, active.checklist)}
@@ -601,18 +665,23 @@
       }
     }
 
-    async function init() {
-      const [customers] = await Promise.all([loadCustomerList(), loadChecklistDefinition()]);
-      if (!customers.length) {
+    // Cached across renders so a language toggle can redraw everything from
+    // memory instead of re-fetching every customer's data.json.
+    let cachedCustomers = [];
+    let cachedResults = [];
+    let cachedLastSyncedAt = null;
+
+    function renderGridAndStats() {
+      const T = window.DtsI18n ? window.DtsI18n.t : (k) => k;
+      if (!cachedCustomers.length) {
         document.getElementById('grid').innerHTML =
-          '<p style="color:#8b949e;font-size:13px;">Could not load account-map.json — no customers to show.</p>';
+          `<p style="color:#8b949e;font-size:13px;">${T('couldNotLoad')}</p>`;
         return;
       }
-      const results = await Promise.all(customers.map((c, i) => loadCustomer(c, i)));
-      document.getElementById('grid').innerHTML = results.map(r => r.html).join('');
+      document.getElementById('grid').innerHTML = cachedResults.map(r => r.html).join('');
 
       let open = 0, scheduled = 0, closed = 0;
-      results.forEach(({ data }) => {
+      cachedResults.forEach(({ data }) => {
         const deps = data?.deployments;
         if (!deps?.length) return;
         const s = (deps[deps.length - 1].status || '').toLowerCase();
@@ -622,13 +691,36 @@
       });
 
       const pills = [];
-      if (open)      pills.push(`<div class="stat-pill"><div class="stat-dot open"></div>${open} Open</div>`);
-      if (scheduled) pills.push(`<div class="stat-pill"><div class="stat-dot scheduled"></div>${scheduled} Scheduled</div>`);
-      if (closed)    pills.push(`<div class="stat-pill"><div class="stat-dot closed"></div>${closed} Closed</div>`);
+      if (open)      pills.push(`<div class="stat-pill"><div class="stat-dot open"></div>${open} ${T('statusOpen')}</div>`);
+      if (scheduled) pills.push(`<div class="stat-pill"><div class="stat-dot scheduled"></div>${scheduled} ${T('statusScheduled')}</div>`);
+      if (closed)    pills.push(`<div class="stat-pill"><div class="stat-dot closed"></div>${closed} ${T('statusClosed')}</div>`);
       document.getElementById('stats-bar').innerHTML = pills.join('');
     }
 
+    async function init() {
+      const [{ customers, lastSyncedAt }] = await Promise.all([loadCustomerList(), loadChecklistDefinition()]);
+      cachedCustomers = customers;
+      cachedLastSyncedAt = lastSyncedAt;
+
+      renderSyncStatus(lastSyncedAt);
+      if (lastSyncedAt) {
+        setInterval(() => renderSyncStatus(lastSyncedAt), 30000);
+      }
+
+      if (!customers.length) {
+        renderGridAndStats();
+        return;
+      }
+      cachedResults = await Promise.all(customers.map((c, i) => loadCustomer(c, i)));
+      renderGridAndStats();
+    }
+
     init();
+
+    window.addEventListener('dts-lang-changed', () => {
+      renderGridAndStats();
+      renderSyncStatus(cachedLastSyncedAt);
+    });
 
     // ── Checklist modal ──
     const TOKEN_KEY = 'dts_editor_pat';
