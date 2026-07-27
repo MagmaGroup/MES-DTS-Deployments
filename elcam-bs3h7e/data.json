@@ -8,7 +8,7 @@
       "createDate": "08.07.2026",
       "deployDate": "01.09.2026",
       "closeDate": null,
-      "ticketCount": 8,
+      "ticketCount": 10,
       "url": "DTS_00002.html",
       "tickets": [
         {
@@ -92,6 +92,28 @@
           "contentLocked": false,
           "originalDescription": "לוט:2601431303מנסה להוסיף שקית 1כמות 0.660",
           "description": "לוט:2601431303מנסה להוסיף שקית 1כמות 0.660",
+          "testSteps": []
+        },
+        {
+          "number": "2830",
+          "subject": "בקשה לתוספת הרשאה במסך Oven Process",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "היי,כיום, על מנת לאפשר למתחזקי משמרת להפעיל תנורים במסך Oven Process https://elsfol.elcam.co.il/sfolv7/#4/grid/_MG_OvenProcessנדרש לתת להם הרשאות מסוג Supervisor או Support. הרשאות אלו רחבות מדי ולא ניתן להקצות אותן לכל משתמש ב-MES.אשמח אם תוכלו להוסיף הרשאה מתאימה לתפקיד WO Scheduler תחת ה-Security Role, כך שהם יוכלו לבצע את הפעולה ללא צורך בהרשאות המורחבות.תודה,",
+          "description": "היי,כיום, על מנת לאפשר למתחזקי משמרת להפעיל תנורים במסך Oven Process https://elsfol.elcam.co.il/sfolv7/#4/grid/_MG_OvenProcessנדרש לתת להם הרשאות מסוג Supervisor או Support. הרשאות אלו רחבות מדי ולא ניתן להקצות אותן לכל משתמש ב-MES.אשמח אם תוכלו להוסיף הרשאה מתאימה לתפקיד WO Scheduler תחת ה-Security Role, כך שהם יוכלו לבצע את הפעולה ללא צורך בהרשאות המורחבות.תודה,",
+          "testSteps": []
+        },
+        {
+          "number": "2638",
+          "subject": "חוסר סנכרון בהגדרות הטריגרים בין ממשקי ה-Document",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "קיים חוסר התאמה בהגדרות בין הממשקים: בממשק Document Upload Logic כל ה-Triggers מוגדרים על New lot, אך הגדרה זו אינה באה לידי ביטוי ואינה מסונכרנת בממשק Process Upload Docs For Lot. נשמח לסנכרון ההגדרות.",
+          "description": "קיים חוסר התאמה בהגדרות בין הממשקים: בממשק Document Upload Logic כל ה-Triggers מוגדרים על New lot, אך הגדרה זו אינה באה לידי ביטוי ואינה מסונכרנת בממשק Process Upload Docs For Lot. נשמח לסנכרון ההגדרות.",
           "testSteps": []
         }
       ]
