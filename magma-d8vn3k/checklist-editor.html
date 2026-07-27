@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magma — Checklist Editor</title>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -18,7 +18,7 @@
     }
 
     body {
-      font-family: 'Heebo', Arial, sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Heebo', Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
@@ -61,18 +61,22 @@
 
     /* ── Phase blocks ── */
     .phase-block {
-      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-left: 4px solid #2563eb; border-radius: 12px;
       padding: 16px 18px; margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 4px 14px rgba(15,23,42,0.03);
     }
     .phase-head {
       display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
       margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--card-border);
     }
     .phase-label-input {
-      font-size: 14px; font-weight: 800; color: var(--text); border: none; background: none;
-      outline: none; flex: 1; min-width: 160px; padding: 3px 4px; border-radius: 4px;
+      font-size: 15px; font-weight: 800; color: var(--text); border: 1px solid transparent; background: none;
+      outline: none; flex: 1; min-width: 160px; padding: 4px 7px; border-radius: 6px;
+      transition: background 0.12s, border-color 0.12s;
     }
-    .phase-label-input:hover, .phase-label-input:focus { background: var(--bg); }
+    .phase-label-input:hover { background: var(--bg); border-color: var(--card-border); }
+    .phase-label-input:focus { background: #fff; border-color: #2563eb; }
     .phase-key {
       font-size: 10px; font-family: monospace; color: var(--text-dim); background: var(--bg);
       padding: 2px 7px; border-radius: 10px; white-space: nowrap;
@@ -106,15 +110,19 @@
     .add-item-form .label-input { flex: 1; }
 
     .item-row {
-      display: flex; align-items: center; gap: 8px; padding: 6px 0;
-      border-bottom: 1px solid #f2f5fa;
+      display: flex; align-items: center; gap: 8px; padding: 7px 6px;
+      border-bottom: 1px solid #f2f5fa; border-radius: 6px;
+      transition: background 0.12s;
     }
+    .item-row:hover { background: #f7f9fc; }
     .item-row:last-of-type { border-bottom: none; }
     .item-row .label-input {
       flex: 1; border: 1px solid transparent; border-radius: 6px; padding: 6px 8px;
-      font-size: 13px; color: var(--text); outline: none; background: none;
+      font-size: 13.5px; color: var(--text); outline: none; background: none;
+      transition: background 0.12s, border-color 0.12s;
     }
-    .item-row .label-input:hover, .item-row .label-input:focus { border-color: var(--card-border); background: var(--bg); }
+    .item-row .label-input:hover { border-color: var(--card-border); background: #fff; }
+    .item-row .label-input:focus { border-color: #2563eb; background: #fff; }
     .item-id {
       font-size: 10px; font-family: monospace; color: var(--text-dim); white-space: nowrap;
       max-width: 150px; overflow: hidden; text-overflow: ellipsis;
