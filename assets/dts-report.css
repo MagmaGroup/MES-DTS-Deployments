@@ -129,7 +129,6 @@ main {
 .ticket-badges { display: flex; gap: 6px; flex-wrap: wrap; }
 .ticket-subject { font-size: 17px; font-weight: 700; color: var(--text); margin: 12px 0 3px; }
 .ticket-assignee { font-size: 12.5px; color: var(--text-dim); margin-bottom: 4px; }
-
 .ticket-section { margin-top: 18px; }
 .ticket-section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 6px; }
 .ticket-description { font-size: 14px; line-height: 1.65; color: var(--text); white-space: pre-wrap; }
@@ -139,6 +138,7 @@ main {
 }
 .test-steps { font-size: 14px; line-height: 1.75; color: var(--text); padding-inline-start: 22px; }
 .test-steps li { margin-bottom: 5px; }
+.na-block { font-size: 13.5px; color: var(--text-dim); }
 
 .empty-block {
   text-align: center;

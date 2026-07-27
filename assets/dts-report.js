@@ -81,7 +81,7 @@
         </div>
         <div class="ticket-badges">${badges.join('')}</div>
       </div>
-      <div class="ticket-subject" dir="auto">${escapeHtml(tk.subject)}</div>
+<div class="ticket-subject" dir="auto">${escapeHtml(tk.subject)}</div>
       <div class="ticket-assignee">${tk.assignee ? t('assignedTo', { name: escapeHtml(tk.assignee) }) : ''}</div>
       ${sections.join('')}
     </div>`;
