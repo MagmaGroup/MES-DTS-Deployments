@@ -14,6 +14,13 @@
     return window.DtsI18n ? window.DtsI18n.t(key, vars) : key;
   }
 
+  // Guards against a stale cached copy of dts-i18n.js (from before a given
+  // helper existed) being loaded alongside a fresh copy of this file — never
+  // let a version mismatch between the two shared assets crash the render.
+  function isRtl() {
+    return !!(window.DtsI18n && typeof window.DtsI18n.isRtl === 'function' && window.DtsI18n.isRtl());
+  }
+
   function escapeHtml(str) {
     const div = document.createElement('div');
     div.textContent = str == null ? '' : String(str);
@@ -111,7 +118,7 @@
   }
 
   function backLinkHtml() {
-    const arrow = window.DtsI18n && window.DtsI18n.isRtl() ? '&rarr;' : '&larr;';
+    const arrow = isRtl() ? '&rarr;' : '&larr;';
     return `<a class="back-link" href="./index.html">${arrow} ${t('backToHistory')}</a>`;
   }
 

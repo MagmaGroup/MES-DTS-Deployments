@@ -21,6 +21,13 @@
     return window.DtsI18n ? window.DtsI18n.t(key, vars) : key;
   }
 
+  // Guards against a stale cached copy of dts-i18n.js (from before a given
+  // helper existed) being loaded alongside a fresh copy of this file — never
+  // let a version mismatch between the two shared assets crash the render.
+  function isRtl() {
+    return !!(window.DtsI18n && typeof window.DtsI18n.isRtl === 'function' && window.DtsI18n.isRtl());
+  }
+
   function badgeHtml(status) {
     const s = (status || '').toLowerCase();
     if (s === 'open')      return `<span class="badge badge-open"><span class="badge-dot"></span>${t('statusOpen')}</span>`;
@@ -54,7 +61,7 @@
         <div><div class="meta-col-label">${t('metaTickets')}</div><div class="meta-col-value">${count}</div></div>
       </div>
       <div class="deploy-footer">
-        <a class="view-link" href="${escapeHtml(dep.url)}" target="_blank">${t('viewReport')} ${window.DtsI18n && window.DtsI18n.isRtl() ? '←' : '→'}</a>
+        <a class="view-link" href="${escapeHtml(dep.url)}" target="_blank">${t('viewReport')} ${isRtl() ? '←' : '→'}</a>
       </div>
     </div>`;
   }
