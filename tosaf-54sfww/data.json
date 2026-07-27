@@ -8,7 +8,7 @@
       "createDate": "13.07.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 1,
+      "ticketCount": 2,
       "url": "DTS_00005.html",
       "tickets": [
         {
@@ -19,6 +19,17 @@
           "isCR": false,
           "contentLocked": false,
           "description": "חיפשתי את זה בכל התרגומים,לא מצאתי את זהלמעלה-סיבות לאיפוס סילולמטה לתרגם את השורות לעברית",
+          "testSteps": []
+        },
+        {
+          "number": "2841",
+          "subject": "eco לא עובר",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "26F00065לא עובר למרות שהכל מוגדר26F00064 הייתה אותה בעיהבדיקתכם",
+          "description": "26F00065לא עובר למרות שהכל מוגדר26F00064 הייתה אותה בעיהבדיקתכם",
           "testSteps": []
         }
       ],
