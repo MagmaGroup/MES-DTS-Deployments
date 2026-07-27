@@ -8,7 +8,7 @@
       "createDate": "13.07.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 2,
+      "ticketCount": 3,
       "url": "DTS_00005.html",
       "tickets": [
         {
@@ -30,6 +30,17 @@
           "contentLocked": false,
           "originalDescription": "26F00065לא עובר למרות שהכל מוגדר26F00064 הייתה אותה בעיהבדיקתכם",
           "description": "26F00065לא עובר למרות שהכל מוגדר26F00064 הייתה אותה בעיהבדיקתכם",
+          "testSteps": []
+        },
+        {
+          "number": "2833",
+          "subject": "מקט טחון לא עובר למס",
+          "assignee": "ayala rov",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "RPN28575Tלפי הDTSהיה אמור להיכנס משהו שמטפל בזה,אז עדיין זה לא טופל ולא עובד",
+          "description": "RPN28575Tלפי הDTSהיה אמור להיכנס משהו שמטפל בזה,אז עדיין זה לא טופל ולא עובד",
           "testSteps": []
         }
       ],
