@@ -25,11 +25,14 @@ Both URLs are internal-only (security by obscurity — not linked publicly).
 
 ```
 MES-DTS-Deployments/
-├── account-map.json         ← accountId → {slug, name, color} — single source of truth
+├── account-map.json         ← accountId → {slug, name, color} — single source of truth,
+│                                 plus `lastSyncedAt` (ISO timestamp of the last sync that
+│                                 actually changed something — dashboard shows this live)
 ├── assets/
 │   ├── dts-history.js       ← renders every customer index.html from its data.json
 │   ├── dts-report.js        ← renders every DTS_#####.html report from its data.json
-│   └── dts-report.css       ← shared styling for report pages
+│   ├── dts-report.css       ← shared styling for report pages
+│   └── dts-i18n.js          ← EN/HE glossary + language toggle (chrome only, see below)
 ├── magma-d8vn3k/             ← Internal tools
 │   ├── index.html           ← Dashboard (dynamic customer list from account-map.json)
 │   └── editor.html          ← Content editor — writes data.json only, nothing else
@@ -202,6 +205,31 @@ Content Editor (browser, magma-d8vn3k/editor.html)
 
 There is no "generate report" or "update index" step anywhere in this workflow — both were
 retired once the pages moved to rendering live from `data.json`.
+
+---
+
+## EN/HE Language Toggle
+
+Every customer-facing page (dashboard, each customer's history page, every report page)
+has a language button (`עב` / `EN`) in the header that flips page **chrome** — labels,
+section headings, status badges, button text — between English and Hebrew, and flips
+the page `dir` between `ltr`/`rtl` to match.
+
+**It never translates ticket content.** Subject, original description, AI summary, and
+test steps are always shown exactly as submitted/generated, in whatever language they're
+actually written in — `dir="auto"` on those specific elements lets the browser render
+Hebrew or English content correctly regardless of the page's own chrome language.
+
+Implementation: `assets/dts-i18n.js` holds a small `en`/`he` key→string glossary (~30
+fixed UI strings) and:
+- `DtsI18n.t(key, vars)` — used by the dashboard's, history page's, and report page's own
+  JS wherever a label is generated dynamically (status badges, meta labels, filter pills, etc.)
+- `data-i18n="key"` attributes — used for static text baked into each page's HTML
+  (headers, buttons); optionally paired with `data-i18n-vars='{"name":"..."}'` for
+  per-page substitutions like a customer's name.
+- The chosen language persists via `localStorage` (`dts_lang`) so it's remembered across
+  page visits, and a `dts-lang-changed` event lets each page's renderer redraw its
+  already-fetched data in the new language without re-fetching `data.json`.
 
 ---
 

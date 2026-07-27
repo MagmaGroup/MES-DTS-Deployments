@@ -223,8 +223,8 @@ async function listAccounts() {
 }
 
 // ---------------------------------------------------------------------------
-// Step 2 — thread + comment fetch, for AI context only (new tickets only,
-// called lazily from the main loop below — never for already-tracked tickets)
+// Thread + comment fetch, for AI context only (new tickets only, called
+// lazily from the main loop below — never for already-tracked tickets)
 // ---------------------------------------------------------------------------
 
 async function fetchTicketThreads(ticketId) {
@@ -421,16 +421,17 @@ async function writeJson(filePath, data) {
 }
 
 const REPORT_SHELL = `<!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>DTS Report</title>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/dts-report.css" />
 </head>
 <body>
   <div id="dts-report"></div>
+  <script src="../assets/dts-i18n.js"></script>
   <script src="../assets/dts-report.js"></script>
 </body>
 </html>
@@ -632,11 +633,17 @@ async function main() {
     touchedSlugs.add(entry.slug);
   }
 
-  if (accountMapChanged) {
+  // `lastSyncedAt` reflects the last time the sync actually changed
+  // something — not every hourly tick, which would otherwise mean a commit
+  // (and a Pages redeploy) every single hour even when nothing happened.
+  // The dashboard reads this to show a live "synced X ago" readout.
+  const anyChange = touchedSlugs.size > 0 || accountMapChanged;
+  if (anyChange) {
+    accountMap.lastSyncedAt = new Date().toISOString();
     await writeJson(accountMapPath, accountMap);
   }
 
-  if (touchedSlugs.size === 0 && !accountMapChanged) {
+  if (!anyChange) {
     console.log("All tickets already accounted for. Nothing to sync.");
     return;
   }

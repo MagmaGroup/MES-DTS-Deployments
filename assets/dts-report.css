@@ -1,66 +1,86 @@
 /* Shared styling for every DTS_XXXXX.html deployment report page.
    One visual family across all customers — the accent color (fetched from
    account-map.json based on the folder's customer slug) is the only thing
-   that varies per customer. */
-* , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+   that varies per customer. Matches the design language used by the
+   dashboard (magma-d8vn3k) and each customer's history page (index.html):
+   Plus Jakarta Sans, a space-to-daylight header gradient, wide cards with
+   details laid out side by side. */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #f2f4fa;
+  --card-bg:      #ffffff;
+  --card-border:  #e3e7f1;
+  --text:         #171d33;
+  --text-muted:   #667089;
+  --text-dim:     #9aa3ba;
+}
 
 body {
-  font-family: 'Heebo', Arial, sans-serif;
-  background: #eef2f8;
-  color: #1a2340;
+  font-family: 'Plus Jakarta Sans', 'Heebo', Arial, sans-serif;
+  background-color: var(--bg);
+  background-image: linear-gradient(180deg,
+    #070b16 0%, #0d1326 12%, #1b2648 26%, #3a4a78 40%,
+    #7188b8 55%, #c3d0ea 65%, var(--bg) 78%);
+  background-repeat: no-repeat;
+  background-size: 100% 460px;
+  color: var(--text);
   min-height: 100vh;
 }
 
+.star-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 280px; pointer-events: none; z-index: 0; }
+
 main {
-  max-width: 860px;
+  position: relative; z-index: 1;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 40px 24px 72px;
+  padding: 40px 28px 72px;
 }
 
+.report-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; margin-bottom: 20px;
+}
 .back-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.85rem;
+  font-size: 13px;
   font-weight: 700;
-  color: #1a2340;
+  color: rgba(255,255,255,0.85);
   text-decoration: none;
-  margin-bottom: 24px;
   padding: 9px 18px;
-  background: #fff;
-  border: 1px solid #dbe4f3;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.16);
   border-radius: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
-.back-link:hover {
-  background: var(--accent, #38bdf8);
-  border-color: var(--accent, #38bdf8);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transform: translateY(-1px);
-}
+.back-link:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
 
-/* ── Report header ── */
-.report-header {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 8px 20px rgba(0,0,0,0.04);
-  border-top: 5px solid var(--accent, #38bdf8);
-  padding: 28px 32px;
-  margin-bottom: 24px;
+.lang-toggle-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.08); color: #d7deef;
+  font-size: 12.5px; font-weight: 800; letter-spacing: 0.3px;
+  padding: 9px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.16);
+  cursor: pointer; font-family: inherit;
+  transition: background 0.15s, border-color 0.15s;
 }
+.lang-toggle-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+
+/* ── Report header — sits directly on the page gradient, no card of its own,
+   consistent with the dashboard/history header treatment ── */
+.report-header { padding: 4px 4px 8px; margin-bottom: 28px; }
 .report-pill {
   display: inline-block;
   background: var(--accent, #38bdf8);
   color: #fff;
-  font-size: 0.65rem;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 4px 12px;
+  padding: 5px 15px;
   border-radius: 20px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 .report-head-row {
   display: flex;
@@ -70,46 +90,64 @@ main {
   gap: 12px;
   margin-bottom: 6px;
 }
-.report-id { font-size: 1.7rem; font-weight: 900; letter-spacing: -0.5px; }
-.report-title { font-size: 0.95rem; color: #475569; font-weight: 500; margin-bottom: 20px; }
+.report-id { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.6px; color: #fff; }
+.report-title { font-size: 14px; color: rgba(255,255,255,0.6); font-weight: 500; margin-bottom: 22px; }
 
-.badge { display: inline-flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.4px; white-space: nowrap; }
+.badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.3px; white-space: nowrap; }
 .badge-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; background: currentColor; }
-.badge-open      { background: #dcfce7; color: #166534; }
-.badge-scheduled { background: #fef9c3; color: #854d0e; }
+.badge-open      { background: #dcfce7; color: #15803d; }
+.badge-scheduled { background: #fef9c3; color: #92400e; }
 .badge-closed    { background: #f1f5f9; color: #64748b; }
 .badge-cr        { background: #ede9fe; color: #6d28d9; }
 .badge-locked    { background: #f1f5f9; color: #64748b; }
 
-.report-meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding-top: 18px; border-top: 1px solid #f0f4ff; }
-.meta-col-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #94a3b8; margin-bottom: 4px; }
-.meta-col-value { font-size: 0.92rem; font-weight: 700; color: #1a2340; }
-.meta-col-value.na { color: #cbd5e1; font-weight: 400; }
-@media (max-width: 640px) { .report-meta { grid-template-columns: repeat(2, 1fr); } }
+/* Meta row — wide, side by side, sits inside a light card like the rest of
+   the page content (this part is below the gradient's fully-light zone) */
+.report-meta {
+  display: flex; flex-wrap: wrap; gap: 28px;
+  background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px;
+  padding: 20px 26px;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05), 0 6px 20px rgba(15,23,42,0.04);
+}
+.report-meta > div { display: flex; flex-direction: column; gap: 3px; min-width: 80px; }
+.meta-col-label { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); }
+.meta-col-value { font-size: 15px; font-weight: 700; color: var(--text); }
+.meta-col-value.na { color: var(--text-dim); font-weight: 400; }
 
 /* ── Ticket cards ── */
-.tickets-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #64748b; margin: 4px 0 12px 4px; }
-.ticket-list { display: flex; flex-direction: column; gap: 14px; }
-.ticket-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 8px 20px rgba(0,0,0,0.04); border-left: 4px solid var(--accent, #38bdf8); padding: 22px 26px; }
+.tickets-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin: 28px 0 12px 2px; }
+.ticket-list { display: flex; flex-direction: column; gap: 16px; }
+.ticket-card {
+  background: var(--card-bg); border: 1px solid var(--card-border);
+  border-left: 6px solid var(--accent, #38bdf8);
+  border-radius: 14px; padding: 24px 28px;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05), 0 6px 20px rgba(15,23,42,0.04);
+}
 .ticket-card-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 6px; }
 .ticket-head-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.ticket-number { font-weight: 900; font-size: 1.05rem; color: #1a2340; }
+.ticket-number { font-weight: 800; font-size: 17px; color: var(--text); }
 .ticket-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-.ticket-subject { font-size: 0.95rem; font-weight: 600; color: #1a2340; margin: 10px 0 4px; }
-.ticket-assignee { font-size: 0.78rem; color: #94a3b8; margin-bottom: 14px; }
-.ticket-section-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; margin: 14px 0 6px; }
-.ticket-description { font-size: 0.88rem; line-height: 1.6; color: #334155; white-space: pre-wrap; }
-.ticket-original-description { font-size: 0.85rem; line-height: 1.6; color: #64748b; white-space: pre-wrap; font-style: italic; padding-inline-start: 10px; border-inline-start: 2px solid #e2e8f0; }
-.test-steps { font-size: 0.88rem; line-height: 1.7; color: #334155; padding-inline-start: 20px; }
-.test-steps li { margin-bottom: 4px; }
-.na-block { font-size: 0.85rem; color: #cbd5e1; }
+.ticket-subject { font-size: 17px; font-weight: 700; color: var(--text); margin: 12px 0 3px; }
+.ticket-assignee { font-size: 12.5px; color: var(--text-dim); margin-bottom: 4px; }
+.ticket-section { margin-top: 18px; }
+.ticket-section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 6px; }
+.ticket-description { font-size: 14px; line-height: 1.65; color: var(--text); white-space: pre-wrap; }
+.ticket-original-description {
+  font-size: 13.5px; line-height: 1.6; color: var(--text-muted); white-space: pre-wrap;
+  font-style: italic; padding-inline-start: 12px; border-inline-start: 2px solid var(--card-border);
+}
+.test-steps { font-size: 14px; line-height: 1.75; color: var(--text); padding-inline-start: 22px; }
+.test-steps li { margin-bottom: 5px; }
+.na-block { font-size: 13.5px; color: var(--text-dim); }
 
 .empty-block {
   text-align: center;
-  color: #c5cfe8;
-  font-size: 0.95rem;
+  color: var(--text-dim);
+  font-size: 14px;
   padding: 64px 24px;
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
+
+@media (max-width: 640px) { .report-meta { gap: 18px; } }
