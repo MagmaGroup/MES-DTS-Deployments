@@ -8,7 +8,7 @@
       "createDate": "08.07.2026",
       "deployDate": "01.09.2026",
       "closeDate": null,
-      "ticketCount": 7,
+      "ticketCount": 8,
       "url": "DTS_00002.html",
       "tickets": [
         {
@@ -81,6 +81,17 @@
           "isCR": false,
           "contentLocked": false,
           "description": "היי , לפני כמה ימים נתקלתי בבעיה הזו,ביקורת לשקילת דבק לא עולה כל שעתיים במחזורי , פעם אחרונה אלדן פתר אתזה ,אשמח אם תוכלו לתת עדיפות כי זה בייצור ואם אפשר לדעת מה הבעיה , כי עובד במפרט אחר וכן המשימה עולה אוטומטית",
+          "testSteps": []
+        },
+        {
+          "number": "2818",
+          "subject": "הוספת שקית נכשלת - לישראלה",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "לוט:2601431303מנסה להוסיף שקית 1כמות 0.660",
+          "description": "לוט:2601431303מנסה להוסיף שקית 1כמות 0.660",
           "testSteps": []
         }
       ]
