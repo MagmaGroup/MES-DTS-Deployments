@@ -8,7 +8,7 @@
       "createDate": "08.07.2026",
       "deployDate": "01.09.2026",
       "closeDate": null,
-      "ticketCount": 10,
+      "ticketCount": 11,
       "url": "DTS_00002.html",
       "tickets": [
         {
@@ -114,6 +114,17 @@
           "contentLocked": false,
           "originalDescription": "קיים חוסר התאמה בהגדרות בין הממשקים: בממשק Document Upload Logic כל ה-Triggers מוגדרים על New lot, אך הגדרה זו אינה באה לידי ביטוי ואינה מסונכרנת בממשק Process Upload Docs For Lot. נשמח לסנכרון ההגדרות.",
           "description": "קיים חוסר התאמה בהגדרות בין הממשקים: בממשק Document Upload Logic כל ה-Triggers מוגדרים על New lot, אך הגדרה זו אינה באה לידי ביטוי ואינה מסונכרנת בממשק Process Upload Docs For Lot. נשמח לסנכרון ההגדרות.",
+          "testSteps": []
+        },
+        {
+          "number": "2363",
+          "subject": "אפשרות לביצוע בדיקה שבוטלה",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": true,
+          "contentLocked": false,
+          "originalDescription": "יש להוסיף אפשרות לביצוע בדיקה שבוצעה",
+          "description": "יש להוסיף אפשרות לביצוע בדיקה שבוצעה",
           "testSteps": []
         }
       ]
