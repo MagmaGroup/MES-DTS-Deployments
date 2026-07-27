@@ -4,52 +4,57 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Magma — DTS Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:           #eef2f8;
+      --bg:           #f2f4fa;
       --card-bg:      #ffffff;
-      --card-border:  #e2e8f2;
-      --text:         #1a2340;
-      --text-muted:   #64748b;
-      --text-dim:     #a0aec0;
+      --card-border:  #e3e7f1;
+      --text:         #171d33;
+      --text-muted:   #667089;
+      --text-dim:     #9aa3ba;
     }
 
     body {
-      font-family: 'Heebo', Arial, sans-serif;
-      background: var(--bg);
+      font-family: 'Plus Jakarta Sans', 'Heebo', Arial, sans-serif;
+      background-color: var(--bg);
+      background-image: linear-gradient(180deg,
+        #070b16 0%,
+        #0c1224 8%,
+        #141c34 16%,
+        #212c4c 26%,
+        #38456f 37%,
+        #6478a0 48%,
+        #9fb0d2 58%,
+        #cddaf0 68%,
+        #e9eefb 80%,
+        var(--bg) 92%
+      );
+      background-repeat: no-repeat;
+      background-size: 100% 820px;
       color: var(--text);
       min-height: 100vh;
     }
 
-    /* ── Header ── */
+    /* ── Header — sits on the dark part of the body's space-to-daylight
+       gradient, no background of its own so the transition is continuous ── */
     .page-header {
-      background: linear-gradient(180deg, #060d1f 0%, #0a1628 100%);
-      border-bottom: 1px solid #1a2744;
-      padding: 32px 40px 28px;
+      padding: 40px 44px 34px;
       position: relative;
-      overflow: hidden;
-    }
-    .page-header::after {
-      content: '';
-      position: absolute;
-      top: -80px; left: 50%;
-      transform: translateX(-50%);
-      width: 900px; height: 500px;
-      background: radial-gradient(ellipse, rgba(56,139,253,0.08) 0%, transparent 60%);
-      pointer-events: none;
+      overflow: visible;
     }
     .star-canvas {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 520px;
       pointer-events: none; z-index: 0;
     }
     .header-inner {
       position: relative; z-index: 1;
       display: flex; align-items: flex-end;
       justify-content: space-between; gap: 32px;
+      max-width: 1700px; margin: 0 auto;
     }
     .header-left { flex: 1; }
     .header-rocket {
@@ -59,27 +64,25 @@
     }
 
     .brand {
-      font-size: 10px;
-      letter-spacing: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 20px;
+      color: #7c8bb5;
+      margin-bottom: 18px;
     }
     .page-header h1 {
-      font-size: 44px;
-      font-weight: 900;
-      letter-spacing: -1.5px;
-      background: linear-gradient(135deg, #ffffff 30%, #8ab4d8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: 46px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #fff;
       margin-bottom: 8px;
       line-height: 1.1;
     }
     .subtitle {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 32px;
+      font-size: 14px;
+      color: #94a1c4;
+      margin-bottom: 28px;
     }
 
     /* Stats pills */
@@ -88,24 +91,24 @@
       justify-content: flex-start;
       gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       min-height: 34px;
     }
     .stat-pill {
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px;
-      padding: 6px 16px;
-      font-size: 13px;
+      padding: 8px 18px;
+      font-size: 14px;
       font-weight: 700;
-      color: rgba(255,255,255,0.7);
+      color: rgba(255,255,255,0.85);
     }
     .stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .stat-dot.open      { background: #3fb950; box-shadow: 0 0 8px #3fb95088; }
-    .stat-dot.scheduled { background: #d29922; box-shadow: 0 0 8px #d2992288; }
+    .stat-dot.open      { background: #3fb950; }
+    .stat-dot.scheduled { background: #d29922; }
     .stat-dot.closed    { background: #6e7681; }
 
     /* Edit button */
@@ -113,209 +116,175 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(56,139,253,0.1);
-      color: #58a6ff;
+      background: rgba(255,255,255,0.06);
+      color: #d7deef;
       font-size: 13px;
       font-weight: 700;
-      padding: 9px 22px;
+      padding: 10px 20px;
       border-radius: 8px;
       text-decoration: none;
-      border: 1px solid rgba(56,139,253,0.25);
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      border: 1px solid rgba(255,255,255,0.14);
+      transition: background 0.15s, border-color 0.15s;
     }
     .edit-btn:hover {
-      background: rgba(56,139,253,0.18);
-      border-color: rgba(56,139,253,0.5);
-      color: #79b8ff;
+      background: rgba(255,255,255,0.11);
+      border-color: rgba(255,255,255,0.24);
     }
 
     /* ── Grid ── */
     .grid-wrap {
-      max-width: 1200px;
+      max-width: 1700px;
       margin: 0 auto;
-      padding: 40px 28px 80px;
+      padding: 36px 32px 90px;
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+      gap: 18px;
     }
-    @media (max-width: 1300px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-    @media (max-width: 1000px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 680px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 420px)  { .grid { grid-template-columns: 1fr; } }
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
 
-    /* ── Card ── */
+    /* ── Card — wide, thin, details laid out side by side ── */
     .card {
       position: relative;
+      display: flex;
+      align-items: stretch;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      text-decoration: none;
-      color: var(--text);
-      overflow: visible;
-      display: flex;
-      flex-direction: column;
+      border-radius: 14px;
+      overflow: hidden;
       opacity: 0;
-      animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-      transition: transform 0.22s cubic-bezier(0.22,1,0.36,1),
-                  border-color 0.22s,
-                  box-shadow 0.22s;
+      animation: fadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.05), 0 6px 20px rgba(15,23,42,0.04);
+      transition: transform 0.18s cubic-bezier(0.22,1,0.36,1),
+                  border-color 0.18s,
+                  box-shadow 0.18s;
     }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
+      from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .card:hover {
-      transform: translateY(-7px) scale(1.015);
-      border-color: var(--accent);
+      transform: translateY(-3px);
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--card-border));
       box-shadow:
-        0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
-        0 28px 72px color-mix(in srgb, var(--accent) 16%, transparent),
-        0 8px 24px rgba(0,0,0,0.4);
+        0 1px 0 1px color-mix(in srgb, var(--accent) 20%, transparent),
+        0 16px 36px color-mix(in srgb, var(--accent) 14%, transparent);
     }
 
     .card-accent {
-      height: 4px;
-      background: linear-gradient(90deg,
-        color-mix(in srgb, var(--accent) 60%, white),
-        var(--accent) 45%,
-        color-mix(in srgb, var(--accent) 70%, black));
+      width: 6px;
       flex-shrink: 0;
-      border-radius: 12px 12px 0 0;
-      transition: height 0.22s;
-    }
-    .card:hover .card-accent { height: 6px; }
-
-    /* ── Status ribbon — corner stamp, decoupled from the cramped stub row so it
-       can never collide with the DTS id regardless of how long the status word is ── */
-    .status-ribbon {
-      position: absolute;
-      top: -9px;
-      right: 14px;
-      z-index: 3;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-      padding: 5px 12px;
-      border-radius: 20px;
-      color: #fff;
-      white-space: nowrap;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.22), 0 0 0 3px var(--card-bg);
-      transform: rotate(2deg);
-      transition: transform 0.22s;
-    }
-    .card:hover .status-ribbon { transform: rotate(2deg) translateY(-2px); }
-    .status-ribbon.open       { background: linear-gradient(135deg, #46c85e, #2ea043); }
-    .status-ribbon.scheduled  { background: linear-gradient(135deg, #e0a930, #b8791a); }
-    .status-ribbon.closed     { background: linear-gradient(135deg, #7d8590, #565d68); }
-    .ribbon-dot { width: 5px; height: 5px; border-radius: 50%; background: #fff; flex-shrink: 0; }
-    .status-ribbon.open .ribbon-dot { animation: pulse-white 1.8s infinite; }
-    @keyframes pulse-white {
-      0%, 100% { box-shadow: 0 0 3px rgba(255,255,255,0.7); }
-      50%      { box-shadow: 0 0 9px rgba(255,255,255,1), 0 0 16px rgba(255,255,255,0.6); }
+      background: var(--accent);
     }
 
     .card-body {
-      padding: 18px 20px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      flex: 1;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .card-name {
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: -0.4px;
-      color: var(--accent);
-      line-height: 1.1;
-    }
-    .card-count {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.05);
-      color: var(--text-muted);
-      border: 1px solid rgba(255,255,255,0.08);
-      white-space: nowrap;
-      flex-shrink: 0;
-      margin-top: 4px;
-    }
-
-    /* ── Ticket stub ── */
-    .ticket-stub {
-      background: var(--bg);
-      border-radius: 10px;
-      padding: 14px 16px 12px;
-      border-left: 3px solid var(--accent);
-    }
-    .stub-head {
       display: flex;
       align-items: center;
-      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding: 22px 28px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-identity {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 150px;
+    }
+    .card-name {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: var(--accent);
+      line-height: 1.15;
+      text-decoration: none;
+    }
+    .identity-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .card-count {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: var(--bg);
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      white-space: nowrap;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .status-pill.open       { background: #2ea043; }
+    .status-pill.scheduled  { background: #b8791a; }
+    .status-pill.closed     { background: #6b7280; }
+    .status-dot { width: 5px; height: 5px; border-radius: 50%; background: #fff; flex-shrink: 0; }
+
+    .card-divider {
+      width: 1px;
+      align-self: stretch;
+      background: var(--card-border);
+      flex-shrink: 0;
+    }
+
+    /* ── Ticket details, laid out horizontally ── */
+    .ticket-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 28px;
+      flex: 1;
+      min-width: 0;
     }
     .stub-id {
-      font-size: 17px;
-      font-weight: 900;
-      letter-spacing: -0.3px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
       color: var(--text);
-      text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 45%, transparent);
+      white-space: nowrap;
     }
-    .stub-divider {
-      border-top: 1.5px dashed var(--card-border);
-      margin: 0 0 12px;
-    }
-    .stub-meta {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 12px;
+    .stat-block {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 58px;
     }
     .meta-label {
       font-size: 9.5px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.7px;
+      letter-spacing: 0.6px;
       color: var(--text-dim);
-      margin-bottom: 3px;
     }
     .meta-value {
-      font-size: 13px;
+      font-size: 14.5px;
       font-weight: 700;
       color: var(--text);
+      white-space: nowrap;
     }
     .meta-value.na { color: var(--text-dim); font-weight: 400; }
-    .stub-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 11px;
-      border-top: 1px solid var(--card-border);
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-    .stub-footer strong { color: var(--text); font-weight: 700; }
-
-    .card-name { text-decoration: none; }
 
     /* ── Checklist progress bar (on card) ── */
-    .checklist-bar-wrap { cursor: pointer; margin-top: 12px; }
+    .checklist-bar-wrap { cursor: pointer; min-width: 160px; flex: 1; max-width: 220px; }
     .checklist-bar-label {
       display: flex; justify-content: space-between; align-items: center;
       font-size: 9.5px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 5px;
+      letter-spacing: 0.5px; color: var(--text-dim); margin-bottom: 6px;
       transition: color 0.15s;
     }
     .checklist-bar-wrap:hover .checklist-bar-label { color: var(--accent); }
@@ -323,13 +292,13 @@
     .checklist-bar-track { height: 6px; border-radius: 4px; background: var(--card-border); overflow: hidden; }
     .checklist-bar-fill {
       height: 100%; border-radius: 4px;
-      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 70%, white), var(--accent));
+      background: color-mix(in srgb, var(--accent) 85%, black 0%);
       transition: width 0.25s;
     }
 
     /* ── Checklist modal ── */
     .cl-modal-backdrop {
-      position: fixed; inset: 0; background: rgba(6,10,20,0.6);
+      position: fixed; inset: 0; background: rgba(15,20,35,0.55);
       display: none; align-items: center; justify-content: center;
       z-index: 50; padding: 24px; backdrop-filter: blur(2px);
     }
@@ -337,10 +306,10 @@
     .cl-modal {
       background: #fff; border-radius: 14px; width: 100%; max-width: 640px;
       max-height: 85vh; overflow-y: auto; padding: 26px 28px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
     .cl-modal-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; gap: 12px; }
-    .cl-modal-title { font-size: 17px; font-weight: 900; color: var(--text); }
+    .cl-modal-title { font-size: 17px; font-weight: 800; color: var(--text); }
     .cl-modal-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
     .cl-modal-close { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--text-dim); line-height: 1; padding: 2px; }
     .cl-modal-close:hover { color: var(--text); }
@@ -408,21 +377,10 @@
     .cl-status.err { color: #dc2626; }
     .cl-status.ok  { color: #16a34a; }
 
-    /* Stats-bar pills (header) still use the plain .badge-less stat-pill/stat-dot
-       classes defined above — the per-card status indicator is .status-ribbon. */
-
     /* Empty */
-    .empty-state {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 28px 0 18px;
-      gap: 10px;
+    .empty-text {
+      font-size: 13px; color: var(--text-dim); font-weight: 500;
     }
-    .empty-icon { width: 28px; height: 28px; color: #d1dae8; }
-    .empty-text { font-size: 12px; color: var(--text-dim); font-weight: 500; }
 
     /* Footer */
     footer {
@@ -500,10 +458,6 @@
   </div>
 
   <script>
-    // The pre-deploy checklist definition (items/phases) used to be a hardcoded
-    // script tag; it's now assets/dts-checklist-data.json, fetched here so the
-    // Checklist Editor (checklist-editor.html) can manage it live via the
-    // GitHub Contents API without anyone editing JS by hand.
     async function loadChecklistDefinition() {
       try {
         const res = await fetch(`../assets/dts-checklist-data.json?_=${Date.now()}`);
@@ -521,11 +475,6 @@
       }
     }
 
-    // Customer list is no longer hardcoded — it's read from account-map.json,
-    // which the DTS sync keeps up to date automatically (new customers get
-    // appended there the first time they have a Waiting-DTS ticket). Colors
-    // are assigned deterministically from a fixed palette so a given slug
-    // always gets the same color across page loads.
     const palette = [
       '#818cf8', '#38bdf8', '#34d399', '#fbbf24', '#f87171',
       '#a78bfa', '#2dd4bf', '#fb923c', '#f472b6', '#60a5fa',
@@ -543,10 +492,6 @@
         const res = await fetch(`../account-map.json?_=${Date.now()}`);
         if (!res.ok) throw new Error();
         const map = await res.json();
-        // Prefer the customer's real brand color from account-map.json (the
-        // same color their own DTS page uses) so the two never disagree.
-        // Only hash-derive a color when none is on record yet — i.e. a
-        // freshly auto-created customer that hasn't been assigned one.
         return (map.customers || []).map((c) => ({
           name: c.name,
           slug: c.slug,
@@ -561,22 +506,13 @@
       day: '2-digit', month: '2-digit', year: 'numeric'
     });
 
-    const emptyIcon = `<svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.883 2.542l.857 6a2.25 2.25 0 002.227 1.932H19.05a2.25 2.25 0 002.227-1.932l.857-6a2.25 2.25 0 00-1.883-2.542m-16.5 0V6A2.25 2.25 0 016 3.75h3.879a1.5 1.5 0 011.06.44l2.122 2.12a1.5 1.5 0 001.06.44H18A2.25 2.25 0 0120.25 9v.776"/>
-    </svg>`;
-
-    function statusRibbon(status) {
+    function statusPill(status) {
       if (!status) return '';
       const s = status.toLowerCase();
       const label = s === 'open' ? 'Open' : s === 'scheduled' ? 'Scheduled' : s === 'closed' ? 'Closed' : status;
-      const dot = s === 'open' ? '<span class="ribbon-dot"></span>' : '';
+      const dot = s === 'open' ? '<span class="status-dot"></span>' : '';
       const cls = s === 'open' ? 'open' : s === 'scheduled' ? 'scheduled' : s === 'closed' ? 'closed' : '';
-      return `<span class="status-ribbon ${cls}">${dot}${label}</span>`;
-    }
-
-    function truncate(str, len) {
-      if (!str) return '';
-      return str.length > len ? str.slice(0, len) + '…' : str;
+      return `<span class="status-pill ${cls}">${dot}${label}</span>`;
     }
 
     // slug -> { customer, data } — kept live so the checklist modal can read
@@ -602,51 +538,50 @@
     function renderCard(customer, data, idx) {
       const deployments = data?.deployments || [];
       const count = deployments.length;
-      // Only surface a deployment on the dashboard if it's still active (Open
-      // or Scheduled). A Closed one has nothing pending, so it falls back to
-      // the empty state here — its history still lives on the customer's own page.
       const active = deployments.find(
         (d) => (d.status || '').toLowerCase() === 'open' || (d.status || '').toLowerCase() === 'scheduled'
       );
       const activeIdx = active ? deployments.indexOf(active) : -1;
 
-      const cardOpen = `<div class="card" style="--accent:${customer.color};animation-delay:${idx * 50}ms">
-        ${active ? statusRibbon(active.status) : ''}
-        <div class="card-accent"></div>
-        <div class="card-body">
-          <div class="card-header">
+      const identity = `
+          <div class="card-identity">
             <a class="card-name" href="../${customer.slug}/" target="_blank">${customer.name}</a>
-            <span class="card-count">${count} DTS</span>
+            <div class="identity-meta">
+              ${active ? statusPill(active.status) : ''}
+              <span class="card-count">${count} DTS</span>
+            </div>
           </div>`;
 
       if (!active) {
-        return cardOpen + `
-          <div class="empty-state">${emptyIcon}<span class="empty-text">No deployments yet</span></div>
-        </div>
-      </div>`;
+        return `<div class="card" style="--accent:${customer.color};animation-delay:${idx * 30}ms">
+          <div class="card-accent"></div>
+          <div class="card-body">
+            ${identity}
+            <span class="empty-text">No deployments yet</span>
+          </div>
+        </div>`;
       }
 
       const ticketCount = active.ticketCount || (active.tickets ? active.tickets.length : 0);
 
-      return cardOpen + `
-          <div class="ticket-stub">
-            <div class="stub-head">
-              <span class="stub-id">${active.ticketNumber}</span>
+      return `<div class="card" style="--accent:${customer.color};animation-delay:${idx * 30}ms">
+        <div class="card-accent"></div>
+        <div class="card-body">
+          ${identity}
+          <div class="card-divider"></div>
+          <div class="ticket-row">
+            <span class="stub-id">${active.ticketNumber}</span>
+            <div class="stat-block">
+              <div class="meta-label">Created</div>
+              <div class="meta-value">${active.createDate || '—'}</div>
             </div>
-            <div class="stub-divider"></div>
-            <div class="stub-meta">
-              <div>
-                <div class="meta-label">Created</div>
-                <div class="meta-value">${active.createDate || '—'}</div>
-              </div>
-              <div>
-                <div class="meta-label">Deploy</div>
-                <div class="meta-value ${active.deployDate ? '' : 'na'}">${active.deployDate || '—'}</div>
-              </div>
+            <div class="stat-block">
+              <div class="meta-label">Deploy</div>
+              <div class="meta-value ${active.deployDate ? '' : 'na'}">${active.deployDate || '—'}</div>
             </div>
-            <div class="stub-footer">
-              <span>Tickets</span>
-              <strong>${ticketCount}</strong>
+            <div class="stat-block">
+              <div class="meta-label">Tickets</div>
+              <div class="meta-value">${ticketCount}</div>
             </div>
             ${checklistProgressHtml(customer.slug, activeIdx, active.checklist)}
           </div>
@@ -696,15 +631,12 @@
     init();
 
     // ── Checklist modal ──
-    // Reuses the same GitHub token localStorage key as the Content Editor
-    // (magma-d8vn3k/editor.html) — same origin, so if a token's already been
-    // entered there it just works here too, no separate setup.
     const TOKEN_KEY = 'dts_editor_pat';
     const REPO = 'MagmaGroup/MES-DTS-Deployments';
 
-    let clCurrent = null;          // { slug, depIdx }
-    let clWorkingChecklist = {};   // in-progress edits before Save
-    let clDirty = false;           // true once anything's been toggled since open/save
+    let clCurrent = null;
+    let clWorkingChecklist = {};
+    let clDirty = false;
 
     function isValidLookingToken(pat) {
       return !!pat && (pat.startsWith('ghp_') || pat.startsWith('github_pat_') || pat.length >= 30);
@@ -740,8 +672,6 @@
       updateClProgress();
     }
 
-    // Live "X/22 complete" readout at the top of the modal — updates
-    // instantly on every checkbox toggle, before Save is even clicked.
     function updateClProgress() {
       const required = window.DTS_CHECKLIST_REQUIRED || [];
       const total = required.length;
@@ -751,9 +681,6 @@
       document.getElementById('cl-progress-fill').style.width = `${pct}%`;
     }
 
-    // Recomputes one phase's own count/checkmark/toggle-all label and patches
-    // just that phase's header in place (cheaper than a full re-render, and
-    // avoids fighting any other phase's manually-expanded/collapsed state).
     function updateClPhaseHeader(phase) {
       const items = window.DTS_CHECKLIST_ITEMS.filter((it) => it.phase === phase);
       const done = items.filter((it) => clWorkingChecklist[it.id]).length;
@@ -767,9 +694,6 @@
       return { done, total, phaseEl };
     }
 
-    // Manual expand/collapse — always available regardless of completeness,
-    // and never overridden by the auto-collapse-on-complete behavior below
-    // (that only fires from an actual checkbox toggle, not from this).
     function clTogglePhaseCollapse(phase) {
       const phaseEl = document.querySelector(`.cl-phase[data-phase="${phase}"]`);
       if (phaseEl) phaseEl.classList.toggle('collapsed');
@@ -783,9 +707,6 @@
       const item = window.DTS_CHECKLIST_ITEMS.find((it) => it.id === id);
       if (item) {
         const { done, total, phaseEl } = updateClPhaseHeader(item.phase);
-        // The moment a phase becomes fully checked, collapse it out of the
-        // way; the moment it's no longer complete, expand it back so the
-        // unchecked item is visible.
         if (phaseEl) phaseEl.classList.toggle('collapsed', done === total);
       }
       updateClProgress();
@@ -839,8 +760,6 @@
       document.getElementById('cl-backdrop').classList.add('open');
     }
 
-    // force=true skips the unsaved-changes prompt (used right after a
-    // successful Save, where there's nothing left to lose).
     function closeChecklistModal(force) {
       if (!force && clDirty) {
         const ok = confirm('You have unsaved checklist changes. Close without saving?');
@@ -857,8 +776,6 @@
       if (e.target.id === 'cl-backdrop') closeChecklistModal(false);
     });
 
-    // Minimal GitHub write client — mirrors editor.html's, kept separate so
-    // that file is never touched by this dashboard feature.
     async function ghFetch(path, opts = {}) {
       const pat = localStorage.getItem(TOKEN_KEY) || '';
       const res = await fetch(`https://api.github.com/repos/${REPO}/${path}`, {
@@ -948,7 +865,9 @@
       saveBtn.disabled = false;
     });
 
-    // ── Star field ──
+    // ── Star field — biased toward the top of the canvas and fading in
+    // opacity toward the bottom, so stars taper off naturally as the body's
+    // background gradient brightens into daylight, instead of stopping abruptly ──
     (function() {
       const canvas = document.getElementById('star-canvas');
       if (!canvas) return;
@@ -956,15 +875,17 @@
       function drawStars() {
         canvas.width  = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
-        for (let i = 0; i < 180; i++) {
+        for (let i = 0; i < 160; i++) {
+          const y = Math.pow(Math.random(), 1.6) * canvas.height; // biased toward top
+          const fade = 1 - (y / canvas.height) * 0.85; // dimmer near the bottom
           ctx.beginPath();
           ctx.arc(
             Math.random() * canvas.width,
-            Math.random() * canvas.height,
-            Math.random() * 1.3 + 0.2,
+            y,
+            Math.random() * 1.2 + 0.2,
             0, Math.PI * 2
           );
-          ctx.fillStyle = `rgba(255,255,255,${(Math.random() * 0.55 + 0.15).toFixed(2)})`;
+          ctx.fillStyle = `rgba(255,255,255,${(fade * (Math.random() * 0.5 + 0.15)).toFixed(2)})`;
           ctx.fill();
         }
       }
