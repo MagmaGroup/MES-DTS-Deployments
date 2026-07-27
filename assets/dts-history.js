@@ -54,7 +54,7 @@
         <div><div class="meta-col-label">${t('metaTickets')}</div><div class="meta-col-value">${count}</div></div>
       </div>
       <div class="deploy-footer">
-        <a class="view-link" href="${escapeHtml(dep.url)}" target="_blank">${t('viewReport')} →</a>
+        <a class="view-link" href="${escapeHtml(dep.url)}" target="_blank">${t('viewReport')} ${window.DtsI18n && window.DtsI18n.isRtl() ? '←' : '→'}</a>
       </div>
     </div>`;
   }

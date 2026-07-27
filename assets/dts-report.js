@@ -36,10 +36,12 @@
   // renders when it actually has content — an empty field means clean empty
   // space below the subject/assignee, never a "No X yet" placeholder.
   function ticketCardHtml(tk) {
+    // Raw Zoho status (e.g. "Waiting DTS") is dropped here — every ticket on
+    // this page is already known to be in that state, showing it again on
+    // every single card added noise, not information.
     const badges = [];
     if (tk.isCR) badges.push(`<span class="badge badge-cr">${t('cr')}</span>`);
-    if (tk.status) badges.push(`<span class="badge badge-closed">${escapeHtml(tk.status)}</span>`);
-    if (tk.contentLocked) badges.push(`<span class="badge badge-locked">🔒 ${t('locked')}</span>`);
+    const lockIcon = tk.contentLocked ? `<span class="ticket-lock-icon" title="${t('locked')}">🔒</span>` : '';
 
     const sections = [];
 
@@ -74,28 +76,50 @@
       </div>`);
     }
 
-    return `<div class="ticket-card">
-      <div class="ticket-card-head">
-        <div class="ticket-head-left">
+    return `<div class="ticket-card" id="ticket-${escapeHtml(tk.number)}">
+      <div class="ticket-top">
+        <div class="ticket-top-row">
           <span class="ticket-number">#${escapeHtml(tk.number)}</span>
+          ${badges.join('')}
+          ${lockIcon}
         </div>
-        <div class="ticket-badges">${badges.join('')}</div>
+        <div class="ticket-subject" dir="auto">${escapeHtml(tk.subject)}</div>
+        <div class="ticket-assignee">${tk.assignee ? t('assignedTo', { name: escapeHtml(tk.assignee) }) : ''}</div>
       </div>
-<div class="ticket-subject" dir="auto">${escapeHtml(tk.subject)}</div>
-      <div class="ticket-assignee">${tk.assignee ? t('assignedTo', { name: escapeHtml(tk.assignee) }) : ''}</div>
-      ${sections.join('')}
+      <div class="ticket-divider-line"></div>
+      <div class="ticket-body">
+        ${sections.join('')}
+      </div>
     </div>`;
+  }
+
+  // Small chip nav so a deployment with several tickets can be scanned/jumped
+  // through without scrolling past every fully-expanded card. Plain anchor
+  // links — works even before JS finishes, respects back button.
+  function ticketJumpBarHtml(tickets) {
+    if (!tickets || tickets.length < 2) return '';
+    const chips = tickets.map((tk) => {
+      const s = (tk.status || '').toLowerCase();
+      const cls = s === 'open' ? 'open' : s === 'scheduled' ? 'scheduled' : s === 'closed' ? 'closed' : '';
+      return `<a href="#ticket-${escapeHtml(tk.number)}" class="ticket-jump-chip ${cls}">#${escapeHtml(tk.number)}</a>`;
+    }).join('');
+    return `<div class="ticket-jump-bar">${chips}</div>`;
   }
 
   function langToggleHtml() {
     return '<button type="button" id="lang-toggle" class="lang-toggle-btn">עב</button>';
   }
 
+  function backLinkHtml() {
+    const arrow = window.DtsI18n && window.DtsI18n.isRtl() ? '&rarr;' : '&larr;';
+    return `<a class="back-link" href="./index.html">${arrow} ${t('backToHistory')}</a>`;
+  }
+
   function renderNotFound(root, ticketId) {
     root.innerHTML = `<canvas class="star-canvas" id="star-canvas"></canvas>
     <main>
       <div class="report-toolbar">
-        <a class="back-link" href="./index.html">&larr; ${t('backToHistory')}</a>
+        ${backLinkHtml()}
         ${langToggleHtml()}
       </div>
       <div class="empty-block">🚀 ${t('reportNotFound', { id: escapeHtml(ticketId) })}</div>
@@ -116,7 +140,7 @@
     root.innerHTML = `<canvas class="star-canvas" id="star-canvas"></canvas>
     <main>
       <div class="report-toolbar">
-        <a class="back-link" href="./index.html">&larr; ${t('backToHistory')}</a>
+        ${backLinkHtml()}
         ${langToggleHtml()}
       </div>
       <div class="report-header">
@@ -134,6 +158,7 @@
         </div>
       </div>
       <div class="tickets-label">${t('includedTickets')}</div>
+      ${ticketJumpBarHtml(dep.tickets)}
       <div class="ticket-list">${tickets}</div>
     </main>`;
     initStarField();

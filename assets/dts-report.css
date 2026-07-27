@@ -7,6 +7,8 @@
    details laid out side by side. */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { scroll-behavior: smooth; }
+
 :root {
   --bg:           #f2f4fa;
   --card-bg:      #ffffff;
@@ -99,7 +101,6 @@ main {
 .badge-scheduled { background: #fef9c3; color: #92400e; }
 .badge-closed    { background: #f1f5f9; color: #64748b; }
 .badge-cr        { background: #ede9fe; color: #6d28d9; }
-.badge-locked    { background: #f1f5f9; color: #64748b; }
 
 /* Meta row — wide, side by side, sits inside a light card like the rest of
    the page content (this part is below the gradient's fully-light zone) */
@@ -116,19 +117,42 @@ main {
 
 /* ── Ticket cards ── */
 .tickets-label { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin: 28px 0 12px 2px; }
+
+/* Quick-jump chip nav — appears once a deployment has more than one ticket,
+   so a long ticket list can be scanned/jumped through without scrolling
+   past every fully-expanded card. */
+.ticket-jump-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+.ticket-jump-chip {
+  font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+  font-size: 12px; font-weight: 800; letter-spacing: 0.2px;
+  padding: 6px 13px; border-radius: 20px;
+  background: #fff; border: 1px solid var(--card-border); color: var(--text-muted);
+  text-decoration: none; transition: all 0.15s;
+}
+.ticket-jump-chip:hover { border-color: color-mix(in srgb, var(--accent) 50%, var(--card-border)); color: var(--text); }
+.ticket-jump-chip.open { border-color: #86d9a4; color: #15803d; }
+.ticket-jump-chip.scheduled { border-color: #f5d78a; color: #92400e; }
+.ticket-jump-chip.closed { border-color: var(--card-border); color: var(--text-dim); }
+
 .ticket-list { display: flex; flex-direction: column; gap: 16px; }
 .ticket-card {
+  scroll-margin-top: 20px;
   background: var(--card-bg); border: 1px solid var(--card-border);
-  border-left: 6px solid var(--accent, #38bdf8);
-  border-radius: 14px; padding: 24px 28px;
+  border-inline-start: 6px solid var(--accent, #38bdf8);
+  border-radius: 14px; padding: 26px 28px;
   box-shadow: 0 1px 3px rgba(15,23,42,0.05), 0 6px 20px rgba(15,23,42,0.04);
 }
-.ticket-card-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 6px; }
-.ticket-head-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* Number + title sit on top, full width, followed by a divider line, then
+   the body (description / summary / test steps) as a single column below —
+   no side-by-side field sets. */
+.ticket-top-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
 .ticket-number { font-weight: 800; font-size: 17px; color: var(--text); }
-.ticket-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-.ticket-subject { font-size: 17px; font-weight: 700; color: var(--text); margin: 12px 0 3px; }
-.ticket-assignee { font-size: 12.5px; color: var(--text-dim); margin-bottom: 4px; }
+.ticket-lock-icon { font-size: 13px; line-height: 1; }
+.ticket-subject { font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 4px; }
+.ticket-assignee { font-size: 12.5px; color: var(--text-dim); }
+.ticket-divider-line { height: 1px; background: var(--card-border); margin: 16px 0 4px; }
+.ticket-body .ticket-section:first-child { margin-top: 14px; }
 .ticket-section { margin-top: 18px; }
 .ticket-section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); margin-bottom: 6px; }
 .ticket-description { font-size: 14px; line-height: 1.65; color: var(--text); white-space: pre-wrap; }

@@ -78,8 +78,8 @@
       syncedMinutesAgo: 'סונכרן לפני {n} דקות',
       syncedHoursAgo: 'סונכרן לפני {n} שעות',
       syncedDaysAgo: 'סונכרן לפני {n} ימים',
-      historyTitle: 'היסטוריית פריסות DTS',
-      historySubtitle: 'גרסאות Magma MES עבור {name}',
+      historyTitle: 'היסטוריית DTS',
+      historySubtitle: 'גרסאות עבור {name}',
       filterActive: 'פעיל',
       filterAll: 'הכל',
       filterClosed: 'סגור',
@@ -105,6 +105,10 @@
   function currentLang() {
     const saved = localStorage.getItem(STORAGE_KEY);
     return saved === 'he' ? 'he' : 'en';
+  }
+
+  function isRtl() {
+    return currentLang() === 'he';
   }
 
   // {n} -> vars.n, plus a small "{s}" plural helper for English ("1 minute"
@@ -169,7 +173,7 @@
     }
   }
 
-  window.DtsI18n = { t, currentLang, setLang, applyStaticTranslations, init };
+  window.DtsI18n = { t, currentLang, isRtl, setLang, applyStaticTranslations, init };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
