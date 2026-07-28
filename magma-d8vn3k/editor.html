@@ -4,52 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DTS Content Editor — Magma</title>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #eef2f8;
+      --card-bg:      #ffffff;
+      --card-border:  #e2e8f2;
+      --text:         #1a2340;
+      --text-muted:   #64748b;
+      --text-dim:     #a0aec0;
+    }
 
     body {
-      font-family: 'Heebo', Arial, sans-serif;
-      background: #eef2f8;
-      color: #1a2340;
+      font-family: 'Plus Jakarta Sans', 'Heebo', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
     }
 
     .page-header {
-      background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
-      border-bottom: 1px solid #21262d;
+      background: linear-gradient(180deg, #060d1f 0%, #0a1628 100%);
+      border-bottom: 1px solid #1a2744;
       color: #fff;
-      padding: 44px 40px 40px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+      padding: 28px 40px 24px;
     }
-    .page-header::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 24px 24px;
-      pointer-events: none;
-    }
-    .page-header::after {
-      content: '';
-      position: absolute;
-      top: -80px; left: 50%;
-      transform: translateX(-50%);
-      width: 700px; height: 400px;
-      background: radial-gradient(ellipse, rgba(56,139,253,0.07) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .page-header .header-inner { position: relative; z-index: 1; }
-    .page-header .brand { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 18px; }
-    .page-header h1 {
-      font-size: 34px; font-weight: 900; letter-spacing: -1px;
-      background: linear-gradient(135deg, #ffffff 30%, #8ab4d8 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      margin-bottom: 6px;
-    }
-    .page-header .subtitle { font-size: 13px; color: rgba(255,255,255,0.35); }
+    .page-header .brand { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; }
+    .page-header h1 { font-size: 30px; font-weight: 900; color: #fff; letter-spacing: -0.8px; margin-bottom: 8px; }
+    .page-header .subtitle { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 6px; max-width: 640px; line-height: 1.5; }
 
     .wrap { max-width: 860px; margin: 0 auto; padding: 32px 24px 64px; }
 
@@ -72,7 +55,7 @@
       padding: 8px 12px; font-size: 13px; font-family: monospace;
       outline: none; transition: border-color 0.15s;
     }
-    #inp-token:focus { border-color: #3b82f6; }
+    #inp-token:focus { border-color: #2563eb; }
     .token-status { font-size: 12px; font-weight: 600; white-space: nowrap; }
     .token-status.ok   { color: #16a34a; }
     .token-status.err  { color: #dc2626; }
@@ -88,7 +71,7 @@
       font-size: 14px; font-family: inherit; background: #fff; color: #1a2340;
       outline: none; cursor: pointer; transition: border-color 0.15s;
     }
-    .selector-bar select:focus { border-color: #3b82f6; }
+    .selector-bar select:focus { border-color: #2563eb; }
     #sel-customer { min-width: 160px; }
     #sel-dts      { min-width: 200px; flex: 1; }
 
@@ -99,8 +82,8 @@
       white-space: nowrap;
     }
     .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-    .btn-dark  { background: #1a3a5c; color: #fff; }
-    .btn-dark:not(:disabled):hover  { background: #243f64; }
+    .btn-dark  { background: #2563eb; color: #fff; }
+    .btn-dark:not(:disabled):hover  { background: #1d4ed8; }
     .btn-green { background: #16a34a; color: #fff; }
     .btn-green:not(:disabled):hover { background: #15803d; }
 
@@ -139,7 +122,7 @@
 
     .ticket-num {
       font-size: 11px; font-weight: 700; color: #fff;
-      background: #1a3a5c; border-radius: 4px;
+      background: #2563eb; border-radius: 4px;
       padding: 3px 8px; white-space: nowrap;
       flex-shrink: 0; margin-top: 1px;
     }
@@ -165,8 +148,8 @@
       color: #c0c8d4;
     }
     .lock-btn:hover { background: #f0f4f8; }
-    .lock-btn.locked { color: #1a3a5c; }
-    .ticket-card.locked .ticket-header { border-left: 3px solid #1a3a5c; }
+    .lock-btn.locked { color: #2563eb; }
+    .ticket-card.locked .ticket-header { border-left: 3px solid #2563eb; }
 
     .ticket-body { padding: 20px; display: none; }
     .ticket-card.open .ticket-body { display: block; }
@@ -192,7 +175,7 @@
       color: #64748b; font-style: italic; direction: rtl; text-align: right;
       white-space: pre-wrap; background: #f9fafb;
     }
-    textarea.desc:focus { border-color: #3b82f6; }
+    textarea.desc:focus { border-color: #2563eb; }
 
     .steps-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
     .step-row { display: flex; align-items: center; gap: 8px; }
@@ -203,7 +186,7 @@
       color: #1a2340; direction: rtl; text-align: right;
       outline: none; transition: border-color 0.15s;
     }
-    .step-row input:focus { border-color: #3b82f6; }
+    .step-row input:focus { border-color: #2563eb; }
     .btn-del-step {
       background: none; border: none; color: #d0d9e4;
       font-size: 18px; line-height: 1; cursor: pointer;
@@ -224,16 +207,13 @@
       display: inline-flex; align-items: center; gap: 5px;
       transition: border-color 0.15s, color 0.15s;
     }
-    .btn-add-step:hover { border-color: #3b82f6; color: #3b82f6; }
+    .btn-add-step:hover { border-color: #2563eb; color: #2563eb; }
 
     .back-link {
-      display: inline-block; background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.85);
-      text-decoration: none; padding: 6px 16px; border-radius: 20px;
-      font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
-      margin-bottom: 16px; transition: background 0.2s;
+      display: inline-block; margin-top: 10px; font-size: 12px; font-weight: 700;
+      color: #58a6ff; text-decoration: none;
     }
-    .back-link:hover { background: rgba(255,255,255,0.22); color: #fff; }
+    .back-link:hover { text-decoration: underline; }
 
     /* ── DTS Details panel ── */
     .dts-details {
@@ -253,7 +233,7 @@
     }
     .detail-field select:focus,
     .detail-field input[type="text"]:focus,
-    .detail-field input[type="date"]:focus { border-color: #3b82f6; }
+    .detail-field input[type="date"]:focus { border-color: #2563eb; }
     .detail-field input[readonly] {
       background: #f4f7fb; color: #aab; cursor: default;
     }
@@ -273,7 +253,7 @@
     .btn-ghost:hover { border-color: #aab; color: #5a6a7a; }
 
     .link-btn {
-      background: none; border: none; color: #3b82f6;
+      background: none; border: none; color: #2563eb;
       font-size: 12px; font-weight: 600; cursor: pointer; padding: 0;
     }
     .link-btn:hover { text-decoration: underline; }
@@ -284,12 +264,10 @@
 <body>
 
 <div class="page-header">
-  <div class="header-inner">
-  <a class="back-link" href="./">← Dashboard</a>
   <div class="brand">Magma MES &mdash; Internal Use Only</div>
   <h1>DTS Content Editor</h1>
   <div class="subtitle">Edit ticket descriptions and test steps &nbsp;&middot;&nbsp; Saves data.json to GitHub — pages render live from it</div>
-  </div>
+  <a href="index.html" class="back-link">&larr; Back to Dashboard</a>
 </div>
 
 <div class="wrap">
@@ -1074,6 +1052,11 @@ btnCancel.addEventListener('click', () => {
 
 // ── Save ──
 btnSave.addEventListener('click', async () => {
+  // Save & Publish sits at the bottom of a potentially long ticket list, but
+  // the status message renders up near the top of the page — scroll there
+  // immediately so the "Saving…" / success / error result is visible without
+  // the user having to scroll back up manually.
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   btnSave.disabled = true;
   clearStatus();
   setStatus('loading', 'Saving…');
@@ -1132,24 +1115,6 @@ function esc(s) {
   return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── Star field (editor header) ──
-(function() {
-  const canvas = document.querySelector('.page-header .star-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  function drawStars() {
-    canvas.width  = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-    for (let i = 0; i < 160; i++) {
-      ctx.beginPath();
-      ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, Math.random()*1.3+0.2, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(255,255,255,${(Math.random()*0.55+0.15).toFixed(2)})`;
-      ctx.fill();
-    }
-  }
-  drawStars();
-  window.addEventListener('resize', drawStars);
-})();
 </script>
 
 </body>
