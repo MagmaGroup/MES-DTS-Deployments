@@ -4,10 +4,10 @@
     {
       "ticketNumber": "DTS_00001",
       "title": "DTS_00001 # Flex # 08.07.2026",
-      "status": "Open",
+      "status": "Closed",
       "createDate": "08.07.2026",
-      "deployDate": null,
-      "closeDate": null,
+      "deployDate": "26.07.2026",
+      "closeDate": "26.07.2026",
       "ticketCount": 6,
       "url": "DTS_00001.html",
       "tickets": [
