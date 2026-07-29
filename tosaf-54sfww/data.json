@@ -8,7 +8,7 @@
       "createDate": "13.07.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 3,
+      "ticketCount": 4,
       "url": "DTS_00005.html",
       "tickets": [
         {
@@ -41,6 +41,17 @@
           "contentLocked": false,
           "originalDescription": "RPN28575Tלפי הDTSהיה אמור להיכנס משהו שמטפל בזה,אז עדיין זה לא טופל ולא עובד",
           "description": "RPN28575Tלפי הDTSהיה אמור להיכנס משהו שמטפל בזה,אז עדיין זה לא טופל ולא עובד",
+          "testSteps": []
+        },
+        {
+          "number": "2745",
+          "subject": "הוספת בדיקות לבדיקות נדרשות",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "כל פעם שאנחנו מוסיפים בדיקות לבדיקות קיימות בבדיקות נדרשות,המערכת נתקעת ולא מעבירהאת הבדיקותשלומי ציון בזמנו אמר שהוא יודע מה הפיתרון לזה",
+          "description": "כל פעם שאנחנו מוסיפים בדיקות לבדיקות קיימות בבדיקות נדרשות,המערכת נתקעת ולא מעבירהאת הבדיקותשלומי ציון בזמנו אמר שהוא יודע מה הפיתרון לזה",
           "testSteps": []
         }
       ],
