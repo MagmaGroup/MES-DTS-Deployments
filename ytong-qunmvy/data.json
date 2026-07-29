@@ -8,7 +8,7 @@
       "createDate": "09.07.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 2,
+      "ticketCount": 3,
       "url": "DTS_00003.html",
       "tickets": [
         {
@@ -29,6 +29,17 @@
           "isCR": false,
           "contentLocked": false,
           "description": "נראה כי יש חלא מעט נכשלים , ראו לדוגמה פקע WO2602850 , אשמח אם תבדקו , לא הגיוני כמות הנכשלים בנוסף יש פקעות שהועברו ממרכז עבודה יציקה 4 לממתינות , אני מצפה שלא יופיעו על המכונה , עדין מופיעות לדוגמה 2627, 2570",
+          "testSteps": []
+        },
+        {
+          "number": "2685",
+          "subject": "עדכון במסך מכונה - יציקה פסון (משתלבות)",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": true,
+          "contentLocked": false,
+          "originalDescription": "מבקשת להוסיף עמודה במסך מכונה במרכזי עבודה של יציקה ,  שדה מכרטיס פריט שנקרא: HMI-מתכון שם השדה: MoldingRecipeCode.",
+          "description": "מבקשת להוסיף עמודה במסך מכונה במרכזי עבודה של יציקה ,  שדה מכרטיס פריט שנקרא: HMI-מתכון שם השדה: MoldingRecipeCode.",
           "testSteps": []
         }
       ],
