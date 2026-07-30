@@ -78,6 +78,30 @@
         "familiarize_scope": true,
         "prepare_sql": true
       }
+    },
+    {
+      "ticketNumber": "DTS_00010",
+      "title": "DTS_00010 # Flex # 30.07.2026",
+      "status": "Open",
+      "createDate": "30.07.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 1,
+      "url": "DTS_00010.html",
+      "tickets": [
+        {
+          "number": "2699",
+          "subject": "מסך VIEW BOM ",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": true,
+          "contentLocked": false,
+          "originalDescription": "שלום,אנחנו רוצים להוסיף במסך פפילטר חדש בפילטרים של סאב אופריישןתודה",
+          "description": "שלום,אנחנו רוצים להוסיף במסך פפילטר חדש בפילטרים של סאב אופריישןתודה",
+          "testSteps": []
+        }
+      ],
+      "checklist": {}
     }
   ]
 }
