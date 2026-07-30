@@ -4,9 +4,9 @@
     {
       "ticketNumber": "DTS_00003",
       "title": "DTS_00003 # Ytong # 09.07.2026",
-      "status": "Open",
+      "status": "Scheduled",
       "createDate": "09.07.2026",
-      "deployDate": null,
+      "deployDate": "02.08.2026",
       "closeDate": null,
       "ticketCount": 5,
       "url": "DTS_00003.html",
