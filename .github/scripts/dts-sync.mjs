@@ -322,9 +322,33 @@ Produce two things:
 1. "description": a concise, well-written 1-3 sentence Hebrew summary of what this ticket covers and how it was resolved, suitable for a customer-facing deployment report. Use the original description and the public conversation. Do not include internal-only notes or internal phrasing.
 2. "testSteps": an array of 2-5 short, concrete Hebrew steps a tester would follow to verify this change once deployed. Be specific to this ticket (use ticket/batch numbers, screen names, etc. mentioned in the source material), not generic filler. You may use the internal notes and resolution field to make these more precise.
 
-Respond with ONLY a JSON object, no markdown fences, no commentary: {"description": "...", "testSteps": ["...", "..."]}`;
+Use the submit_ticket_content tool to return your answer — do not respond in plain text.`;
 
-  try {
+  // Forced tool-use instead of "please reply with JSON in prose": Anthropic
+  // parses the tool input as JSON for us, so there's no free-text regex to
+  // fail on. We still retry once, since a flaky/truncated call can happen
+  // regardless of output mode, and this call must never block the sync.
+  const tool = {
+    name: "submit_ticket_content",
+    description: "Submit the drafted customer-facing description and test steps for this DTS ticket.",
+    input_schema: {
+      type: "object",
+      properties: {
+        description: {
+          type: "string",
+          description: "1-3 sentence Hebrew summary suitable for a customer-facing deployment report.",
+        },
+        testSteps: {
+          type: "array",
+          items: { type: "string" },
+          description: "2-5 short, concrete Hebrew verification steps.",
+        },
+      },
+      required: ["description", "testSteps"],
+    },
+  };
+
+  const attempt = async () => {
     const res = await fetch(ANTHROPIC_API_URL, {
       method: "POST",
       headers: {
@@ -335,6 +359,8 @@ Respond with ONLY a JSON object, no markdown fences, no commentary: {"descriptio
       body: JSON.stringify({
         model: ANTHROPIC_MODEL,
         max_tokens: 700,
+        tools: [tool],
+        tool_choice: { type: "tool", name: "submit_ticket_content" },
         messages: [{ role: "user", content: prompt }],
       }),
     });
@@ -345,15 +371,9 @@ Respond with ONLY a JSON object, no markdown fences, no commentary: {"descriptio
     }
 
     const data = await res.json();
-    const text = data?.content?.[0]?.text || "";
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.warn(`Anthropic response for "${subject}" had no parseable JSON — falling back.`);
-      return null;
-    }
-
-    const parsed = JSON.parse(jsonMatch[0]);
-    if (typeof parsed.description !== "string" || !Array.isArray(parsed.testSteps)) {
+    const toolBlock = data?.content?.find((b) => b.type === "tool_use" && b.name === "submit_ticket_content");
+    const parsed = toolBlock?.input;
+    if (!parsed || typeof parsed.description !== "string" || !Array.isArray(parsed.testSteps)) {
       console.warn(`Anthropic response for "${subject}" had an unexpected shape — falling back.`);
       return null;
     }
@@ -366,10 +386,18 @@ Respond with ONLY a JSON object, no markdown fences, no commentary: {"descriptio
     }
 
     return { description, testSteps };
-  } catch (err) {
-    console.warn(`Anthropic API call errored for "${subject}": ${err.message} — falling back.`);
-    return null;
+  };
+
+  for (let i = 0; i < 2; i++) {
+    try {
+      const result = await attempt();
+      if (result) return result;
+      if (i === 0) console.warn(`Retrying Anthropic content generation for "${subject}"...`);
+    } catch (err) {
+      console.warn(`Anthropic API call errored for "${subject}": ${err.message}${i === 0 ? " — retrying." : " — falling back."}`);
+    }
   }
+  return null;
 }
 
 // ---------------------------------------------------------------------------
