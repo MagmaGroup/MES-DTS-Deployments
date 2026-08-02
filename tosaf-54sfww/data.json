@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 4,
+      "ticketCount": 5,
       "url": "DTS_00004.html",
       "tickets": [
         {
@@ -72,6 +72,17 @@
             "וודא כי כל התרגומים של שורות זו מופיעות כראוי באישור שינויים במערכת",
             "בדוק בסביבת הבילד כי התרגום לא נדרס וברור בעדכונים הבאים"
           ]
+        },
+        {
+          "number": "2873",
+          "subject": "שקילות חול - ארהב - Part number incompatible",
+          "assignee": "ayala rov",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "שקילות חול - ארהב - Part number incompatible",
+          "description": "שקילות חול - ארהב - Part number incompatible",
+          "testSteps": []
         }
       ],
       "checklist": {}
