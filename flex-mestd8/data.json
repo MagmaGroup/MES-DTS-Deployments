@@ -1,4 +1,33 @@
 {
   "customer": "Flex",
-  "deployments": []
+  "deployments": [
+    {
+      "ticketNumber": "DTS_00003",
+      "title": "DTS_00003 # Flex # 02.08.2026",
+      "status": "Open",
+      "createDate": "02.08.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 1,
+      "url": "DTS_00003.html",
+      "tickets": [
+        {
+          "number": "2699",
+          "subject": "מסך VIEW BOM ",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": true,
+          "contentLocked": false,
+          "originalDescription": "שלום,אנחנו רוצים להוסיף במסך פפילטר חדש בפילטרים של סאב אופריישןתודה",
+          "description": "נוסף פילטר חדש במסך VIEW BOM בפילטרים של סאב אופריישן כמבוקש על ידי הלקוח. השינוי בוצע והתקשר לאימות ב-DTS.",
+          "testSteps": [
+            "נווט אל מסך VIEW BOM ובדוק כי פילטר החדש עבור סאב אופריישן קיים ופעיל",
+            "הפעל את הפילטר החדש ובדוק כי הוא מסנן נכון את הנתונים בהתאם לקריטריון שנבחר",
+            "אמת כי הפילטר החדש שומר בהצלחה ולא משפיע על פילטרים קיימים אחרים"
+          ]
+        }
+      ],
+      "checklist": {}
+    }
+  ]
 }
