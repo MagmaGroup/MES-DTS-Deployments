@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 2,
+      "ticketCount": 4,
       "url": "DTS_00002.html",
       "tickets": [
         {
@@ -40,6 +40,37 @@
             "בדוק שכאשר מקט מכיל מספר לקוחות משוייכים, המערכת לא מעדכנת לקוח אוטומטית וניתן לבחור ידנית.",
             "בדוק שהיכולת לבחור Sequence עובדת כראוי למכונות שאינן Injection במסך שחרור הפקעות.",
             "בדוק שהעדכון חל על פקעות חדשות וגם על פקעות קיימות שעוברות בממשק מחדש."
+          ]
+        },
+        {
+          "number": "2898",
+          "subject": "נעלם כפתור הסבר לסיבת עצירה",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "https://elsfol.elcam.co.il/sfolv7/#4/grid/ProductionPerformanceBase/OEE_DEPT20_V1",
+          "description": "תוקנה בעיה בה כפתור הסבר לסיבת עצירה נעלם מהצג OEE_DEPT20_V1 בדף דוח ביצועי הייצור. השינוי פורס לייצור בתאריך 03 באוגוסט 2026 בשעה 12:00.",
+          "testSteps": [
+            "נווט לכתובת https://elsfol.elcam.co.il/sfolv7/#4/grid/ProductionPerformanceBase/OEE_DEPT20_V1",
+            "וודא שכפתור הסבר לסיבת העצירה גלוי ופעיל בצג OEE_DEPT20_V1",
+            "לחץ על כפתור הסבר לסיבת העצירה וודא שהוא משקם חלון הסבר תקין",
+            "בדוק שהכפתור מופיע בכל גרסאות הדוח לעובדים שונים בחטיבות שונות"
+          ]
+        },
+        {
+          "number": "2888",
+          "subject": "היעלמות כפתורים ובעיות במחיקת שורות (Production Performance)",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "היימסך מושפע: Production Performance (מעבר לנתיב: Production) כפתורים חיוניים נעלמו מהמסך, מה שמונע  למחוק שורות במסך זה.תודה",
+          "description": "תוקנה בעיית היעלמות כפתורים חיוניים בהיימסך Production Performance בנתיב Production. הכפתורים שהיו חסרים מונעו את האפשרות למחוק שורות במסך, והבעיה כעת מתוקנת.",
+          "testSteps": [
+            "נווט להיימסך Production Performance דרך נתיב Production וודא שכל הכפתורים החיוניים (כולל כפתור המחיקה) מופיעים בממשק",
+            "בחר שורה במסך וודא שניתן לבצע פעולת מחיקה באמצעות הכפתור שכעת מופיע",
+            "אמת שכל הכפתורים החיוניים נראים בצורה כראוי ופעילים עבור משתמשים בהרשאה המתאימה"
           ]
         }
       ],
