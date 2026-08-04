@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 5,
+      "ticketCount": 6,
       "url": "DTS_00002.html",
       "tickets": [
         {
@@ -86,6 +86,21 @@
             "בעבור אל מסך QUALITY ASSURANCE → INSPECTIONS ובדוק שיש כפתור CANCEL לשינוי סטטוס בדיקה מ'CANCEL' ל'מתוזמנת'",
             "ודא שכפתור זה משנה את סטטוס הבדיקה כצפוי ומתחדש הגריד 'inspection to do' בהתאם",
             "בדוק שבדיקה ששינתה סטטוס מ'בוטלה' ל'מתוזמנת' ממשיכה בתהליך התקני ללא שגיאות"
+          ]
+        },
+        {
+          "number": "2906",
+          "subject": "שגיאת SQL בסקריפט סריקת חומר מכונה 156",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "היי,בזמן ביצוע פעולת סריקת חומר במסך ניהול חומרי גלם (Raw Material ) מתקבלת שגיאה שמונעת את השלמת הפעולה.תקלה שגרמה לעצירת הייצורhttps://elsfol.elcam.co.il/sfolv7/#4/dashboard/_MG_OperatorDashboardLine/LineID=43/Line=156",
+          "description": "תוקנה שגיאה ב-SQL בסקריפט סריקת חומר במסך ניהול חומרי גלם אשר גרמה להכנסת ערך לא נכון לטבלה זמנית. התיקון כולל הוספת ולידציה נוספת על הערכים המוכנסים על מנת למנוע חזרה של הבעיה בעתיד.",
+          "testSteps": [
+            "נווט למסך ניהול חומרי גלם (Raw Material) בקו ייצור 156 (LineID=43)",
+            "בצע פעולת סריקת חומר והוודא שהערכים המסורקים מעברים את הולידציה החדשה בלי שגיאות",
+            "בדוק שטבלה הזמנית של סריקה קיבלה ערכים תקינים בלבד לאחר הדיפלוי"
           ]
         }
       ],
