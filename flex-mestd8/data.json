@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 10,
+      "ticketCount": 11,
       "url": "DTS_00003.html",
       "tickets": [
         {
@@ -166,6 +166,22 @@
             "עדכן את שדה COMMENT/התיאור של הפקע לערך חדש וודא שהשדה עדכן בהצלחה ללא שגיאה.",
             "ודא שכמות המקור (OriginalQty) של הפקע נשארה ללא שינוי - אם תנסה לשנות את הכמות, צריכה להופיע הודעת שגיאה.",
             "בדוק שהשינוי בתיאור נשמר כראוי בבסיס הנתונים (WO_Custom) עבור כל הפקעות המקושרות לאותו WOReference."
+          ]
+        },
+        {
+          "number": "2944",
+          "subject": "קריאת המשך 2698 - COPY MBOM",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "היי,לגביי העתקת MBOMאני יודע שהם ניסו לעשות העתקה שהDTS עלה וזה עבד ועכשיו שוב הסאב אופריישנס לא עוברים בהעתקהיכול להיות שמשהו השתבש בDTS שעבר אתמול? קובי העתיק MBOM מספר 67 מMBOM מספר 38תודה",
+          "description": "תוקן תהליך העתקת MBOM כך שפעולות העל-ניתוב (Sub Routing Operations) מועתקות כראוי בעת העתקת MBOM. בנוסף, הוסכמו בעת ההעתקה גם עמודת MACHINES וההגדרות הקשורות, כך שאין צורך בהשמה חוזרת של תחנות עבודה.",
+          "testSteps": [
+            "בחרו MBOM מספר 38 בחלון ההעתקה וחפשו את MBOM מספר 67 שהועתק ממנו, וודאו שפעולות העל-ניתוב (SubRoutingOperations) הועתקו בהצלחה",
+            "בדקו שעמודת MACHINES ערכיה המקוריים מ-MBOM 38 מועתקים גם ב-MBOM 67 החדש",
+            "וודאו שהגדרות תחנות העבודה (Machines) המשויכות ל-MBOM 67 מוגדרות כשל עצמן ללא צורך בהשמה חוזרת",
+            "בדקו את התעודה PR#430 כדי לוודא שה-ALTER TABLE על טבלת _MG_MBOMItemsTemp כוללת את השדה SubRoutingOperationID"
           ]
         }
       ],
