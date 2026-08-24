@@ -1,0 +1,34 @@
+{
+  "customer": "Tama",
+  "deployments": [
+    {
+      "ticketNumber": "DTS_00008",
+      "title": "DTS_00008 # Tama # 24.08.2026",
+      "status": "Open",
+      "createDate": "24.08.2026",
+      "deployDate": null,
+      "closeDate": null,
+      "ticketCount": 1,
+      "url": "DTS_00008.html",
+      "tickets": [
+        {
+          "number": "3020",
+          "subject": "בעת החלפת הוראה שלושת תגי גוללן גדלים ב1 בערך שלהם במקום להידרס",
+          "assignee": "Shai Lubartovsky",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "ביצענו החלפה על הוראה במכונה 27 באלון תבור . מצב קיים של תגי BRoll_Expected, BRoll_Number, BRoll_Remaining היה בהתאמה 2,1,2. לאחר החלפה הערכים התעדכנו בהתאמה 3,2,3 ולא נדרסו כפי שציפינו. הוראה AT108050.",
+          "description": "תוקנה בעיה בעת החלפת הוראה במכונה 27 באלון תבור (הוראה AT108050) שבה תגי ה-BRoll (BRoll_Expected, BRoll_Number, BRoll_Remaining) לא נדרסו כראוי אלא התעדכנו בערכים לא נכונים. הסיבה לבעיה הוססה בכך שתג BRoll_Remaining לא נשלח כחלק מתהליך החלפת ההוראה. תוקן קוד הן עבור מכונות עם הוראה קיימת והן עם מכונות ללא הוראה, כדי לכלול שליחה של תג זה בזמן החלפה.",
+          "testSteps": [
+            "בצעו החלפת הוראה על מכונה 27 בכרזת אלון תבור והשוו את ערכי התגים BRoll_Expected, BRoll_Number, BRoll_Remaining לפני ואחרי הפעולה",
+            "אמתו כי בעת החלפת הוראה AT108050, כל שלושת התגים (BRoll_Expected, BRoll_Number, BRoll_Remaining) נדרסו בערכים נכונים ולא התעדכנו",
+            "בדקו בתוך מערכת KEWARE כי החלפת הוראה שולחת כעת את תג BRoll_Remaining בנוסף לתגים האחרים",
+            "בצעו החלפת הוראה גם על מכונה ללא הוראה קיימת וודאו כי כל שלושת תגי ה-BRoll מעודכנים בערכים נכונים"
+          ]
+        }
+      ],
+      "checklist": {}
+    }
+  ]
+}
