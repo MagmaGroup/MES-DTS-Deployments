@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 2,
+      "ticketCount": 3,
       "url": "DTS_00005.html",
       "tickets": [
         {
@@ -43,6 +43,17 @@
             "בדוק שסביבת הבילד עדכנה את שם המחשב לRefaelsMESTV",
             "אמת שהתצוגה (טלוויזיה) במחלקת רפאלס מוצגת כראוי עם ההגדרות המעודכנות"
           ]
+        },
+        {
+          "number": "2311",
+          "subject": "ניהול זמני תקן וכמות תקן למכונות רשת מטבעות וסיאט מטבעות",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": true,
+          "contentLocked": false,
+          "originalDescription": "ניהול זמני תקן וכמות תקן למכונות רשת מטבעות וסיאט מטבעות",
+          "description": "ניהול זמני תקן וכמות תקן למכונות רשת מטבעות וסיאט מטבעות",
+          "testSteps": []
         }
       ],
       "checklist": {}
