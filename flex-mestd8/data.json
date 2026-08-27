@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 23,
+      "ticketCount": 24,
       "url": "DTS_00003.html",
       "tickets": [
         {
@@ -371,6 +371,22 @@
             "בדיקת גריד MACHINE PROGRESS בשרת הבילד עבור סריאלי 532607065 - ודא שמוצגים זמני תחילה וסיום בפועל לתתי הרכבות",
             "אימות שחישוב הזמנים בפועל תואם לזמן התקן שהוגדר במערכת",
             "בדיקה כי אין שגיאות לוגיה בתצוגת הנתונים של הקטנות (sub-assemblies)"
+          ]
+        },
+        {
+          "number": "3063",
+          "subject": "קוד שלב לא נשמר - המשך קריאה 2990",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "היי,יש לנו בעיה בMBOM שוב בנושא הזה לא מצליחים להקים קוד שלב בבום 75 שלב \tMain Assy Stage #1 QCעזרתכם הדחופהתודה",
+          "description": "תוקנה בעיה בהגדרת קוד שלב במערכת MBOM שמנעה מהלקוח להקים קוד שלב בבום 75 (Main Assy Stage #1 QC). השינוי בוצע בגריד RoutingOperation במסך EDIT כאשר בוטלה ההגדרה של עדכון דינמי בשדה RoutingOperationCode והוסרה התלות של השדה RoutingOperation לשדה זה.",
+          "testSteps": [
+            "הכנסו לגריד RoutingOperation במסך EDIT ובדקו שהשדה RoutingOperationCode כבר אינו מסומן ל-Dynamically Update",
+            "בדקו שהשדה RoutingOperation אינו תלוי עוד בשדה RoutingOperationCode",
+            "נסו ליצור קוד שלב חדש בבום 75 לשלב Main Assy Stage #1 QC ובדקו שהפעולה הושלמה בהצלחה",
+            "ודאו שקוד השלב החדש נשמר כראוי במערכת"
           ]
         }
       ],

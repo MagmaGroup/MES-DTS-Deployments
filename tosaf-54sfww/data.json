@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 13,
+      "ticketCount": 14,
       "url": "DTS_00004.html",
       "tickets": [
         {
@@ -212,6 +212,17 @@
             "לאחר הפריסה, ודא שהפרמטר LawerBoxWeight חזר לערך 4 (ולא נשאר ב-0), ובדוק שהשקילה עדיין תואמת כצפוי.",
             "פתח סקריפט _MG_PalletWeightValidator.cs וודא שהשינוי כולל את LawerBoxWeight בשדה NOM (ולא רק ב-RequiredWeightDisp)."
           ]
+        },
+        {
+          "number": "2800",
+          "subject": "סיום קיט של קיטים קטנים",
+          "assignee": "ayala rov",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "שלום,אנחנו נתקלים בתקלה שבקיטים קטנים (פחות מ 27.5קג) כאשר יש צורך בהוספת חומר מהעמדה הטעינ הבכמות \"קטנה\" אז בסוף לא נותן לעשות סיום קיט (אולי התקלה היא בגלל מספר הספרות שיש לאחר הנקודה )",
+          "description": "שלום,אנחנו נתקלים בתקלה שבקיטים קטנים (פחות מ 27.5קג) כאשר יש צורך בהוספת חומר מהעמדה הטעינ הבכמות \"קטנה\" אז בסוף לא נותן לעשות סיום קיט (אולי התקלה היא בגלל מספר הספרות שיש לאחר הנקודה )",
+          "testSteps": []
         }
       ],
       "checklist": {}
