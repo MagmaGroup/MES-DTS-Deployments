@@ -1,6 +1,6 @@
 {
   "_comment": "Maps a known Zoho accountId to its deployment folder slug and brand color — the single source of truth both the dashboard and the customer's own page should read from, so a customer's color is never derived two different ways in two different places. One rule, no exceptions: accountId found here -> use the mapped slug/color. accountId not found here -> auto-create a fresh folder (new slug, data.json, index.html, dashboard entry) using accountName from list_accounts and a hash-derived color, then add the new mapping here including that color.",
-  "lastSyncedAt": "2026-08-27T14:44:12.027Z",
+  "lastSyncedAt": "2026-08-30T11:10:55.094Z",
   "customers": [
     {
       "name": "Ytong",
