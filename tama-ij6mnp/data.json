@@ -8,7 +8,7 @@
       "createDate": "24.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 11,
+      "ticketCount": 12,
       "url": "DTS_00008.html",
       "tickets": [
         {
@@ -184,6 +184,17 @@
             "בדיקה שערך ה-Diameter בטבלה _MG_Consumption עבור הפילם החלופי הוא 0 ולא NULL",
             "אישור שדיווח צריכה ניתן להוזן ולשמירה בהצלחה ללא שגיאות קלט"
           ]
+        },
+        {
+          "number": "3049",
+          "subject": "החלפת הוראה",
+          "assignee": "Shai Lubartovsky",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "כאשר מתבצעת החלפת הוראה מאותו מק\"ט מספר גליל בג'מבו נדרס ל1 בהחלפת הוראה, גם אם היה כבר 3 (למשל) בהוראה הקודמת.",
+          "description": "כאשר מתבצעת החלפת הוראה מאותו מק\"ט מספר גליל בג'מבו נדרס ל1 בהחלפת הוראה, גם אם היה כבר 3 (למשל) בהוראה הקודמת.",
+          "testSteps": []
         }
       ],
       "checklist": {}
