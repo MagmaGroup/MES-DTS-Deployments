@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 23,
+      "ticketCount": 24,
       "url": "DTS_00004.html",
       "tickets": [
         {
@@ -364,6 +364,17 @@
             "בטל את הצ'קבוקס 'הצג רק נכשלים' ודא כי כל הבדיקות מוצגות שוב בגריד (כולל נכשלות ולא נכשלות).",
             "אמת כי השינויים הועברו לכל האתרים בחקיקה (gridName=_MG_QualitySamples)."
           ]
+        },
+        {
+          "number": "3162",
+          "subject": "בדיקות לא עוברות למרות שכל הבדיקות כרגע תקינות",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "הייתה בעיה של הגדרה באחת הבדיקות זה טופל נשלח שוב למס אבל לא מתעדכן 26M10325/001SVE470315A",
+          "description": "הייתה בעיה של הגדרה באחת הבדיקות זה טופל נשלח שוב למס אבל לא מתעדכן 26M10325/001SVE470315A",
+          "testSteps": []
         }
       ],
       "checklist": {}
