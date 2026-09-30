@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 31,
+      "ticketCount": 32,
       "url": "DTS_00003.html",
       "tickets": [
         {
@@ -500,6 +500,21 @@
             "אמת כי רשימת המקטים מוצגת כראוי ללא שורות ריקות",
             "בדוק כי שדה BALOON מכיל נתונים תקינים ולא ריק",
             "וודא כי השאילתה מחזירה את כל הנתונים הצפויים כולל כל השורות הרלוונטיות"
+          ]
+        },
+        {
+          "number": "3185",
+          "subject": "דיווח - PERSONEL GROUP",
+          "assignee": "Sharon Hen",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "היי,בשלב INTEGRATION בINRA בום מספר 73 קבענו שם PERSONEL GROUP של INTEGRATION HP הם לא הצליחו לדווח ורק מישהו אחד שלא בקבוצה הזאת בכלל הצליח עזרתכם להבין למה זה קרה תודה",
+          "description": "בעיה בדיווח של PERSONEL GROUP של INTEGRATION HP בשלב INTEGRATION בבום מספר 73 בINRA גרמה לכך שחברי הקבוצה לא הצליחו לדווח, בעוד שמשתמשים שחוצים לקבוצה כן הצליחו. הבעיה זוהתה והטופלה בייצור, וכעת יעבור שוב מסודר במסגרת DTS.",
+          "testSteps": [
+            "בדיקה אונליין של דיווח PERSONEL GROUP של INTEGRATION HP בבום מספר 73 בINRA - וודא שחברי הקבוצה יכולים להגיש דיווחים בהצלחה",
+            "אימות שהנתונים המוחזרים עבור PERSONEL GROUP הם תקינים וללא שגיאות",
+            "בדיקת משתמש שאיננו חברי הקבוצה - אימות שהוא עדיין יכול לדווח כמקודם"
           ]
         }
       ],
