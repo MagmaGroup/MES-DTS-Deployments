@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 5,
+      "ticketCount": 8,
       "url": "DTS_00007.html",
       "tickets": [
         {
@@ -86,6 +86,56 @@
             "בדוק בתחנה SLD-01 עבור דלת עם קוד פקע KAP4225055 — תמונת הוראות הרכבה אמורה להיות מוצגת בדשבורד",
             "בדוק בתחנה SLD-02 עבור דלת ללא קובץ תמונה — אמורה להיות מוצגת תמונת 'No image found' ולא איקון שבור",
             "וודא כי התמונות נטענות בדרך ה-API הנכונה (/api/Images/Custom/Instructions/...) וממנו אין שגיאות 404"
+          ]
+        },
+        {
+          "number": "3319",
+          "subject": "לאחר אישור לקוח - רב בריח - מועד DTS 05/10/2026",
+          "assignee": "שלומי ציון",
+          "status": "Waiting DTS",
+          "isCR": true,
+          "contentLocked": false,
+          "originalDescription": "לאחר אישור לקוח DTS התקנת:מספרי הקריאות הםCR האם הערותבאחריותתאורמספר קריאהלאשלומי ציוןתמונות הוראות עבודה לא מוצגות כמו שצריך3246לאeldan menahemפעולה לדיווח באריזת משקוף3272לאשלומי ציוןבמסך grid/OPCItemHistory חסר סינון לפי סטטוס3238לאeldan menahemדיווחים לפרירויטי תקועים בסטטוס Approved3299לאשלומי ציוןכישלון תג - Frames_Line01.ST05.FrameOut.Flag3298",
+          "description": "בסבב DTS זה יש תיקון לתצוגת תמונות הוראות עבודה בתחנות, הוספת סינון לפי סטטוס בגריד ההיסטוריה, עדכון שאילתת הדיווחים באריזת משקוף, הגבלת עיבוד דיווחים לייצור ל-TOP 10, ותיקון לבעיית תיאום בתג Frames_Line01.ST05.FrameOut.Flag. השינויים כוללים עדכוני תצורה, שאילתות ו-PR אשר סוגרות 5 קריאות (3246, 3272, 3238, 3299, 3298).",
+          "testSteps": [
+            "בדיקה קריאה 3246: ניתן להראות תמונות הוראות עבודה בתחנת המפעיל (_MG_Doors_OperatorStationOverview) ללא त्रुटis, וכאשר תמונה חסרה מוצג fallback (noImage.png).",
+            "בדיקה קריאה 3272: התאימו שהשאילתה _MG_ListOfActionToReport מציגה פעולות דיווח נכונות לפי נתוני _MG_WORoutings בחלון הדיווחים.",
+            "בדיקה קריאה 3238: גריד OPCItemHistory בתצוגת grid מציג סינון לפי סטטוס ותוצאות מסוננות כראוי.",
+            "בדיקה קריאה 3299: דיווחי ייצור במצב Approved עוברים עיבוד עד 10 דיווחים מקסימום בכל ריצה, והמערכת אינה תקועה.",
+            "בדיקה קריאה 3298: תג Frames_Line01.ST05.FrameOut.Flag בעיבוד Clear Station לא זורק שגיאות IndexOutOfRange, ו-OPC Services נוגדר לפני ה-deploy."
+          ]
+        },
+        {
+          "number": "3299",
+          "subject": "דיווחים לפרירויטי תקועים בסטטוס Approved ",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "דיווחים לפרירויטי תקועים בסטטוס Approved UDI תקוע לגמרי ללא התקדמות משעה 4 בבוקר",
+          "description": "תוקנה בעיית האטה משמעותית בקליטת דיווחי ייצור מ-MES לפריוריטי, שהחלה ב-29.9 בשעה 15:00 וגרמה לעיכוב של עד 24 שניות לדיווח והצטברות של כ-1,400 דיווחים בתור. התיקון כלל הצמצום זמן ריצת ה-UDI והשיפור בעיבוד הדיווחים, וכעת דיווחים מתעבדים בחזרה בקצב רגיל ללא צורך בפעולה ידנית.",
+          "testSteps": [
+            "בדוק את זמן קליטת דיווחי הייצור בפריוריטי (ALINE_ONE בטופס AFORM) והוודא שחזר לפחות משנייה לדיווח",
+            "בדוק שקצב הדיווחים חזר לרמת 250-380 דיווחים בשעה ולא מתחת ל-150",
+            "אמת שתור ההמתנה של דיווחים מתרוקן אוטומטית ללא יד בתוך פחות משעה",
+            "בדוק שדיווחים מכל סוגי המחלקות (צבע, פרזול, משקופים וסוג Finish) מעובדים בקצב תקין ללא עיכוב"
+          ]
+        },
+        {
+          "number": "3298",
+          "subject": "כישלון תג - Frames_Line01.ST05.FrameOut.Flag",
+          "assignee": "שלומי ציון",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "לאחר ייצור סט משקופים בסלבניני משקופים לא מתבצע דיווח באריזה לחלק מהייצור.לאחר בדיקה נמצא התג הבא -Frames_Line01.ST05.FrameOut.Flag נכשל מידי פעם אנו חושדים שיש קשר בין הדברים.פקע אב לדוגמה: PMS4226176לבדיקתכם.ניתן לפנות אליי לשאלות תודה.גריד:https://informes.rav-bariach.co.il/mes/#4/grid/OPCItemAdminהשגיאה: Error Action Running Script: Lighthouse.Udi.Scripting.UdiScriptExecutionException: Index was outside the bounds of the array. ---&gt; System.IndexOutOfRangeException: Index was outside the bounds of the array. at Lighthouse.Udi.Scripting._MG_Frames_ClearStation.Execute(List`1 args) in Custom\\OPC\\_MG_Frames_ClearStation.cs:line 99 at System.RuntimeMethodHandle.InvokeMethod(ObjectHandleOnStack target, Void** arguments, ObjectHandleOnStack sig, BOOL isConstructor, ObjectHandleOnStack result) at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr) --- End of inner exception stack trace --- at Lighthouse.Udi.Scripting.ScriptEngine.ExecuteServerScriptInMemoryAsync(ScriptExecutorType executorType, CancellationToken parentCancellationToken, CancellationToken timeoutCancellationToken) at Lighthouse.Udi.Scripting.ScriptEngine.ExecuteServerScriptAsync(ScriptExecutorType executorType, CancellationToken cancellationToken) at Lighthouse.Udi.Scripting.ScriptEngine.ExecuteOpcScriptAsync(ScriptDefinition scriptDefinition, OpcEventInfo opcEventInfo, String connectionString, String applicationRoot, CancellationToken cancellationToken) at Lighthouse.Opc.OpcObjects.OpcItemActionDefinition.ExecuteUdiScriptAsync(IOpcItemAction action, Nullable`1 historyId)",
+          "description": "תוקן כישלון בתג Frames_Line01.ST05.FrameOut.Flag שגרם לדגל \"לא מתבצע דיווח באריזה\" לאחר ייצור סט משקופים. הבעיה נבעה מתיזמון בקריאת נתוני SetIndexNo מ-DB בזמן שהם עדיין לא נשמרו, מה שגרם לשגיאת IndexOutOfRange. התיקון מוסיף השהיה קצרה ו-retry logic כדי להבטיח שכל הנתונים קיימים לפני הביצוע.",
+          "testSteps": [
+            "בדוק בגריד OPCItemAdmin כי דגל ST05.FrameOut.Flag מעלה ויורד כתוך ~31 שניות בחזור לפחות 5 פעמים ברצף ללא שגיאות IndexOutOfRange בלוגים.",
+            "בדוק בהיסטוריית OPC כי ערך SetIndexNo קיים וחוקי בכל פעם שהדגל מעלה.",
+            "בדוק כי חבילות הסט עוברות לסטטוס Out ו-MesDone נכתב כהלכה אחרי כל ספירה מוצלחת.",
+            "בדוק בלוגים פנימיים כי יש הודעות 'became available on attempt' בהרצות עם race conditions, וקרא כמה נסיונות עברו לפני הצלחה.",
+            "בדוק בעדכון גריד פקע אב כמו PMS4226176 והנתונים הקשורים עברו לארוזה כהלכה."
           ]
         }
       ],
