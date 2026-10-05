@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 33,
+      "ticketCount": 35,
       "url": "DTS_00003.html",
       "tickets": [
         {
@@ -532,6 +532,33 @@
             "בדיקת דיווח 'חומר לא מנופק' בטופס Complete וודא שהשגיאה התוקנה - קריאה 3181",
             "בדיקת דיווח 'חוסרים' וודא שאין שורות ריקות בלון - קריאה 3251",
             "בדיקת ממשק MRB לאחר הרצת סקריפט SQL (הוספת שדה LocName) - קריאה 3193"
+          ]
+        },
+        {
+          "number": "3103",
+          "subject": "תבניות סריאלים למק\"ט",
+          "assignee": "Sharon Hen",
+          "status": "Waiting DTS",
+          "isCR": true,
+          "contentLocked": false,
+          "originalDescription": "תבניות סריאלים למק\"ט",
+          "description": "תבניות סריאלים למק\"ט",
+          "testSteps": []
+        },
+        {
+          "number": "3311",
+          "subject": "בדיקות איכות לא מופיעות - ILP",
+          "assignee": "Sharon Hen",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "שלום,בום מספר 82 עדיין לא מופיע בדיקות איכות פתחנו פקע חדשה עשינו שחרור לבדיקות איכות במסך בום קו INIPSLOT-2עזרתכםתודה",
+          "description": "תיקון בעיה שבה בדיקות איכות (Inspections) לא הופיעו כראוי בעת העתקת BOM, כאשר קוד הבדיקה (Inspection Code) נשמר כריק עקב שגיאה בשאילתת ההעתקה של RfVarGridStyleID. השגיאה תוקנה על ידי שימוש בשדה הסגנון הנכון (RfVarGridStyleID_L), ובדיקות איכות יופיעו כעת כצפוי גם בבום מספר 82 וגם במסך קו INIPSLOT-2.",
+          "testSteps": [
+            "העתקת BOM חדש (או עדכון קיים) המכיל בדיקות איכות והרצת שחרור לבדיקות איכות — וידוא שבדיקות מופיעות כראוי בתוך הקו (INIPSLOT-2) ולא ריקות.",
+            "בדיקת BOM 82 בפרט — לחיצה על כפתור הבדיקות ויידוא שכל ה-Inspections מופיעים עם Inspection Code שלם (לא ריק).",
+            "בדיקת העתקת Acquisition בשתי שפות (עברית ואנגלית) — וידוא שקוד הבדיקה ושדות הסגנון עוברים כראוי בשתי הרקריאות.",
+            "הרצת שאילתת בדיקה לרשומות שבורות ישנות (קודם לבעיה זו) — וידוא שאין עוד שורות עם Inspection Code ריק בתוך AVDataEntryOptions."
           ]
         }
       ],
