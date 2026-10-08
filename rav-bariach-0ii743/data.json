@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 12,
+      "ticketCount": 13,
       "url": "DTS_00007.html",
       "tickets": [
         {
@@ -200,6 +200,22 @@
             "בדיקת ידיווד ממוזג: נעל שורה ב-InventoryPack מ-SSMS, הפעל רובוט שליחה, ודקד כי ה-OPC מחזיר Success למרות הנעילה, וצפה לרשימת FAILED (ignored) בErrorLog.",
             "בדיקת retry: זקן את שורת failure ממקודם לטבלת _MG_R3_PendingStateAndLocationChange, הפעל את אירוע _MG_ProcessPendingStateAndLocationChange, ודקד כי הדלת עודכנה למצב/מיקום הנכון וה-status הפך ל-Processed.",
             "בדיקת כשלון קבוע: יצור שורת retry עם LocationID לא חוקי, הפעל את אירוע ה-retry מספר פעמים, ודקד כי ה-RetryCount יורד ל-0 וה-status הפך ל-Error עם תיאור הטעות."
+          ]
+        },
+        {
+          "number": "3348",
+          "subject": "בעקבות DTS - דיווחים לפריוריטי לא עובדים",
+          "assignee": "שלומי ציון",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "מאז הDTS ביום שני 5.10 בשעה 12:34 כל הדיווחים הסדרתיים נכשלוgrid/_MG_ErpSerialDetailsשגיאה Report to Priority table RAV_SERIALDETAILS failed, Response: [404 Not Found] No response body returned by Priority.",
+          "description": "תוקן כשל בדיווח הנתונים הסדרתיים לPriority שהחל ביום שני 5.10 בשעה 12:34, כאשר הדיווחים לטבלת RAV_SERIALDETAILS החזירו שגיאת 404. הבעיה נבעה מדרך העברת מפתח הסדרה בקריאה לPriority, ותוקנה בגרסה 2026.04. כל הרשומות שנכשלו תוקנו בהצלחה בעקבות הפיקוד.",
+          "testSteps": [
+            "בדוק את טבלת RAV_SERIALDETAILS בPriority ובדוק שרשומות סדרתיות מועברות בהצלחה ללא שגיאות 404",
+            "אמת שהרשומות שנכשלו עד 08/10 (סה״כ ~944 רשומות) עברו לסטטוס Success בהתאם לתיקוד",
+            "בדוק את רישום תהליך _MG_ProcessErpSerialDetails וודא שהמפתח מועבר כערך SERIALNAME בצורה נכונה (בגרשיים)",
+            "הרץ דיווח סדרתי חדש דרך הממשק ובדוק שהוא מתועד בטבלת RAV_SERIALDETAILS ללא שגיאות"
           ]
         }
       ],
