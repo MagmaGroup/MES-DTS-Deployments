@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 32,
+      "ticketCount": 33,
       "url": "DTS_00004.html",
       "tickets": [
         {
@@ -498,6 +498,22 @@
             "בדוק בלוג את הרשומות [_MG_AutoWeightSiloBigBag] ו-[_MG_AutoWeightContainerOnTrolley] במהלך תהליך שליחה רגיל של עגלה לשקילה.",
             "אשר שלכל הרצה מוצגת רשומה אחת בלוג עם חותמת זמן וסטטוס (OK או FAILED) לכל שלב של התהליך.",
             "בעת התקלה הבאה, בדוק בלוג איזה שלב היה האחרון שבוצע בהצלחה ואיזה רשומה חסרה — זה יחשוף בדיוק היכן נתקעת העגלה."
+          ]
+        },
+        {
+          "number": "3359",
+          "subject": "יוזר איכות מוגדר כמורשה לכפתור ניהול קבצים אך מקבל הודעת שגיאה ",
+          "assignee": "ישראלה גילת",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "מדובר על כפתור _MG_LinkDocumentsReleasedWO מסך _MG_ReleasedWOיוזר WATADMאם צריך סיסמא אוכל להעביר בפרטי",
+          "description": "תוקן הגדר הרשאות ליוזר QC כדי לאפשר גישה לכפתור _MG_LinkDocumentsReleasedWO במסך _MG_ReleasedWO. השינוי בוצע בגריד DocumentsBaseSecurity בתוספת הרשאת QA הנדרשת, וההגדרה עודכנה בסביבת הייצור תנובות.",
+          "testSteps": [
+            "התחברו כיוזר QC לסביבת הייצור תנובות",
+            "נווטו למסך _MG_ReleasedWO וודאו כי כפתור _MG_LinkDocumentsReleasedWO נגיש וללא הודעות שגיאה",
+            "ודאו כי ברשומות קיימות, היוזר יכול ללחוץ על הכפתור והגישה מותרת",
+            "בדקו בטבלת DocumentsBaseSecurity כי QA מוגדר בהרשאות הנדרשות"
           ]
         }
       ],
