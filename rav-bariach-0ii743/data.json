@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 13,
+      "ticketCount": 14,
       "url": "DTS_00007.html",
       "tickets": [
         {
@@ -216,6 +216,22 @@
             "אמת שהרשומות שנכשלו עד 08/10 (סה״כ ~944 רשומות) עברו לסטטוס Success בהתאם לתיקוד",
             "בדוק את רישום תהליך _MG_ProcessErpSerialDetails וודא שהמפתח מועבר כערך SERIALNAME בצורה נכונה (בגרשיים)",
             "הרץ דיווח סדרתי חדש דרך הממשק ובדוק שהוא מתועד בטבלת RAV_SERIALDETAILS ללא שגיאות"
+          ]
+        },
+        {
+          "number": "3327",
+          "subject": "זמן תגובה ארוך בלחיצה על כפתור \"משקופים שליחת משטח ל FG\"",
+          "assignee": "eldan menahem",
+          "status": "Waiting DTS",
+          "isCR": false,
+          "contentLocked": false,
+          "originalDescription": "במסך : https://informes.rav-bariach.co.il/mes/#4/grid/_MG_ManualLoadingToUtronבעת לחיצה על כפתור - \"משקופים שליחת משטח ל FG\" קיים זמן טעינה ארוך מהרגיל.זמן הטעינה הממושך גורם לעיכוב משמעותי ברצף העבודה.נדרש לבדוק את מקור האיטיות ולבחון אפשרות לשיפור זמן התגובה.",
+          "description": "בוצע שיפור בזמן התגובה של כפתור \"משקופים שליחת משטח ל FG\" במסך המטענה היזום (ManualLoadingToUtron). השינוי מטרתו להפחית את זמן הטעינה הממושך שגרם לעיכוב ברצף העבודה.",
+          "testSteps": [
+            "נווט למסך https://informes.rav-bariach.co.il/mes/#4/grid/_MG_ManualLoadingToUtron",
+            "לחץ על כפתור 'משקופים שליחת משטח ל FG' ותאם את זמן התגובה - הוא צריך להיות מהיר בהשוואה למצב הקודם",
+            "אמת כי תהליך המטענה מתבצע ללא עיכוב משמעותי בברצף העבודה",
+            "בדוק את הביצוע הן בגרסה הנוכחית והן בבילד הקודם לאישור שיפור בביצועים"
           ]
         }
       ],
