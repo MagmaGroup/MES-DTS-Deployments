@@ -8,7 +8,7 @@
       "createDate": "02.08.2026",
       "deployDate": null,
       "closeDate": null,
-      "ticketCount": 38,
+      "ticketCount": 39,
       "url": "DTS_00003.html",
       "tickets": [
         {
@@ -608,6 +608,21 @@
             "הריצו את הסקריפט 2705_MainLineDashboardLayouts.sql על DB של TEST - קודם עם ROLLBACK ובדקו את תוצאות ה-verify grid, ואז עם COMMIT",
             "לחצו על קו ראשי קיים מדשבורד Plant Overview וודאו שפותח את _MG_OperatorLineAssemblyNew עם LineID ו-Line נכונים",
             "הריצו את הסקריפט פעם שנייה על TEST וודאו שלא מוכנסות שורות כפולות"
+          ]
+        },
+        {
+          "number": "3399",
+          "subject": "לאחר אישור לקוח - Flex - 20.10.26 DTS",
+          "assignee": "Shai Lubartovsky",
+          "status": "Waiting DTS",
+          "isCR": true,
+          "contentLocked": false,
+          "originalDescription": "התקנת DTS לאחר אישור לקוחמספרי הקריאות הם:האם CRהערותבאחריותתאורמספר קריאהכןayala rovהעתקת MBOM ל-MBOM ב-MES3325לאשלומי ציוןהצגת סיריאלי בדשבורד קווים2705",
+          "description": "הדויס כלל שתי שינויים מרכזיים: העתקת MBOM ל-MBOM ב-MES (קריאה 3325) והצגת סיריאלי בדשבורד קווים (קריאה 2705). השינויים אושרו על ידי הלקוח והועלו לסביבת הייצור בתאריך 20.10.26.",
+          "testSteps": [
+            "בדקו כי פונקציית העתקת MBOM ל-MBOM ב-MES (קריאה 3325) פועלת כהלכה ומעתיקה את הנתונים בצורה נכונה",
+            "אימתו כי הסיריאלי מוצג כראוי בדשבורד קווים (קריאה 2705) עבור כל הקווים הרלוונטיים",
+            "בדקו כי אין שגיאות או הודעות אזהרה בקובץ היומן (log) בעת ביצוע שתי הפונקציות"
           ]
         }
       ],
